@@ -19,6 +19,8 @@ Flex gives you a way to align things in 2-dimensional space using sensible props
 
 ![mui-flex](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
+Want to see for yourself? [Try it out!](https://brandonscript.github.io/Flex/).
+
 ## Getting started
 
 ```shell
