@@ -55,7 +55,7 @@ const Inner = styled(FlexBox)({
   gap: "4px",
   padding: "4px",
   "& > span": {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#efecf4",
     paddingLeft: "4px",
     paddingRight: "4px",
     borderRadius: "4px",
