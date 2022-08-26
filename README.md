@@ -17,6 +17,8 @@ What if we took an approach from science and math and 2-dimensional space?
 
 Flex gives you a way to align things in 2-dimensional space using sensible props like x and y instead, and does all the hard CSS stuff for you so you don't have to.
 
+![mui-flex](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
+
 ## Getting started
 
 ```shell
