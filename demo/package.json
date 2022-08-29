@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A little demo app for mui-flexy",
   "main": "index.js",
-  "repository": "https://github.com/brandonscript/Flex",
+  "repository": "https://github.com/brandonscript/mui-flexy",
   "author": "github.com/brandonscript",
   "license": "MIT",
   "private": false,

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "main": "src/index.ts",
-  "repository": "https://github.com/brandonscript/Flex",
+  "repository": "https://github.com/brandonscript/mui-flexy",
   "author": "github.com/brandonscript",
   "license": "MIT",
   "private": false,
