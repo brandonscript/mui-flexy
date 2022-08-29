@@ -1,7 +1,7 @@
 {
   "name": "mui-flex",
   "version": "1.0.0",
-  "description": "A flexbox wrapper for Material UI Box and Grid components with handy shorthand props",
+  "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "main": "src/index.ts",
   "repository": "https://github.com/brandonscript/Flex",
   "author": "github.com/brandonscript",
