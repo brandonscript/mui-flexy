@@ -5,7 +5,7 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 
 ## The problem
 
-If you have never gotten confused whether to use justify-content or align-items, then Flex is not for you. If you have, and you've lost sleep, hair, or brain cells because centering a div is hard, then say no more, and `yarn add mui-flex` or `npm install mui-flex`.
+If you have never gotten confused whether to use justify-content or align-items, then Flex is not for you. If you have, and you've lost sleep, hair, or brain cells because centering a div is hard, then say no more, and `yarn add mui-flexy` or `npm install mui-flexy`.
 
 See, CSS dictates that:
 
@@ -17,16 +17,16 @@ What if we took an approach from science and math and 2-dimensional space?
 
 Flex gives you a way to align things in 2-dimensional space using sensible props like x and y instead, and does all the hard CSS stuff for you so you don't have to.
 
-![mui-flex](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
+![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
 Want to see for yourself? [Try it out!](https://brandonscript.github.io/Flex/)
 
 ## Getting started
 
 ```shell
-yarn add mui-flex
+yarn add mui-flexy
 # or 
-npm install mui-flex
+npm install mui-flexy
 ```
 
 Make sure you've got `@mui/material` and its dependencies installed. And React, don't forget React.

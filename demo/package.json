@@ -1,7 +1,7 @@
 {
-  "name": "mui-flex-demo",
+  "name": "mui-flexy-demo",
   "version": "1.0.0",
-  "description": "A little demo app for mui-flex",
+  "description": "A little demo app for mui-flexy",
   "main": "index.js",
   "repository": "https://github.com/brandonscript/Flex",
   "author": "github.com/brandonscript",
