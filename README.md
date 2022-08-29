@@ -1,7 +1,7 @@
 <img width="256" alt="flex-logo" src="https://user-images.githubusercontent.com/1480253/186842214-5575f27e-fc48-4617-bedb-a7ec29411203.png">
 
 # Flex
-A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props
+A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
 ## The problem
 
@@ -19,7 +19,7 @@ Flex gives you a way to align things in 2-dimensional space using sensible props
 
 ![mui-flex](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
-Want to see for yourself? [Try it out!](https://brandonscript.github.io/Flex/).
+Want to see for yourself? [Try it out!](https://brandonscript.github.io/Flex/)
 
 ## Getting started
 
