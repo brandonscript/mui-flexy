@@ -4,6 +4,7 @@ import React, { forwardRef, PropsWithChildren, useEffect, useRef, useState } fro
 import { FlexBox, FlexGrid } from "../../src/Flex";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { FlexBoxProps } from "src";
 
 const rowCombinations = [
   ["left", "top"],
@@ -261,6 +262,19 @@ const FlexTest = () => {
           <Code code={ref?.current?.toString()} />
         </Inner>
       </FlexGrid>
+      <Header text="Complex props test" />
+      {(() => {
+        const invalidProps = { prop: 'invalid' } as FlexBoxProps;
+        return (
+          <FlexGrid item xs={12} component="article">
+            <Inner x="center" y="center" column {...({ prop: "invalid" } as FlexBoxProps)}>
+              <span>Complex props test</span>
+              <Code code={JSON.stringify(invalidProps)} />
+            </Inner>
+          </FlexGrid>
+        );
+      })()}
+      
     </FlexGrid>
   );
 };

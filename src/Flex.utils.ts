@@ -1,16 +1,10 @@
-import { ComponentType } from "react";
 import { BoxProps } from "@mui/material/Box";
 import { GridProps } from "@mui/material/Grid";
-import { ResponsiveStyleValue } from "@mui/system";
-import { CSSProperties } from "react";
+import { ComponentType } from "react";
 import {
   Align,
   Axis,
-  BaseFlexProps,
-  ColumnAlign,
-  FlexReturnType,
-  RowAlign,
-  StrictAxis,
+  BaseFlexProps, FlexReturnType, StrictAxis
 } from "./Flex.types";
 
 // Borrowed unapologetically from https://github.com/vercel/next.js/blob/canary/packages/next/shared/lib/utils.ts
@@ -90,15 +84,13 @@ const mapResponsiveObject = (direction: { [key: string]: Axis }, main: Align, cr
   );
 };
 
-export const mapFlexProps = (props: BaseFlexProps<BoxProps | GridProps>): FlexReturnType => {
+export const mapFlexProps = <T extends BoxProps | GridProps>(props: BaseFlexProps<T>): FlexReturnType<T> => {
   const { x, y, row, column, flexDirection, reverse, nowrap } = props;
   const direction = mapDirection(row ? "row" : column ? "column" : flexDirection, reverse);
 
-  console.log(direction, flexDirection);
-
   const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
 
-  const flexProps: FlexReturnType = { display: "flex", whiteSpace };
+  const flexProps: FlexReturnType<T> = { display: "flex", whiteSpace } as T;
 
   if (typeof direction === "string") {
     return {

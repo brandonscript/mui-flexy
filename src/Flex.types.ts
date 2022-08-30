@@ -27,13 +27,7 @@ export type BaseFlexProps<T extends BoxProps | GridProps> = T & {
   reverse?: boolean;
   nowrap?: boolean;
 };
+export type FlexBoxProps = BaseFlexProps<BoxProps>;
+export type FlexGridProps = BaseFlexProps<GridProps>;
 
-export type FlexReturnType =
-  | {
-      display: 'flex';
-      whiteSpace?: BoxProps["whiteSpace"] | GridProps["whiteSpace"];
-      justifyContent?: Align;
-      alignItems?: Align;
-      flexDirection?: Axis;
-    }
-  | undefined;
+export type FlexReturnType<T extends BoxProps | GridProps> = T;

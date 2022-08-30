@@ -6,10 +6,9 @@ import { BaseFlexProps, PropsWithComponent } from "./Flex.types";
 import { getDisplayName, mapFlexProps } from "./Flex.utils";
 
 const Flex = <C extends BoxProps | GridProps>(Component: React.ComponentType<C>) => {
-  const WC = forwardRef(
-    <R extends HTMLElement = HTMLDivElement>(
+  const WC = forwardRef((
       props: PropsWithComponent<BaseFlexProps<C>>,
-      ref?: React.ForwardedRef<R>
+      ref?: React.ForwardedRef<unknown>
     ) => {
       const { x, y, row, column, reverse, nowrap, ...rest } = props;
       const flexProps = mapFlexProps(props);
