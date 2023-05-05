@@ -16,10 +16,14 @@ module.exports = {
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"],
+    modules: [path.resolve("../demo/node_modules/")],
     alias: {
       react: path.resolve("../node_modules/react"),
       "react-dom": path.resolve("../node_modules/react-dom"),
     },
+  },
+  resolveLoader: {
+    modules: [path.resolve("../demo/node_modules/")],
   },
   module: {
     rules: [

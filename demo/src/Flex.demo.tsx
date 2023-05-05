@@ -1,10 +1,10 @@
+import styled from "@emotion/styled";
 import { Link, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import React, { forwardRef, PropsWithChildren, useEffect, useRef, useState } from "react";
-import { FlexBox, FlexGrid } from "../../src/Flex";
+import { PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
-import { FlexBoxProps } from "src";
+
+import { FlexBox, FlexBoxProps, FlexGrid } from "../../dist";
 
 const rowCombinations = [
   ["left", "top"],
@@ -66,7 +66,7 @@ const Inner = styled(FlexBox)({
     borderRadius: "4px",
   },
   "& pre, & code": {
-    whiteSpace: "break-spaces !important",
+    whiteSpace: "break-spaces",
   },
 });
 
@@ -96,7 +96,7 @@ const Code = ({
 }: PropsWithChildren<{ inline?: boolean; code?: string }>) => (
   <SyntaxHighlighter
     language="javascript"
-    customStyle={inline ? { display: "inline", padding: '2px 4px' } : {}}
+    customStyle={inline ? { display: "inline", padding: "2px 4px" } : {}}
     style={atelierCaveLight}
   >
     {children?.toString() || code || ""}
@@ -264,7 +264,7 @@ const FlexTest = () => {
       </FlexGrid>
       <Header text="Complex props test" />
       {(() => {
-        const invalidProps = { prop: 'invalid' } as FlexBoxProps;
+        const invalidProps = { prop: "invalid" } as FlexBoxProps;
         return (
           <FlexGrid item xs={12} component="article">
             <Inner x="center" y="center" column {...({ prop: "invalid" } as FlexBoxProps)}>
@@ -274,7 +274,6 @@ const FlexTest = () => {
           </FlexGrid>
         );
       })()}
-      
     </FlexGrid>
   );
 };

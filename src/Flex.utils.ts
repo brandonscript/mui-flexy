@@ -1,11 +1,6 @@
-import { BoxProps } from "@mui/material/Box";
-import { GridProps } from "@mui/material/Grid";
 import { ComponentType } from "react";
-import {
-  Align,
-  Axis,
-  BaseFlexProps, FlexReturnType, StrictAxis
-} from "./Flex.types";
+
+import { Align, Axis, FlexBoxProps, StrictAxis } from "./Flex.types";
 
 // Borrowed unapologetically from https://github.com/vercel/next.js/blob/canary/packages/next/shared/lib/utils.ts
 export function getDisplayName<P>(Component: ComponentType<P>) {
@@ -84,13 +79,13 @@ const mapResponsiveObject = (direction: { [key: string]: Axis }, main: Align, cr
   );
 };
 
-export const mapFlexProps = <T extends BoxProps | GridProps>(props: BaseFlexProps<T>): FlexReturnType<T> => {
+export const mapFlexProps = <T extends FlexBoxProps = FlexBoxProps>(props: T) => {
   const { x, y, row, column, flexDirection, reverse, nowrap } = props;
   const direction = mapDirection(row ? "row" : column ? "column" : flexDirection, reverse);
 
   const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
 
-  const flexProps: FlexReturnType<T> = { display: "flex", whiteSpace } as T;
+  const flexProps: T = { display: "flex", whiteSpace } as T;
 
   if (typeof direction === "string") {
     return {

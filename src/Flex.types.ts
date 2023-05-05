@@ -1,6 +1,8 @@
 import { BoxProps, GridProps } from "@mui/material";
+import { OverrideProps } from "@mui/material/OverridableComponent";
+import { BoxTypeMap } from "@mui/system";
+import { ComponentType } from "react";
 
-export type PropsWithComponent<P> = P & { component?: React.ElementType | undefined };
 export type RowAlign =
   | BoxProps["justifyContent"]
   | BoxProps["alignItems"]
@@ -19,7 +21,7 @@ export type Axis = BoxProps["flexDirection"] | GridProps["direction"] | null;
 export type StrictAxis = "row" | "row-reverse" | "column" | "column-reverse";
 export type Align = RowAlign | ColumnAlign | null;
 
-export type BaseFlexProps<T extends BoxProps | GridProps> = T & {
+type FlexBaseProps = {
   x?: Align;
   y?: Align;
   row?: boolean;
@@ -27,7 +29,17 @@ export type BaseFlexProps<T extends BoxProps | GridProps> = T & {
   reverse?: boolean;
   nowrap?: boolean;
 };
-export type FlexBoxProps = BaseFlexProps<BoxProps>;
-export type FlexGridProps = BaseFlexProps<GridProps>;
 
-export type FlexReturnType<T extends BoxProps | GridProps> = T;
+export type FlexTypeMap<
+  M extends BoxTypeMap = BoxTypeMap,
+  P extends M["props"] = M["props"],
+  D extends React.ElementType = M["defaultComponent"]
+> = {
+  props: P & FlexBaseProps;
+  defaultComponent: D | "div";
+};
+
+export type FlexProps<P extends BoxProps = BoxProps> = OverrideProps<FlexTypeMap, ComponentType<P>>;
+
+export type FlexBoxProps = FlexProps<BoxProps>;
+export type FlexGridProps = FlexProps<GridProps>;

@@ -1,4 +1,5 @@
-import { createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
+
 import FlexTest from "./Flex.demo";
 
 const fontFamily = [
@@ -7,13 +8,13 @@ const fontFamily = [
   "-apple-system",
   "BlinkMacSystemFont",
   '"Segoe UI"',
-  'Source Sans Pro',
-  'Open Sans',
+  "Source Sans Pro",
+  "Open Sans",
   "Arial",
   "sans-serif",
-]
+];
 
-const preFontFamily = ['"SF Mono"', '"Roboto Mono"', "Menlo", '"Source Code Pro"', 'monospace'];
+const preFontFamily = ['"SF Mono"', '"Roboto Mono"', "Menlo", '"Source Code Pro"', "monospace"];
 
 const theme = createTheme({
   typography: {
@@ -33,8 +34,6 @@ const theme = createTheme({
     },
   },
 });
-
-
 
 const App = () => {
   return (

@@ -2,38 +2,44 @@
   "name": "mui-flexy-demo",
   "version": "1.0.0",
   "description": "A little demo app for mui-flexy",
-  "main": "index.js",
   "repository": "https://github.com/brandonscript/mui-flexy",
   "author": "github.com/brandonscript",
   "license": "MIT",
+  "main": "index.tsx",
   "private": false,
   "scripts": {
     "dev": "webpack serve --hot --mode development",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "lint": "eslint --ext .ts src"
   },
   "dependencies": {
-    "@emotion/react": "^11.10.0",
+    "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.0",
     "@mui/material": "^5.10.2",
     "@types/react": "^17.0.0 || ^18.0.0",
     "@types/react-dom": "^17.0.0 || ^18.0.0",
     "@types/react-syntax-highlighter": "^15.5.5",
+    "mui-flexy": "../",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-syntax-highlighter": "^15.5.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.13",
-    "@babel/preset-env": "^7.18.10",
+    "@babel/core": "^7.21.8",
+    "@babel/preset-env": "^7.21.5",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
+    "@swc/cli": "^0.1.62",
+    "@swc/core": "^1.3.56",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
     "html-webpack-plugin": "^5.5.0",
     "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.2",
+    "typescript": "^5.0.4",
     "url-loader": "^4.1.1",
     "webpack": "^5.74.0",
     "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.10.0"
+    "webpack-dev-server": "^4.10.1"
   }
 }

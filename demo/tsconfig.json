@@ -1,36 +1,21 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "outDir": "dist",
     "allowJs": true,
     "skipLibCheck": true,
+    "sourceMap": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "outDir": "./dist",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "sourceMap": true,
-    "paths": {
-      "@/*": ["./*"]
-    }
+    "noEmit": true
   },
-  "include": ["src/**/*", "tests/**/*"],
-  "exclude": [
-    "dist",
-    "node_modules",
-    "demo",
-    "jest.config.**",
-    "webpack.config.js",
-    "coverage",
-    ".eslintrc.js",
-    ".babelrc.js",
-    ".babelrc"
-  ]
+  "include": ["./src", ".src/**/*"]
 }

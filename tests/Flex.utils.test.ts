@@ -1,5 +1,6 @@
+import { Align, Axis } from "../src/Flex.types";
 import { _test } from "../src/Flex.utils";
-import { Axis, Align } from "src/Flex.types";
+
 const { mapAlignment, mapDirection, mapFlexProps } = _test;
 
 type FlexMapTestType = {
@@ -73,29 +74,32 @@ describe("mapDirection", () => {
       }
     });
   });
-  it('should default to row when passed undefined or null', () => {
+  it("should default to row when passed undefined or null", () => {
     expect(mapDirection(undefined)).toBe("row");
     expect(mapDirection(null)).toBe("row");
   }),
-  it('should log a warning to the console if passed any CSS global values', () => {
-    const spy = jest.spyOn(console, "warn");
-    mapDirection("inherit");
-    mapDirection("initial");
-    mapDirection("revert");
-    mapDirection("revert-layer");
-    mapDirection("unset");
-    expect(spy).toHaveBeenCalledTimes(5);
-  }),
-  it("should accept an array of directions", () => {
-    expect(mapDirection(["row", "column"])).toMatchObject(["row", "column"]);
-    expect(mapDirection(["row", "column"], true)).toMatchObject(["row-reverse", "column-reverse"]);
-    expect(mapDirection(["row", "column", "row-reverse", "inherit"], true)).toMatchObject([
-      "row-reverse",
-      "column-reverse",
-      "row-reverse",
-      "inherit",
-    ]);
-  });
+    it("should log a warning to the console if passed any CSS global values", () => {
+      const spy = jest.spyOn(console, "warn");
+      mapDirection("inherit");
+      mapDirection("initial");
+      mapDirection("revert");
+      mapDirection("revert-layer");
+      mapDirection("unset");
+      expect(spy).toHaveBeenCalledTimes(5);
+    }),
+    it("should accept an array of directions", () => {
+      expect(mapDirection(["row", "column"])).toMatchObject(["row", "column"]);
+      expect(mapDirection(["row", "column"], true)).toMatchObject([
+        "row-reverse",
+        "column-reverse",
+      ]);
+      expect(mapDirection(["row", "column", "row-reverse", "inherit"], true)).toMatchObject([
+        "row-reverse",
+        "column-reverse",
+        "row-reverse",
+        "inherit",
+      ]);
+    });
   it("should accept a MUI ResponsiveStyleValue object of directions", () => {
     expect(mapDirection({ xs: "row", sm: "column" })).toMatchObject({ xs: "row", sm: "column" });
     expect(mapDirection({ xs: "row", sm: "column" }, true)).toMatchObject({
@@ -227,9 +231,7 @@ describe("mapFlexProps", () => {
   });
 
   it("should behave like a row when row, column, and flexDirection are not specified", () => {
-    expect(
-      mapFlexProps({ x: "right", y: "bottom" })
-    ).toMatchObject({
+    expect(mapFlexProps({ x: "right", y: "bottom" })).toMatchObject({
       justifyContent: "flex-end",
       alignItems: "flex-end",
       flexDirection: "row",

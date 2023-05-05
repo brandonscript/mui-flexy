@@ -1,0 +1,19 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "prettier.printWidth": 100,
+  "testing.defaultGutterClickAction": "contextMenu",
+  "[json]": {
+    "editor.formatOnSave": true
+  },
+  "jest.autoRun": {},
+  "jest.debugCodeLens.showWhenTestStateIn": ["pass", "fail", "unknown"],
+  "jest.jestCommandLine": "node_modules/.bin/jest -b",
+  "jest.rootPath": "."
+}

@@ -1,0 +1,23 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "./dist"
+  },
+  "files": ["src/Flex.tsx", "src/Flex.types.ts", "src/Flex.utils.ts", "src/index.tsx"],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "demo",
+    "tests",
+    "jest.config.**",
+    "webpack.config.js",
+    "coverage/",
+    ".eslintrc.js",
+    ".babelrc.js",
+    ".babelrc",
+    ".vscode/"
+  ]
+}
