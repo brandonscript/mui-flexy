@@ -5,7 +5,7 @@
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "prettier.printWidth": 100,
   "testing.defaultGutterClickAction": "contextMenu",
@@ -13,7 +13,11 @@
     "editor.formatOnSave": true
   },
   "jest.autoRun": {},
-  "jest.debugCodeLens.showWhenTestStateIn": ["pass", "fail", "unknown"],
+  "jest.debugCodeLens.showWhenTestStateIn": [
+    "pass",
+    "fail",
+    "unknown"
+  ],
   "jest.jestCommandLine": "node_modules/.bin/jest -b",
   "jest.rootPath": "."
 }

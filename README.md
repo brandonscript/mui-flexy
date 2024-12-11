@@ -1,11 +1,12 @@
 <img width="256" alt="flex-logo" src="https://user-images.githubusercontent.com/1480253/186842214-5575f27e-fc48-4617-bedb-a7ec29411203.png">
 
-# Flex
+# Flexy
+
 A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
 ## The problem
 
-If you have never gotten confused whether to use justify-content or align-items, then Flex is not for you. If you have, and you've lost sleep, hair, or brain cells because centering a div is hard, then say no more, and `yarn add mui-flexy` or `npm install mui-flexy`.
+If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, and you've lost sleep, hair, or brain cells because centering a div is hard, then say no more, and `yarn add mui-flexy` or `npm install mui-flexy`.
 
 See, CSS dictates that:
 
@@ -15,17 +16,17 @@ See, CSS dictates that:
 
 What if we took an approach from science and math and 2-dimensional space?
 
-Flex gives you a way to align things in 2-dimensional space using sensible props like x and y instead, and does all the hard CSS stuff for you so you don't have to.
+Flexy gives you a way to align things in 2-dimensional space using sensible props like x and y instead, and does all the hard CSS stuff for you so you don't have to.
 
 ![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
-Want to see for yourself? [Try it out!](https://brandonscript.github.io/Flex/)
+Want to see for yourself? [Try it out!](https://brandonscript.github.io/mui-flexy/)
 
 ## Getting started
 
 ```shell
 yarn add mui-flexy
-# or 
+# or
 npm install mui-flexy
 ```
 
@@ -36,14 +37,12 @@ If you're not using TypesScript, expect for now that everything will be angry an
 Then add to your project:
 
 ```jsx
-
-import { Typography } from '@mui/material'; // or use a <p> if you don't like fun typography
-import { FlexBox, FlexGrid } from 'mui-flex';
+import { Typography } from "@mui/material"; // or use a <p> if you don't like fun typography
+import { FlexBox, FlexGrid } from "mui-flex";
 
 <FlexBox x="top" y="center">
   <Typography>Hello, Bajor</Typography>
-</FlexBox>
-
+</FlexBox>;
 ```
 
 ## Meaty bits of fun usage and more words
@@ -51,20 +50,17 @@ import { FlexBox, FlexGrid } from 'mui-flex';
 It's like magic:
 
 ```jsx
-
 const YouTooCanCenterADiv = () => (
-  <FlexBox x="center" y="center" width='100vw' height='100vh'>
-    <Typography>
-      2-D coordinate systems are cool
-    </Typography>
+  <FlexBox x="center" y="center" width="100vw" height="100vh">
+    <Typography>2-D coordinate systems are cool</Typography>
   </FlexBox>
-)
+);
 ```
 
 where:
 
 ```jsx
-{ 
+{
   x: "center",
   y: "center",
   row: true // default is row, or you can pass column
@@ -79,7 +75,7 @@ produces {
 and
 
 ```jsx
-{ 
+{
   x: "left",
   y: "bottom",
   column: true
@@ -91,7 +87,7 @@ produces {
 }
 ```
 
-Just like MUI (via Emotion) lets you use arrays and object notation, Flex does too (because it's a wrapper for Box and Grid):
+Just like MUI (via Emotion) lets you use arrays and object notation, Flexy does too (because it's a wrapper for Box and Grid):
 
 ```jsx
 {
@@ -105,7 +101,7 @@ produces {
   flexDirection: "row"
 }
 
-// 
+//
 
 {
   x: ["left", "space-between"],
@@ -175,7 +171,7 @@ Neato, burrito! That's pretty easy, right?
 Oh, one last thing—you can get clever with `reverse`, too:
 
 ```jsx
-{ 
+{
   x: "left",
   y: "center",
   reverse: true
@@ -199,3 +195,4 @@ Coming soon, perhas it's worth having some shorthand like this:
 <FlexBox row top-left />
 
 // maybe?
+```

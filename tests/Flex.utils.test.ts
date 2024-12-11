@@ -1,14 +1,14 @@
-import { Align, Axis } from "../src/Flex.types";
+import { Axis, MuiAlign } from "../src/Flex.types";
 import { _test } from "../src/Flex.utils";
 
 const { mapAlignment, mapDirection, mapFlexProps } = _test;
 
 type FlexMapTestType = {
   x: {
-    [key in "left" | "center" | "right"]: Align;
+    [key in "left" | "center" | "right"]: MuiAlign;
   };
   y: {
-    [key in "top" | "center" | "bottom"]: Align;
+    [key in "top" | "center" | "bottom"]: MuiAlign;
   };
 };
 
@@ -35,7 +35,7 @@ const cssFlexDirection: Axis[] = [
   "unset",
 ];
 
-const cssJustifyContent: Align[] = [
+const cssJustifyContent: MuiAlign[] = [
   "flex-start",
   "flex-end",
   "center",
@@ -47,7 +47,7 @@ const cssJustifyContent: Align[] = [
   "unset",
 ];
 
-const cssAlignItems: Align[] = [
+const cssAlignItems: MuiAlign[] = [
   "flex-start",
   "flex-end",
   "center",
@@ -175,8 +175,8 @@ describe("mapFlexProps", () => {
   Object.entries(flexMap.y).forEach(([y, alignItems]) => {
     Object.entries(flexMap.x).forEach(([x, justifyContent]) => {
       it(`should map row axis y=${y} x=${x}`, () => {
-        const props = mapFlexProps({ x, y, row: true });
-        const propsReverse = mapFlexProps({ x, y, row: true, reverse: true });
+        const props = mapFlexProps({ x, y, row: true } as any);
+        const propsReverse = mapFlexProps({ x, y, row: true, reverse: true } as any);
         expect(props).toMatchObject({
           justifyContent,
           alignItems,
@@ -195,8 +195,8 @@ describe("mapFlexProps", () => {
   Object.entries(flexMap.y).forEach(([y, justifyContent]) => {
     Object.entries(flexMap.x).forEach(([x, alignItems]) => {
       it(`should map column axis y=${y} x=${x}`, () => {
-        const props = mapFlexProps({ x, y, column: true });
-        const propsReverse = mapFlexProps({ x, y, column: true, reverse: true });
+        const props = mapFlexProps({ x, y, column: true } as any);
+        const propsReverse = mapFlexProps({ x, y, column: true, reverse: true } as any);
         expect(props).toMatchObject({
           justifyContent,
           alignItems,
@@ -215,14 +215,22 @@ describe("mapFlexProps", () => {
 
   it("should accept an array of alignments", () => {
     expect(
-      mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"], row: true })
+      mapFlexProps({
+        x: ["left", "center", "right"],
+        y: ["bottom", "center", "top"],
+        row: true,
+      } as any)
     ).toMatchObject({
       justifyContent: ["flex-start", "center", "flex-end"],
       alignItems: ["flex-end", "center", "flex-start"],
       flexDirection: "row",
     });
     expect(
-      mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"], column: true })
+      mapFlexProps({
+        x: ["left", "center", "right"],
+        y: ["bottom", "center", "top"],
+        column: true,
+      } as any)
     ).toMatchObject({
       justifyContent: ["flex-end", "center", "flex-start"],
       alignItems: ["flex-start", "center", "flex-end"],
@@ -237,7 +245,7 @@ describe("mapFlexProps", () => {
       flexDirection: "row",
     });
     expect(
-      mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"] })
+      mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"] } as any)
     ).toMatchObject({
       justifyContent: ["flex-start", "center", "flex-end"],
       alignItems: ["flex-end", "center", "flex-start"],
@@ -259,7 +267,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "center" },
         y: { xs: "top", sm: "bottom" },
         row: true,
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "center" },
       alignItems: { xs: "flex-start", sm: "flex-end" },
@@ -270,7 +278,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "center" },
         y: { xs: "top", sm: "bottom" },
         column: true,
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "flex-end" },
       alignItems: { xs: "flex-start", sm: "center" },
@@ -284,7 +292,7 @@ describe("mapFlexProps", () => {
         x: ["left", "center"],
         y: ["center", "bottom"],
         flexDirection: ["row", "column"],
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: ["flex-start", "flex-end"],
       alignItems: ["center", "center"],
@@ -298,7 +306,7 @@ describe("mapFlexProps", () => {
         x: ["center", "left"],
         y: "center",
         flexDirection: ["column", "row"],
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: ["center", "flex-start"],
       alignItems: ["center", "center"],
@@ -312,7 +320,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "space-between" },
         y: { xs: "center", sm: "inherit" },
         flexDirection: { xs: "row", sm: "column" },
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "inherit" },
       alignItems: { xs: "center", sm: "space-between" },
@@ -326,7 +334,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "space-between" },
         y: "center",
         flexDirection: { xs: "row", sm: "column" },
-      })
+      } as any)
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "center" },
       alignItems: { xs: "center", sm: "space-between" },

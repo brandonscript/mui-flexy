@@ -1,12 +1,21 @@
 {
-  "extends": ["next/core-web-vitals", "plugin:react/recommended"],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:react/recommended"
+  ],
   "parserOptions": {
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "plugins": ["simple-import-sort", "import", "unused-imports", "react-hooks", "react"],
+  "plugins": [
+    "simple-import-sort",
+    "import",
+    "unused-imports",
+    "react-hooks",
+    "react"
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off",
     "simple-import-sort/imports": "warn",
@@ -30,6 +39,10 @@
     "import/resolver": {
       "typescript": true,
       "node": true
-    }
+    },
+    "exclude": [
+      "node_modules",
+      "dist"
+    ]
   }
 }

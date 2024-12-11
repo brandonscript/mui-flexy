@@ -4,9 +4,16 @@
     "noEmit": false,
     "skipLibCheck": true,
     "declaration": true,
-    "declarationDir": "./dist"
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx",
   },
-  "files": ["src/Flex.tsx", "src/Flex.types.ts", "src/Flex.utils.ts", "src/index.tsx"],
+  "files": [
+    "src/Flex.tsx",
+    "src/Flex.types.ts",
+    "src/Flex.utils.ts",
+    "src/index.tsx"
+  ],
   "exclude": [
     "dist",
     "node_modules",

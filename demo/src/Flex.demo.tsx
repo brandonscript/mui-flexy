@@ -4,7 +4,9 @@ import { PropsWithChildren, forwardRef, useEffect, useRef, useState } from "reac
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { FlexBox, FlexBoxProps, FlexGrid } from "../../dist";
+import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
+
+console.log(FlexBox, FlexGrid);
 
 const rowCombinations = [
   ["left", "top"],
@@ -103,7 +105,7 @@ const Code = ({
   </SyntaxHighlighter>
 );
 
-const FlexTest = () => {
+export const FlexTest = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [refState, setRefState] = useState<HTMLDivElement | null>(null);
 
@@ -117,14 +119,14 @@ const FlexTest = () => {
     <FlexGrid container width="100vw" p={4} spacing={2} x="center">
       <FlexGrid item xs={12} column>
         <Typography variant="h4" component="h1">
-          Flex for{" "}
+          Flexy for{" "}
           <Link target="_blank" href="https://mui.com/">
             Material UI
           </Link>
         </Typography>
-        <Typography variant="body1" component="p">
+        <Typography variant="body1" component="div">
           {
-            "Flex for MUI is a component wrapper for flexbox styles that allows you to easily \
+            "Flexy for MUI is a component wrapper for flexbox styles that allows you to easily \
             align and distribute flexy items in a space in a way that doesn't make you want \
             to pull your hair out trying to remember whether to use "
           }
@@ -137,7 +139,7 @@ const FlexTest = () => {
           }
           <br />
           <br />
-          {"Flex components inherit from either "}
+          {"Flexy components inherit from either "}
           <Link target="_blank" href="https://mui.com/material-ui/react-box/">
             Box
           </Link>{" "}
@@ -155,7 +157,7 @@ const FlexTest = () => {
           <Code inline>row</Code>
           {" anyway. If you want a column, just pass a "}
           <Code inline>column</Code>
-          {"prop, and Flex will do the hard thinking and make CSS so you don't have to."}
+          {"prop, and Flexy will do the hard thinking and make CSS so you don't have to."}
         </Typography>
       </FlexGrid>
       <Header text="Row" subtitle="Simple: props are string values" />
@@ -277,5 +279,3 @@ const FlexTest = () => {
     </FlexGrid>
   );
 };
-
-export default FlexTest;

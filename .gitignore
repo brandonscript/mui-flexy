@@ -4,3 +4,5 @@
 **/package
 mui-flexy*.tgz
 *.tsbuildinfo
+/.rollup.cache
+/.yarn

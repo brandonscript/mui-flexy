@@ -1,6 +1,5 @@
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-
-import FlexTest from "./Flex.demo";
+import { FlexTest } from "./Flex.demo";
 
 const fontFamily = [
   '"Source Sans 3Variable"',

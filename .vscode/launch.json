@@ -15,7 +15,7 @@
       "args": ["test", "--runInBand", "--watchAll=false"]
     },
     {
-      "name": "Webpack: debug & run demo",
+      "name": "Demo: webpack debug & run",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
