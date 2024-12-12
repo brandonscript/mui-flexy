@@ -5,7 +5,10 @@
   "main": "dist/cjs/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "repository": "https://github.com/brandonscript/mui-flexy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandonscript/mui-flexy.git"
+  },
   "author": "github.com/brandonscript",
   "license": "MIT",
   "exports": {
@@ -21,7 +24,7 @@
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "build": "yarn clean && rollup -c && tsc -p tsconfig.dist.json",
-    "build-webpack": "yarn clean && webpack --mode production --config webpack.config.js && tsc -p tsconfig.dist.json",
+    "publish": "npm whoami && npm publish",
     "test": "jest"
   },
   "peerDependencies": {
