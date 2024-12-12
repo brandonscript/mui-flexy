@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "main": "dist/cjs/index.cjs",
   "module": "dist/index.js",
@@ -24,7 +24,7 @@
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "build": "yarn clean && rollup -c && tsc -p tsconfig.dist.json",
-    "publish": "npm whoami && npm publish",
+    "ship": "npm whoami && npm publish",
     "test": "jest"
   },
   "peerDependencies": {

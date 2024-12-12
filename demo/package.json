@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy-demo",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A little demo app for mui-flexy",
   "repository": "https://github.com/brandonscript/mui-flexy",
   "author": "github.com/brandonscript",
@@ -15,7 +15,7 @@
     "@emotion/react": "^11.0.0",
     "@emotion/styled": "^11.0.0",
     "@mui/material": "^5.0.0",
-    "mui-flexy": "^1.1.0",
+    "mui-flexy": "^1.1.1",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "^17.0.0 || ^18.0.0",
     "react-syntax-highlighter": "^15.5.0"
