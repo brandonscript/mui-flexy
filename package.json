@@ -24,7 +24,7 @@
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
     "build": "yarn clean && rollup -c && tsc -p tsconfig.dist.json",
-    "ship": "npm whoami && npm publish",
+    "ship": "npm run build && npm whoami && npm publish",
     "test": "jest"
   },
   "peerDependencies": {

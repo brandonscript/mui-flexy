@@ -6,3 +6,4 @@ mui-flexy*.tgz
 *.tsbuildinfo
 /.rollup.cache
 /.yarn
+/demo/.yarn

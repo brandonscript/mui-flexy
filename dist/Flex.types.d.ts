@@ -1,40 +1,63 @@
-import { BoxProps, GridProps, GridTypeMap } from "@mui/material";
-import { BoxTypeMap, Theme as SystemTheme } from "@mui/system";
-type JustifyContentValues = "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly";
-type AlignItemsValues = "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
-export type VerticalAlignable = "top" | "bottom" | "center";
+import { BoxProps, GridOwnProps, GridProps } from "@mui/material";
+import { OverridableComponent, OverridableTypeMap, OverrideProps } from "@mui/material/OverridableComponent";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { BoxOwnProps, BoxTypeMap, GridTypeMap, ResponsiveStyleValue, Theme as SystemTheme } from "@mui/system";
+import { CSSProperties } from "react";
+export type FlexOrientation = "row" | "column";
+type JustifyContent = "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly" | "initial" | "inherit" | "unset";
+type AlignItems = "flex-start" | "flex-end" | "center" | "stretch" | "baseline" | "initial" | "inherit" | "unset";
 export type HorizontalAlignable = "left" | "right" | "center";
-export type XIfRow = HorizontalAlignable | JustifyContentValues;
-export type XIfColumn = HorizontalAlignable | AlignItemsValues;
-export type YIfRow = VerticalAlignable | AlignItemsValues;
-export type YIfColumn = VerticalAlignable | JustifyContentValues;
-export type Axis = BoxProps["flexDirection"] | GridProps["direction"] | null;
-export type StrictAxis = "row" | "row-reverse" | "column" | "column-reverse";
-export type MuiAlign = BoxProps["justifyContent"] | BoxProps["alignItems"] | GridProps["justifyContent"] | GridProps["alignItems"] | null;
-export type FlexProps<ComponentProps extends BoxProps | GridProps, Row extends boolean | undefined = undefined, Column extends boolean | undefined = undefined, X extends XIfRow | XIfColumn = Row extends true ? XIfRow : XIfColumn, Y extends YIfRow | YIfColumn = Row extends true ? YIfRow : YIfColumn> = Row extends true ? {
-    x?: X;
-    y?: Y;
+export type VerticalAlignable = "top" | "bottom" | "center";
+type XProps<O extends FlexOrientation> = ResponsiveStyleValue<O extends "row" ? HorizontalAlignable | JustifyContent : HorizontalAlignable | AlignItems>;
+type XRowProps = XProps<"row">;
+type XColumnProps = XProps<"column">;
+type YProps<O extends FlexOrientation> = ResponsiveStyleValue<O extends "row" ? VerticalAlignable | AlignItems : VerticalAlignable | JustifyContent>;
+type YRowProps = YProps<"row">;
+type YColumnProps = YProps<"column">;
+export type ResponsiveFlexPosition = XRowProps | YRowProps | XColumnProps | YColumnProps | null | undefined;
+export type ResponsiveFlexDirection = ResponsiveStyleValue<CSSProperties["flexDirection"]>;
+export type ResponsiveFlexRowDirection = ResponsiveStyleValue<"row" | "row-reverse">;
+export type ResponsiveFlexColumnDirection = ResponsiveStyleValue<"column" | "column-reverse">;
+export type ResponsiveAlignItems = ResponsiveStyleValue<AlignItems> | undefined;
+export type ResponsiveJustifyContent = ResponsiveStyleValue<JustifyContent> | undefined;
+export type FlexJustifyableProps = FlexProps<"row">["x"] | FlexProps<"column">["y"] | undefined;
+export type FlexProps<Orientation extends FlexOrientation> = (Orientation extends "row" ? {
+    x?: XRowProps;
+    y?: YRowProps;
     row?: true;
-    column?: never;
+    column?: false;
     reverse?: boolean;
     nowrap?: boolean;
-} & ComponentProps : Column extends true ? {
-    x?: X;
-    y?: Y;
-    row?: never;
+} : never) | (Orientation extends "column" ? {
+    x?: XColumnProps;
+    y?: YColumnProps;
+    row?: false;
     column?: true;
     reverse?: boolean;
     nowrap?: boolean;
-} & ComponentProps : {
-    x?: X;
-    y?: Y;
-    row?: boolean;
-    column?: boolean;
-    reverse?: boolean;
-    nowrap?: boolean;
-} & ComponentProps;
-export type FlexBoxProps = FlexProps<BoxProps>;
-export type FlexGridProps = FlexProps<GridProps>;
-export type FlexBoxTypeMap<AdditionalProps = {}, RootComponent extends React.ElementType = "div", Theme extends object = SystemTheme> = BoxTypeMap<FlexProps<BoxProps> & AdditionalProps, RootComponent, Theme>;
-export type FlexGridTypeMap<AdditionalProps = {}, RootComponent extends React.ElementType = "div"> = GridTypeMap<FlexProps<GridProps> & AdditionalProps, RootComponent>;
+} : never);
+export type InferFlexProps<Orientation extends FlexOrientation = "row", AdditionalRowProps extends {} = {}, AdditionalColumnProps extends {} = {}> = ({
+    row?: true | undefined;
+    column?: false | undefined;
+} & AdditionalRowProps & FlexProps<"row">) | ({
+    row?: false;
+    column: true;
+} & AdditionalColumnProps & FlexProps<"column">) | (Orientation extends "row" | undefined ? AdditionalRowProps & FlexProps<"row"> : AdditionalColumnProps & FlexProps<"column">);
+export type InferComponentOverrideProps<TypeMap extends OverridableTypeMap, Component extends React.ElementType = TypeMap["defaultComponent"], AdditionalProps extends {} = {}> = {
+    component: Component;
+} & AdditionalProps & OverrideProps<TypeMap, Component>;
+export type FlexBoxOwnProps<Theme extends object = SystemTheme> = BoxOwnProps<Theme> & InferFlexProps;
+export interface FlexBoxTypeMap<AdditionalProps = {}, RootComponent extends React.ElementType = "div", Theme extends object = SystemTheme> {
+    props: AdditionalProps & FlexBoxOwnProps<Theme>;
+    defaultComponent: RootComponent;
+}
+export type FlexBoxProps = BoxProps<"div", InferFlexProps> & OverrideProps<BoxTypeMap, "div">;
+export type FlexBoxComponent = OverridableComponent<FlexBoxTypeMap<{}, "div", MaterialTheme>>;
+export type FlexGridOwnProps = GridOwnProps & InferFlexProps;
+export interface FlexGridTypeMap<AdditionalProps = {}, RootComponent extends React.ElementType = "div"> {
+    props: AdditionalProps & FlexGridOwnProps;
+    defaultComponent: RootComponent;
+}
+export type FlexGridProps = GridProps<"div", InferFlexProps> & OverrideProps<GridTypeMap, "div">;
+export type FlexGridComponent = OverridableComponent<FlexGridTypeMap<{}, "div">>;
 export {};
