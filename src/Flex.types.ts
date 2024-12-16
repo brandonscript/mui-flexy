@@ -1,5 +1,10 @@
 import { BoxProps, GridOwnProps, GridProps } from "@mui/material";
-import { OverridableTypeMap, OverrideProps } from "@mui/material/OverridableComponent";
+import {
+  OverridableComponent,
+  OverridableTypeMap,
+  OverrideProps,
+} from "@mui/material/OverridableComponent";
+import { Theme as MaterialTheme } from "@mui/material/styles";
 import {
   BoxOwnProps,
   BoxTypeMap,
@@ -130,6 +135,7 @@ export interface FlexBoxTypeMap<
 }
 
 export type FlexBoxProps = BoxProps<"div", InferFlexProps> & OverrideProps<BoxTypeMap, "div">;
+export type FlexBoxComponent = OverridableComponent<FlexBoxTypeMap<{}, "div", MaterialTheme>>;
 
 export type FlexGridOwnProps = GridOwnProps & InferFlexProps;
 
@@ -142,3 +148,4 @@ export interface FlexGridTypeMap<
 }
 
 export type FlexGridProps = GridProps<"div", InferFlexProps> & OverrideProps<GridTypeMap, "div">;
+export type FlexGridComponent = OverridableComponent<FlexGridTypeMap<{}, "div">>;
