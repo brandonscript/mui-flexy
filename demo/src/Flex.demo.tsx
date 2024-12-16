@@ -1,62 +1,92 @@
 import styled from "@emotion/styled";
-import { Link, Typography } from "@mui/material";
+import { Link, Typography, TypographyOwnProps } from "@mui/material";
 import { PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
+import { FlexBox, FlexBoxProps, FlexGrid } from "../../src";
+import { FlexProps } from "../../src/Flex.types";
+
+// Or: run `npm link ../` or `yarn link ../` in the ./demo directory
+// and import from "mui-flexy":
+// import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
 
 console.log(FlexBox, FlexGrid);
 
-const rowCombinations = [
+const rowCombinations: Array<[FlexProps<"row">["x"], FlexProps<"row">["y"]]> = [
   ["left", "top"],
   ["left", "center"],
   ["left", "bottom"],
-  ["left", "space-between"],
-  ["left", "space-around"],
-  ["left", "space-evenly"],
+  ["left", "flex-start"],
+  ["left", "flex-end"],
+  ["left", "stretch"],
+  ["left", "baseline"],
   ["right", "top"],
   ["right", "center"],
   ["right", "bottom"],
-  ["right", "space-between"],
-  ["right", "space-around"],
-  ["right", "space-evenly"],
+  ["right", "flex-start"],
+  ["right", "flex-end"],
+  ["right", "stretch"],
+  ["right", "baseline"],
   ["center", "top"],
   ["center", "center"],
   ["center", "bottom"],
-  ["center", "space-between"],
-  ["center", "space-around"],
-  ["center", "space-evenly"],
+  ["center", "flex-start"],
+  ["center", "flex-end"],
+  ["center", "stretch"],
+  ["center", "baseline"],
+  ["space-between", "top"],
+  ["space-between", "center"],
+  ["space-between", "bottom"],
+  ["space-around", "top"],
+  ["space-around", "center"],
+  ["space-around", "bottom"],
+  ["space-evenly", "top"],
+  ["space-evenly", "center"],
+  ["space-evenly", "bottom"],
 ];
 
-const columnCombinations = [
+const columnCombinations: Array<[FlexProps<"column">["y"], FlexProps<"column">["x"]]> = [
   ["top", "left"],
   ["top", "center"],
   ["top", "right"],
-  ["top", "space-between"],
-  ["top", "space-around"],
-  ["top", "space-evenly"],
-  ["center", "left"],
-  ["center", "center"],
-  ["center", "right"],
-  ["center", "space-between"],
-  ["center", "space-around"],
-  ["center", "space-evenly"],
+  ["top", "flex-start"],
+  ["top", "flex-end"],
+  ["top", "stretch"],
+  ["top", "baseline"],
   ["bottom", "left"],
   ["bottom", "center"],
   ["bottom", "right"],
-  ["bottom", "space-between"],
-  ["bottom", "space-around"],
-  ["bottom", "space-evenly"],
+  ["bottom", "flex-start"],
+  ["bottom", "flex-end"],
+  ["bottom", "stretch"],
+  ["bottom", "baseline"],
+  ["center", "left"],
+  ["center", "center"],
+  ["center", "right"],
+  ["center", "flex-start"],
+  ["center", "flex-end"],
+  ["center", "stretch"],
+  ["center", "baseline"],
+  ["space-between", "left"],
+  ["space-between", "center"],
+  ["space-between", "right"],
+  ["space-around", "left"],
+  ["space-around", "center"],
+  ["space-around", "right"],
+  ["space-evenly", "left"],
+  ["space-evenly", "center"],
+  ["space-evenly", "right"],
 ];
 
 const Inner = styled(FlexBox)({
-  minHeight: 120,
-  border: "1.5px solid lightgrey",
+  minHeight: 140,
+  border: "1.5px solid #e2ebf8",
   borderRadius: "4px",
   width: "100%",
   gap: "4px",
   padding: "4px",
+  backgroundColor: "#fff",
   "& > span": {
     backgroundColor: "#efecf4",
     paddingLeft: "4px",
@@ -72,7 +102,8 @@ const Inner = styled(FlexBox)({
   },
 });
 
-const columns = { xs: 12, sm: 6, xl: 4 };
+const gridColumns = { xs: 12, md: 4, l: 4, xl: 4 };
+const reponsiveFontSizes = { "& pre": { fontSize: { xs: "0.85rem", md: "1.0vw", lg: "0.85rem" } } };
 
 const Header = forwardRef(
   (
@@ -95,7 +126,11 @@ const Code = ({
   inline = false,
   code,
   children,
-}: PropsWithChildren<{ inline?: boolean; code?: string }>) => (
+}: PropsWithChildren<{
+  inline?: boolean;
+  code?: string;
+}>) => (
+  // @ts-ignore - children can be a string, but react-syntax-highlighter expects a ReactElement
   <SyntaxHighlighter
     language="javascript"
     customStyle={inline ? { display: "inline", padding: "2px 4px" } : {}}
@@ -116,14 +151,38 @@ export const FlexTest = () => {
   }, [ref]);
 
   return (
-    <FlexGrid container width="100vw" p={4} spacing={2} x="center">
+    <FlexGrid
+      container
+      width="100vw"
+      p={4}
+      spacing={2}
+      x="center"
+      component="main"
+      sx={{ bgcolor: "#fff" }}
+    >
       <FlexGrid item xs={12} column>
-        <Typography variant="h4" component="h1">
+        <FlexBox
+          component={(props: TypographyOwnProps) => <Typography {...props} component="h1" />}
+          variant="h4"
+          row
+          x="left"
+          // y={{ xs: "top" }}
+          gap={2}
+        >
+          <FlexBox
+            width={100}
+            height={100}
+            mb={2}
+            column
+            component="img"
+            src="apple-touch-icon.png"
+            alt="mui-flexy logo"
+          />
           Flexy for{" "}
           <Link target="_blank" href="https://mui.com/">
             Material UI
           </Link>
-        </Typography>
+        </FlexBox>
         <Typography variant="body1" component="div">
           {
             "Flexy for MUI is a component wrapper for flexbox styles that allows you to easily \
@@ -161,10 +220,14 @@ export const FlexTest = () => {
         </Typography>
       </FlexGrid>
       <Header text="Row" subtitle="Simple: props are string values" />
-      {columnCombinations.map(([y, x], i) => (
-        <FlexGrid item {...columns} key={i} component="article">
-          <Inner x={x} y={y}>
-            <Code code={`<FlexBox x="${x}" y="${y}"> </FlexBox>`} />
+      {rowCombinations.map(([x, y], i) => (
+        <FlexGrid item {...gridColumns} key={i} component="article">
+          <Inner x={x} y={y} sx={reponsiveFontSizes}>
+            <Code
+              code={`<FlexBox x="${x}" y="${y}">
+  ...
+</FlexBox>`}
+            />
             <span>🚣</span>
           </Inner>
         </FlexGrid>
@@ -182,8 +245,7 @@ export const FlexTest = () => {
           <Code
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
-  y={[ "center", "top", "center", "bottom" ]}\n\
-> </FlexBox>\n
+  y={[ "center", "top", "center", "bottom" ]}\n/>\n
 // (interpreted as [ xs, sm, md, lg ])`}
           />
           <span>🚣</span>
@@ -193,23 +255,26 @@ export const FlexTest = () => {
         <Inner
           x={{ sm: "left", md: "center", lg: "right" }}
           y={{ sm: "top", md: "center", lg: "bottom" }}
-          sx={{ minHeight: 240 }}
+          sx={{ minHeight: 240, ...reponsiveFontSizes }}
         >
           <Code
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
-  y={{ sm: "top", md: "center", lg: "bottom" }}\n\
-> </FlexBox>\n
+  y={{ sm: "top", md: "center", lg: "bottom" }}\n/>\n
 // (interpreted as { sm: _, md: _, lg: _ })`}
           />
           <span>🚣</span>
         </Inner>
       </FlexGrid>
       <Header text="Column" subtitle="Basic: props are string values" />
-      {rowCombinations.map(([x, y], i) => (
-        <FlexGrid item {...columns} key={i} component="article">
-          <Inner x={x} y={y} column>
-            <Code code={`<FlexBox x="${x}" y="${y}" column> </FlexBox>`} />
+      {columnCombinations.map(([y, x], i) => (
+        <FlexGrid item {...gridColumns} key={i} component="article">
+          <Inner x={x} y={y} column sx={reponsiveFontSizes}>
+            <Code
+              code={`<FlexBox x="${x}" y="${y}" column>
+  ...
+</FlexBox>`}
+            />
             <span>🏛️</span>
           </Inner>
         </FlexGrid>
@@ -230,8 +295,7 @@ export const FlexTest = () => {
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
   y={[ "center", "top", "center", "bottom" ]}\n\
-  column\n\
-> </FlexBox>\n
+  column\n\/>\n
 // (interpreted as [ xs, sm, md, lg ])`}
           />
           <span>🏛️</span>
@@ -248,8 +312,7 @@ export const FlexTest = () => {
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
   y={{ sm: "top", md: "center", lg: "bottom" }}\n\
-  column\n\
-> </FlexBox>\n
+  column\n\/>\n
 // (interpreted as { sm: _, md: _, lg: _ })`}
           />
           <span>🏛️</span>
@@ -269,7 +332,7 @@ export const FlexTest = () => {
         const invalidProps = { prop: "invalid" } as FlexBoxProps;
         return (
           <FlexGrid item xs={12} component="article">
-            <Inner x="center" y="center" column {...({ prop: "invalid" } as FlexBoxProps)}>
+            <Inner x="center" y="center" column {...{ prop: "invalid" }}>
               <span>Complex props test</span>
               <Code code={JSON.stringify(invalidProps)} />
             </Inner>

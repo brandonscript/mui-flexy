@@ -1,14 +1,15 @@
-import { Axis, MuiAlign } from "../src/Flex.types";
+import { HorizontalAlignable, VerticalAlignable } from "@/Flex.types";
+import { CSSProperties } from "react";
 import { _test } from "../src/Flex.utils";
 
 const { mapAlignment, mapDirection, mapFlexProps } = _test;
 
 type FlexMapTestType = {
   x: {
-    [key in "left" | "center" | "right"]: MuiAlign;
+    [key in "left" | "center" | "right"]: HorizontalAlignable | CSSProperties["justifyContent"];
   };
   y: {
-    [key in "top" | "center" | "bottom"]: MuiAlign;
+    [key in "top" | "center" | "bottom"]: VerticalAlignable | CSSProperties["alignItems"];
   };
 };
 
@@ -25,7 +26,7 @@ const flexMap: FlexMapTestType = {
   },
 };
 
-const cssFlexDirection: Axis[] = [
+const cssFlexDirection: CSSProperties["flexDirection"][] = [
   "row",
   "row-reverse",
   "column",
@@ -35,7 +36,7 @@ const cssFlexDirection: Axis[] = [
   "unset",
 ];
 
-const cssJustifyContent: MuiAlign[] = [
+const cssJustifyContent: CSSProperties["justifyContent"][] = [
   "flex-start",
   "flex-end",
   "center",
@@ -47,7 +48,7 @@ const cssJustifyContent: MuiAlign[] = [
   "unset",
 ];
 
-const cssAlignItems: MuiAlign[] = [
+const cssAlignItems: CSSProperties["alignItems"][] = [
   "flex-start",
   "flex-end",
   "center",

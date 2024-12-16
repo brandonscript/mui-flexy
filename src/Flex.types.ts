@@ -1,81 +1,144 @@
-import { BoxProps, GridProps, GridTypeMap } from "@mui/material";
-import { BoxTypeMap, Theme as SystemTheme } from "@mui/system";
+import { BoxProps, GridOwnProps, GridProps } from "@mui/material";
+import { OverridableTypeMap, OverrideProps } from "@mui/material/OverridableComponent";
+import {
+  BoxOwnProps,
+  BoxTypeMap,
+  GridTypeMap,
+  ResponsiveStyleValue,
+  Theme as SystemTheme,
+} from "@mui/system";
+import { CSSProperties } from "react";
 
-// If row, 'justifyContent' governs horizontal spacing.
-// If column, 'justifyContent' governs vertical spacing.
-type JustifyContentValues =
+export type FlexOrientation = "row" | "column";
+
+// Axis-specific alignment properties
+type JustifyContent =
   | "flex-start"
   | "flex-end"
   | "center"
   | "space-between"
   | "space-around"
-  | "space-evenly";
+  | "space-evenly"
+  | "initial"
+  | "inherit"
+  | "unset";
 
-// If row, 'alignItems' governs vertical position and behavior.
-// If column, 'alignItems' governs horizontal position and behavior.
-type AlignItemsValues = "flex-start" | "flex-end" | "center" | "stretch" | "baseline";
+type AlignItems =
+  | "flex-start"
+  | "flex-end"
+  | "center"
+  | "stretch"
+  | "baseline"
+  | "initial"
+  | "inherit"
+  | "unset";
 
-export type VerticalAlignable = "top" | "bottom" | "center";
 export type HorizontalAlignable = "left" | "right" | "center";
+export type VerticalAlignable = "top" | "bottom" | "center";
 
-export type XIfRow = HorizontalAlignable | JustifyContentValues;
-export type XIfColumn = HorizontalAlignable | AlignItemsValues;
+// Axis-conditional alignment props
+type XProps<O extends FlexOrientation> = ResponsiveStyleValue<
+  O extends "row" ? HorizontalAlignable | JustifyContent : HorizontalAlignable | AlignItems
+>;
 
-export type YIfRow = VerticalAlignable | AlignItemsValues;
-export type YIfColumn = VerticalAlignable | JustifyContentValues;
+type XRowProps = XProps<"row">;
+type XColumnProps = XProps<"column">;
 
-export type Axis = BoxProps["flexDirection"] | GridProps["direction"] | null;
-export type StrictAxis = "row" | "row-reverse" | "column" | "column-reverse";
-export type MuiAlign =
-  | BoxProps["justifyContent"]
-  | BoxProps["alignItems"]
-  | GridProps["justifyContent"]
-  | GridProps["alignItems"]
-  | null;
+type YProps<O extends FlexOrientation> = ResponsiveStyleValue<
+  O extends "row" ? VerticalAlignable | AlignItems : VerticalAlignable | JustifyContent
+>;
 
-export type FlexProps<
-  ComponentProps extends BoxProps | GridProps,
-  Row extends boolean | undefined = undefined,
-  Column extends boolean | undefined = undefined,
-  X extends XIfRow | XIfColumn = Row extends true ? XIfRow : XIfColumn,
-  Y extends YIfRow | YIfColumn = Row extends true ? YIfRow : YIfColumn
-> = Row extends true
-  ? {
-      x?: X;
-      y?: Y;
-      row?: true;
-      column?: never;
-      reverse?: boolean;
-      nowrap?: boolean;
-    } & ComponentProps
-  : Column extends true
-  ? {
-      x?: X;
-      y?: Y;
-      row?: never;
-      column?: true;
-      reverse?: boolean;
-      nowrap?: boolean;
-    } & ComponentProps
-  : {
-      x?: X;
-      y?: Y;
-      row?: boolean;
-      column?: boolean;
-      reverse?: boolean;
-      nowrap?: boolean;
-    } & ComponentProps;
+type YRowProps = YProps<"row">;
+type YColumnProps = YProps<"column">;
 
-export type FlexBoxProps = FlexProps<BoxProps>;
-export type FlexGridProps = FlexProps<GridProps>;
+export type ResponsiveFlexPosition =
+  | XRowProps
+  | YRowProps
+  | XColumnProps
+  | YColumnProps
+  | null
+  | undefined;
 
-export type FlexBoxTypeMap<
+export type ResponsiveFlexDirection = ResponsiveStyleValue<CSSProperties["flexDirection"]>;
+export type ResponsiveFlexRowDirection = ResponsiveStyleValue<"row" | "row-reverse">;
+export type ResponsiveFlexColumnDirection = ResponsiveStyleValue<"column" | "column-reverse">;
+export type ResponsiveAlignItems = ResponsiveStyleValue<AlignItems> | undefined;
+export type ResponsiveJustifyContent = ResponsiveStyleValue<JustifyContent> | undefined;
+export type FlexJustifyableProps = FlexProps<"row">["x"] | FlexProps<"column">["y"] | undefined;
+
+// Base FlexProps with conditional axis behavior
+export type FlexProps<Orientation extends FlexOrientation> =
+  | (Orientation extends "row"
+      ? {
+          x?: XRowProps;
+          y?: YRowProps;
+          row?: true;
+          column?: false;
+          reverse?: boolean;
+          nowrap?: boolean;
+        }
+      : never)
+  | (Orientation extends "column"
+      ? {
+          x?: XColumnProps;
+          y?: YColumnProps;
+          row?: false;
+          column?: true;
+          reverse?: boolean;
+          nowrap?: boolean;
+        }
+      : never);
+
+export type InferFlexProps<
+  Orientation extends FlexOrientation = "row",
+  AdditionalRowProps extends {} = {},
+  AdditionalColumnProps extends {} = {}
+> =
+  | ({
+      row?: true | undefined;
+      column?: false | undefined;
+    } & AdditionalRowProps &
+      FlexProps<"row">)
+  | ({
+      row?: false;
+      column: true;
+    } & AdditionalColumnProps &
+      FlexProps<"column">)
+  | (Orientation extends "row" | undefined
+      ? AdditionalRowProps & FlexProps<"row">
+      : AdditionalColumnProps & FlexProps<"column">);
+
+export type InferComponentOverrideProps<
+  TypeMap extends OverridableTypeMap,
+  Component extends React.ElementType = TypeMap["defaultComponent"],
+  AdditionalProps extends {} = {}
+> = {
+  component: Component;
+} & AdditionalProps &
+  OverrideProps<TypeMap, Component>;
+
+export type FlexBoxOwnProps<Theme extends object = SystemTheme> = BoxOwnProps<Theme> &
+  InferFlexProps;
+
+export interface FlexBoxTypeMap<
   AdditionalProps = {},
   RootComponent extends React.ElementType = "div",
   Theme extends object = SystemTheme
-> = BoxTypeMap<FlexProps<BoxProps> & AdditionalProps, RootComponent, Theme>;
+> {
+  props: AdditionalProps & FlexBoxOwnProps<Theme>;
+  defaultComponent: RootComponent;
+}
 
-export type FlexGridTypeMap<
+export type FlexBoxProps = BoxProps<"div", InferFlexProps> & OverrideProps<BoxTypeMap, "div">;
+
+export type FlexGridOwnProps = GridOwnProps & InferFlexProps;
+
+export interface FlexGridTypeMap<
   AdditionalProps = {},
   RootComponent extends React.ElementType = "div"
-> = GridTypeMap<FlexProps<GridProps> & AdditionalProps, RootComponent>;
+> {
+  props: AdditionalProps & FlexGridOwnProps;
+  defaultComponent: RootComponent;
+}
+
+export type FlexGridProps = GridProps<"div", InferFlexProps> & OverrideProps<GridTypeMap, "div">;
