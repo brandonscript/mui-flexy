@@ -104,7 +104,7 @@ const mapFlexProps = (props, componentName = "Box")=>{
     const direction = mapDirection(axis, reverse);
     const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
     const flexProps = {
-        display: "flex",
+        display: rest.display || "flex",
         whiteSpace
     };
     const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`;
