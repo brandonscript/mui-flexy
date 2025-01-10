@@ -1,20 +1,20 @@
 import styled from "@emotion/styled";
 import { Grid, Link, Typography, TypographyOwnProps } from "@mui/material";
-import { PropsWithChildren, forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, PropsWithChildren, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { FlexGridProps } from "../../dist";
+import pkg from "../../package.json";
 import { FlexBox, FlexBoxProps, FlexGrid } from "../../src";
-import { FlexProps } from "../../src/Flex.types";
 
 // Or: run `npm link ../` or `yarn link ../` in the ./demo directory
 // and import from "mui-flexy":
 // import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
 
-console.log(FlexBox, FlexGrid);
+console.log(pkg.name, pkg.version, FlexBox, FlexGrid);
 
-const rowCombinations: Array<[FlexProps<"row">["x"], FlexProps<"row">["y"]]> = [
+const rowCombinations: Array<[FlexBoxProps<"row">["x"], FlexBoxProps<"row">["y"]]> = [
   ["left", "top"],
   ["left", "center"],
   ["left", "bottom"],
@@ -47,7 +47,7 @@ const rowCombinations: Array<[FlexProps<"row">["x"], FlexProps<"row">["y"]]> = [
   ["space-evenly", "bottom"],
 ];
 
-const columnCombinations: Array<[FlexProps<"column">["y"], FlexProps<"column">["x"]]> = [
+const columnCombinations: Array<[FlexBoxProps<"column">["y"], FlexBoxProps<"column">["x"]]> = [
   ["top", "left"],
   ["top", "center"],
   ["top", "right"],

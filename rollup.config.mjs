@@ -1,3 +1,4 @@
+import cjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
@@ -31,6 +32,7 @@ export default {
     resolve({
       extensions: [".ts", ".tsx"],
     }),
+    cjs(),
     swc({
       jsc: {
         parser: {
@@ -56,5 +58,12 @@ export default {
       include: ["src/**"],
     }),
   ],
-  external: ["react", "react-dom", "@mui/material", "@mui/material/OverridableComponent"],
+  external: [
+    "react",
+    "react-dom",
+    /^@mui\/.*$/,
+    // "@mui/material/OverridableComponent",
+    // "@mui/styled-engine",
+    // "@mui/utils",
+  ],
 };

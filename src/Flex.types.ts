@@ -1,20 +1,16 @@
+import type { GridOwnProps } from "@mui/material/Grid";
 import type { OverridableComponent, OverrideProps } from "@mui/material/OverridableComponent";
 import type {
   BoxOwnProps,
   BoxTypeMap,
-  GridBaseProps,
-  GridTypeMap,
   ResponsiveStyleValue,
-  SxProps,
-  SystemProps,
   Theme as SystemTheme,
 } from "@mui/system";
-import { Theme } from "@mui/system/createTheme";
 import type { CSSProperties } from "react";
 
 export type FlexOrientation = "row" | "column";
 
-// Axis-specific alignment properties
+// Orientation-specific alignment properties
 type JustifyContent =
   | "flex-start"
   | "flex-end"
@@ -69,6 +65,11 @@ type FlexProps<Orientation extends FlexOrientation | undefined = undefined> =
     ? FlexColumnType
     : FlexRowType | FlexColumnType;
 
+export type ResponsiveFlexPosition = ResponsiveStyleValue<
+  XRowProps | YRowProps | XColumnProps | YColumnProps | null | undefined
+>;
+export type ResponsiveFlexDirection = ResponsiveStyleValue<CSSProperties["flexDirection"]>;
+
 /* Box */
 
 export interface FlexBoxTypeMap<
@@ -85,52 +86,48 @@ export type FlexBoxProps<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = BoxTypeMap["defaultComponent"],
   AdditionalProps = {}
-> = OverrideProps<FlexBoxTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
+> = OverrideProps<
+  FlexBoxTypeMap<Orientation, AdditionalProps & FlexProps<Orientation>, RootComponent>,
+  RootComponent
+> & {
   component?: React.ElementType;
 };
 
 declare const FlexBox: OverridableComponent<FlexBoxTypeMap>;
+export { FlexBox };
 export type FlexBoxComponent<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = "div",
   AdditionalProps = {},
   Theme extends object = SystemTheme
-> = OverridableComponent<
-  BoxTypeMap<AdditionalProps & FlexProps<Orientation>, RootComponent, Theme>
->;
+> = OverridableComponent<FlexBoxTypeMap<Orientation, AdditionalProps, RootComponent, Theme>>;
 
 /* Grid */
 
 export interface FlexGridTypeMap<
   Orientation extends FlexOrientation | undefined = undefined,
   AdditionalProps = {},
-  DefaultComponent extends React.ElementType = "div"
+  RootComponent extends React.ElementType = "div"
 > {
-  props: AdditionalProps &
-    FlexProps<Orientation> &
-    GridBaseProps & {
-      sx?: SxProps<Theme>;
-    } & SystemProps<Theme>;
-  defaultComponent: DefaultComponent;
+  props: AdditionalProps & FlexProps<Orientation> & GridOwnProps;
+  defaultComponent: RootComponent;
 }
+
 export type FlexGridProps<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = FlexGridTypeMap["defaultComponent"],
-  AdditionalProps = {
-    component?: React.ElementType;
-  }
-> = OverrideProps<FlexGridTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent>;
+  AdditionalProps = {}
+> = OverrideProps<
+  FlexGridTypeMap<Orientation, AdditionalProps & FlexProps<Orientation>, RootComponent>,
+  RootComponent
+> & {
+  component?: React.ElementType;
+};
 
 declare const FlexGrid: OverridableComponent<FlexGridTypeMap>;
+export { FlexGrid };
 export type FlexGridComponent<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = "div",
   AdditionalProps = {}
-> = OverridableComponent<GridTypeMap<AdditionalProps & FlexProps<Orientation>, RootComponent>>;
-
-export { FlexBox, FlexGrid };
-
-export type ResponsiveFlexPosition = ResponsiveStyleValue<
-  XRowProps | YRowProps | XColumnProps | YColumnProps | null | undefined
->;
-export type ResponsiveFlexDirection = ResponsiveStyleValue<CSSProperties["flexDirection"]>;
+> = OverridableComponent<FlexGridTypeMap<Orientation, AdditionalProps, RootComponent>>;

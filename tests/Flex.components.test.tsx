@@ -225,3 +225,15 @@ describe("FlexBox with styled()", () => {
     );
   });
 });
+
+const GridPropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
+  <FlexGrid container>
+    <FlexGrid item xs={12} component="header" ref={gridRef} column gap={0}></FlexGrid>
+  </FlexGrid>
+);
+
+describe("FlexGrid supports MUIv5 grid props", () => {
+  it("should allow ref and component props", () => {
+    expect(() => GridPropsTest()).not.toThrow();
+  });
+});
