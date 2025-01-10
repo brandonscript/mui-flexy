@@ -25,7 +25,10 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "types": [
+      "jest"
+    ]
   },
   "include": [
     "src/**/*",
@@ -34,12 +37,17 @@
   "exclude": [
     "dist",
     "node_modules",
-    "demo",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+    "demo/**/*",
+    "**eslint**",
     "jest.config.**",
     "webpack.config.js",
     "rollup.config.mjs",
     "coverage",
     ".eslintrc.js",
+    "eslint.config.js",
     ".babelrc.js",
     ".babelrc"
   ]

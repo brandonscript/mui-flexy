@@ -1,5 +1,6 @@
-import { Box, Grid, Typography } from "@mui/material";
-import { FlexBox, FlexGrid } from "../src";
+import { Box, Grid, styled, Typography } from "@mui/material";
+
+import { FlexBox, FlexBoxProps, FlexGrid } from "../src";
 
 const RowTests = [
   () => <FlexBox x="left" y="top" />,
@@ -153,5 +154,74 @@ describe("FlexBox JSX tests", () => {
     OverrideGridTests.forEach(TestComponent => {
       expect(() => TestComponent()).not.toThrow();
     });
+  });
+});
+
+const PropsTests = [
+  ({ x, y, sx, ...rest }: FlexBoxProps) => (
+    // @ts-expect-error
+    <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ),
+  ({ x, y, sx, ...rest }: FlexBoxProps<"row">) => (
+    <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ),
+  ({ x, y, sx, ...rest }: FlexBoxProps<"column">) => (
+    <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ),
+  ({ x, y, sx, ...rest }: FlexBoxProps<"row">) => (
+    // @ts-expect-error
+    <FlexBox {...rest} column x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ),
+  ({ x, y, sx, ...rest }: FlexBoxProps<"column">) => (
+    // @ts-expect-error
+    <FlexBox {...rest} row x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ),
+];
+
+describe("FlexBoxProps<T> type", () => {
+  it("should allow destructuring of props and sx", () => {
+    const { x, y, sx, ...rest } = {
+      x: "left",
+      y: "top",
+      sx: { color: "red" },
+    } as FlexBoxProps<"row">;
+    expect(rest).toBeDefined();
+    expect(sx).toBeDefined();
+    expect(x).toBeDefined();
+    expect(y).toBeDefined();
+    expect(() => (
+      <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+    )).not.toThrow();
+  });
+
+  it("should respect row/column allowed values for undefined", () => {
+    // These are loosly typed as { row: boolean | undefined; column: boolean | undefined; }
+    const { row, column } = {} as FlexBoxProps;
+  });
+  it("should respect row/column allowed values for row", () => {
+    // These are strictly typed as { row: true; column: false | undefined; }
+    const { row, column } = {} as FlexBoxProps<"row">;
+  });
+  it("should respect row/column allowed values for column", () => {
+    // These are strictly typed as { row: false | undefined; column: true; }
+    const { row, column } = {} as FlexBoxProps<"column">;
+  });
+});
+
+describe("FlexBox with styled()", () => {
+  it("should respect FlexBox/Grid types", () => {
+    const StyledFlexBox = styled(FlexBox)(({ theme }) =>
+      theme.unstable_sx({
+        opacity: 0.5,
+        justifyContent: "space-between",
+        mt: 0.5,
+        "& .MuiTypography-body2": {
+          fontSize: "0.7rem",
+        },
+        "& .MuiTypography-body2:first-of-type": {
+          opacity: 0.5,
+        },
+      })
+    );
   });
 });

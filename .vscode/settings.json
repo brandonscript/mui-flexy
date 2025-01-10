@@ -7,12 +7,20 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "eslint.options": {
+    "overrideConfigFile": "eslint.config.js",
+  },
+  // "eslint.workingDirectories": [
+  //   "./src",
+  //   "./tests"
+  // ],
   "prettier.printWidth": 100,
   "testing.defaultGutterClickAction": "contextMenu",
   "[json]": {
     "editor.formatOnSave": true
   },
-  "jest.autoRun": {},
+  "typescript.updateImportsOnPaste.enabled": false,
+  "jest.runMode": "on-demand",
   "jest.debugCodeLens.showWhenTestStateIn": [
     "pass",
     "fail",

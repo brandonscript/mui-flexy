@@ -1,6 +1,7 @@
-import { Box, Grid } from "@mui/material";
-
+import MuiBox from "@mui/material/Box";
+import MuiGrid from "@mui/material/Grid";
 import { createElement, forwardRef } from "react";
+
 import type {
   FlexBoxComponent,
   FlexBoxProps,
@@ -11,7 +12,7 @@ import { mapFlexProps } from "./Flex.utils";
 
 const FlexBoxComponent = (props: FlexBoxProps) =>
   createElement<FlexBoxComponent>(
-    Box as React.FC<FlexBoxComponent>,
+    MuiBox as React.FC<FlexBoxComponent>,
     mapFlexProps(props, "Box") as FlexBoxComponent
   );
 
@@ -21,7 +22,7 @@ export const FlexBox = forwardRef<unknown, FlexBoxProps>((props: FlexBoxProps, r
 
 const FlexGridComponent = (props: FlexGridProps) =>
   createElement<FlexGridComponent>(
-    Grid as React.FC<FlexGridComponent>,
+    MuiGrid as React.FC<FlexGridComponent>,
     mapFlexProps(props, "Grid") as FlexGridComponent
   );
 

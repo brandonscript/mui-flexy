@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+
 import {
   FlexBoxProps,
   FlexGridProps,
@@ -59,7 +60,7 @@ because it can cause unexpected alignment and orientation anomalies.`
   }
 };
 
-const stringOrArrayValue = <V extends unknown = unknown>(value: V, index: number) => {
+const stringOrArrayValue = <V = unknown>(value: V, index: number) => {
   if (typeof value === "string") {
     return value;
   } else if (Array.isArray(value)) {

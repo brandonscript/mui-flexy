@@ -156,4 +156,29 @@ describe("Flex.types", () => {
     expect(flexBoxProps).toBeDefined();
     expect(flexGridProps).toBeDefined();
   });
+
+  // it("should allow explicit usage of orientation-based props", () => {
+  //   const flexBoxRowProps = {} as FlexBoxProps<"row">;
+  //   const flexColumnProps = {} as FlexProps<"column">;
+
+  //   expect(flexBoxRowProps).toBeDefined();
+  //   expect(flexColumnProps).toBeDefined();
+
+  //   const { row: rowWhenRow } = flexBoxRowProps;
+  //   const { row: rowWhenColumn } = flexColumnProps;
+  //   const { column: columnWhenColumn } = flexColumnProps;
+  //   const { column: columnWhenRow } = flexBoxRowProps;
+
+  //   if (rowWhenRow === true) {
+  //   }
+  //   // @ts-expect-error
+  //   if (rowWhenRow === false) {
+  //   }
+
+  //   if (rowWhenColumn === false) {
+  //   }
+  //   // @ts-expect-error
+  //   if (rowWhenColumn === true) {
+  //   }
+  // });
 });
