@@ -1,6 +1,6 @@
 <img width="256" alt="flex-logo" src="https://user-images.githubusercontent.com/1480253/186842214-5575f27e-fc48-4617-bedb-a7ec29411203.png">
 
-# Flexy
+# `mui-flexy`
 
 A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
