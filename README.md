@@ -30,7 +30,10 @@ yarn add mui-flexy
 npm install mui-flexy
 ```
 
-Note: This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
+Notes:
+
+- This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
+- As of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
 
 Make sure you've got `@mui/material` and its dependencies installed, as well as React, then add to your project:
 

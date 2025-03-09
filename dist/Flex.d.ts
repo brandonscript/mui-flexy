@@ -1,6 +1,10 @@
-import type { FlexBoxComponent, FlexBoxProps, FlexGridComponent, FlexGridProps } from "./Flex.types";
-declare const FlexBoxComponent: (props: FlexBoxProps) => import("react").FunctionComponentElement<FlexBoxComponent>;
-export declare const FlexBox: FlexBoxComponent;
-declare const FlexGridComponent: (props: FlexGridProps) => import("react").FunctionComponentElement<FlexGridComponent>;
-export declare const FlexGrid: FlexGridComponent;
-export type { FlexBoxProps, FlexGridProps } from "./Flex.types";
+import type { OverridableComponent } from "@mui/material/OverridableComponent";
+import { Theme as MaterialTheme } from "@mui/material/styles";
+import { Theme as SystemTheme } from "@mui/system/createTheme";
+import type { FlexBoxProps, FlexBoxTypeMap, FlexGrid2Props, FlexGridProps, FlexGridTypeMap } from "./Flex.types";
+export { FlexBoxProps };
+export declare const FlexBox: OverridableComponent<FlexBoxTypeMap<undefined, {}, "div", SystemTheme & MaterialTheme>>;
+export { FlexGridProps };
+export declare const FlexGrid: OverridableComponent<FlexGridTypeMap<undefined, {}, "div">>;
+export { FlexGrid2Props };
+export declare const FlexGrid2: OverridableComponent<FlexGridTypeMap<undefined, {}, "div">>;

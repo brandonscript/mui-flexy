@@ -30,7 +30,6 @@
       "name": "vscode-jest-tests.v2.mui-flexy",
       "request": "launch",
       "args": [
-        // "-b",
         "--runInBand",
         "--watchAll=false",
         "--no-cache",
