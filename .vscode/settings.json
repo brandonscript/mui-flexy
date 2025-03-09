@@ -25,6 +25,10 @@
     "fail",
     "unknown"
   ],
-  "jest.jestCommandLine": "node_modules/.bin/jest -b",
-  "jest.rootPath": "."
+  "jest.jestCommandLine": "node_modules/.bin/jest",
+  "jest.rootPath": ".",
+  "jest.nodeEnv": {
+    "NODE_ENV": "test",
+    "NODE_OPTIONS": "--experimental-vm-modules"
+  }
 }

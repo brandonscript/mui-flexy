@@ -1,7 +1,16 @@
 {
   "folders": [
     {
-      "path": "."
+      "path": ".",
+      "name": "🏗️ mui-flexy",
+    },
+    {
+      "path": "demo",
+      "name": "🌍 demo"
+    },
+    {
+      "path": "dist",
+      "name": "🚀 dist"
     }
   ],
   "settings": {
@@ -32,12 +41,21 @@
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
-    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.tsdk": "🏗️ mui-flexy/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit",
+    },
+    "files.exclude": {
+      "dist": true,
+      "demo": true,
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "dist": true,
+      "**/.yarn": true,
     }
   }
 }

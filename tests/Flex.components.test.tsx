@@ -1,8 +1,16 @@
-import { Box, Grid, styled, Typography } from "@mui/material";
+import { Box, Grid, styled, type SxProps, type Theme, Typography } from "@mui/material";
 
-import { FlexBox, FlexBoxProps, FlexGrid } from "../src";
+import type { FlexBoxProps } from "@/Flex.types";
+
+import { FlexBox, FlexGrid, FlexGrid2 } from "../src";
+
+const muiVersion = await import("@mui/material/package.json").then(pkg =>
+  Number(pkg.version?.split(".")[0] ?? 5)
+);
 
 const RowTests = [
+  () => <FlexBox row />,
+  () => <FlexBox row={true} />,
   () => <FlexBox x="left" y="top" />,
   () => <FlexBox x="left" y="center" />,
   () => <FlexBox x="left" y="bottom" />,
@@ -34,6 +42,10 @@ const RowTests = [
   () => <FlexBox x="space-evenly" y="stretch" />,
   () => <FlexBox x="space-evenly" y="baseline" />,
   // @ts-expect-error
+  () => <FlexBox x="invalid-x" />,
+  // @ts-expect-error
+  () => <FlexBox y="invalid-y" />,
+  // @ts-expect-error
   () => <FlexBox x="top" />,
   // @ts-expect-error
   () => <FlexBox x="bottom" />,
@@ -51,9 +63,13 @@ const RowTests = [
   () => <FlexBox y="space-around" />,
   // @ts-expect-error
   () => <FlexBox y="space-evenly" />,
+  // @ts-expect-error
+  () => <FlexBox row="invalid-row" />,
 ];
 
 const ColumnTests = [
+  () => <FlexBox column />,
+  () => <FlexBox column={true} />,
   () => <FlexBox column x="left" y="top" />,
   () => <FlexBox column x="left" y="center" />,
   () => <FlexBox column x="left" y="bottom" />,
@@ -102,6 +118,8 @@ const ColumnTests = [
   () => <FlexBox column y="stretch" />,
   // @ts-expect-error
   () => <FlexBox column y="baseline" />,
+  // @ts-expect-error
+  () => <FlexBox column="invalid-column" />,
 ];
 
 const OverrideBoxTests = [
@@ -157,7 +175,7 @@ describe("FlexBox JSX tests", () => {
   });
 });
 
-const PropsTests = [
+const _PropsTests = [
   ({ x, y, sx, ...rest }: FlexBoxProps) => (
     // @ts-expect-error
     <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
@@ -165,17 +183,40 @@ const PropsTests = [
   ({ x, y, sx, ...rest }: FlexBoxProps<"row">) => (
     <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
   ),
-  ({ x, y, sx, ...rest }: FlexBoxProps<"column">) => (
-    <FlexBox {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+  ({ x, y, sx, column: _c, ...rest }: FlexBoxProps<"column">) => (
+    <FlexBox column {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
   ),
   ({ x, y, sx, ...rest }: FlexBoxProps<"row">) => (
     // @ts-expect-error
-    <FlexBox {...rest} column x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+    <FlexBox column {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
   ),
   ({ x, y, sx, ...rest }: FlexBoxProps<"column">) => (
     // @ts-expect-error
-    <FlexBox {...rest} row x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
+    <FlexBox row {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
   ),
+  // @ts-expect-error -- cases, probably should be allowed but currently not supported
+  ({ row: _r, column: _c, ...rest }: FlexBoxProps) => <FlexBox column row={false} {...rest} />,
+  // @ts-expect-error -- cases, probably should be allowed but currently not supported
+  ({ row: _r, column: _c, ...rest }: FlexBoxProps) => <FlexBox row column={false} {...rest} />,
+  (props: FlexBoxProps) => <FlexBox {...props} />,
+  // @ts-expect-error -- cases, probably should be allowed but currently not supported
+  (props: FlexBoxProps) => <FlexBox {...props} row />,
+  // @ts-expect-error -- cases, probably should be allowed but currently not supported
+  (props: FlexBoxProps) => <FlexBox {...props} column />,
+  // @ts-expect-error
+  (props: FlexBoxProps) => <FlexBox {...props} row column />,
+
+  (props: FlexBoxProps<"row">) => <FlexBox {...props} row />,
+  // @ts-expect-error
+  (props: FlexBoxProps<"row">) => <FlexBox {...props} column />,
+  // @ts-expect-error
+  (props: FlexBoxProps<"row">) => <FlexBox {...props} row column />,
+
+  (props: FlexBoxProps<"column">) => <FlexBox {...props} column />,
+  // @ts-expect-error
+  (props: FlexBoxProps<"column">) => <FlexBox {...props} row />,
+  // @ts-expect-error
+  (props: FlexBoxProps<"column">) => <FlexBox {...props} column row />,
 ];
 
 describe("FlexBoxProps<T> type", () => {
@@ -196,21 +237,69 @@ describe("FlexBoxProps<T> type", () => {
 
   it("should respect row/column allowed values for undefined", () => {
     // These are loosly typed as { row: boolean | undefined; column: boolean | undefined; }
-    const { row, column } = {} as FlexBoxProps;
+    const { row: _r, column: _c } = {} as FlexBoxProps;
   });
   it("should respect row/column allowed values for row", () => {
     // These are strictly typed as { row: true; column: false | undefined; }
-    const { row, column } = {} as FlexBoxProps<"row">;
+    const { row: _r, column: _c } = {} as FlexBoxProps<"row">;
   });
   it("should respect row/column allowed values for column", () => {
     // These are strictly typed as { row: false | undefined; column: true; }
-    const { row, column } = {} as FlexBoxProps<"column">;
+    const { row: _r, column: _c } = {} as FlexBoxProps<"column">;
+  });
+
+  it("should accept correctly cast props for row", () => {
+    const flexRowProps: FlexBoxProps<"row"> = {
+      row: true,
+      x: "left",
+      y: "stretch",
+    };
+
+    const FlexRow = () => <FlexBox {...flexRowProps} />;
+    expect(() => FlexRow()).not.toThrow();
+  });
+
+  it("should reject incorrectly cast props for row", () => {
+    const flexRowProps: FlexBoxProps<"row"> = {
+      // @ts-expect-error
+      column: true,
+      x: "left",
+      y: "stretch",
+    };
+
+    // @ts-expect-error
+    const FlexRow = () => <FlexBox column {...(flexRowProps as FlexBoxProps<"row">)} />;
+    expect(() => FlexRow()).not.toThrow();
+  });
+
+  it("should accept correctly cast props for column", () => {
+    const flexColumnProps: FlexBoxProps<"column"> = {
+      column: true,
+      x: "stretch",
+      y: "top",
+    };
+
+    const FlexColumn = () => <FlexBox {...flexColumnProps} />;
+    expect(() => FlexColumn()).not.toThrow();
+  });
+
+  it("should reject incorrectly cast props for column", () => {
+    const flexColumnProps: FlexBoxProps<"column"> = {
+      // @ts-expect-error
+      column: false,
+      x: "stretch",
+      y: "top",
+    };
+
+    // @ts-expect-error
+    const FlexColumn = () => <FlexBox row {...(flexColumnProps as FlexBoxProps<"column">)} />;
+    expect(() => FlexColumn()).not.toThrow();
   });
 });
 
 describe("FlexBox with styled()", () => {
-  it("should respect FlexBox/Grid types", () => {
-    const StyledFlexBox = styled(FlexBox)(({ theme }) =>
+  it("should respect FlexBox/Grid components", () => {
+    styled(FlexBox)(({ theme }) =>
       theme.unstable_sx({
         opacity: 0.5,
         justifyContent: "space-between",
@@ -226,14 +315,130 @@ describe("FlexBox with styled()", () => {
   });
 });
 
+describe("Responsive prop & sx tests", () => {
+  it("should handle typed sx with responsive breakpoints", () => {
+    const sx: FlexBoxProps<"row">["sx"] = { minHeight: { xs: 240, sm: 300 } };
+    const Component = () => <FlexBox sx={sx} />;
+    expect(() => Component()).not.toThrow();
+  });
+
+  it("should handle responsive array props for x/y", () => {
+    const x: FlexBoxProps<"row">["x"] = ["center", "left", "center", "right"] as const;
+    const y: FlexBoxProps<"row">["y"] = ["stretch", "top", "center", "bottom"];
+
+    // @ts-expect-error
+    const _xBad: FlexBoxProps<"row">["y"] = ["center", "left", "center", "right"] as const;
+    // @ts-expect-error
+    const _yBad: FlexBoxProps<"row">["x"] = ["stretch", "top", "center", "bottom"];
+
+    const sx: FlexBoxProps<"row">["sx"] = { minHeight: { xs: 240, sm: 300 } };
+    const ComponentViaProps = () => <FlexBox x={x} y={y} sx={sx} />;
+    const ComponentDirect = () => (
+      <FlexBox
+        x={["center", "left", "center", "right"]}
+        y={["stretch", "top", "center", "bottom"]}
+        sx={sx}
+      />
+    );
+    expect(() => ComponentViaProps()).not.toThrow();
+    expect(() => ComponentDirect()).not.toThrow();
+  });
+
+  it("should handle responsive array props for row/column", () => {
+    const row: FlexBoxProps["row"] = [true, false, true, false];
+    const column: FlexBoxProps["column"] = [false, true, false, true];
+    const ComponentViaProps = () => <FlexBox row={row} column={column} />;
+    const ComponentDirect = () => (
+      <FlexBox row={[true, false, true, false]} column={[false, true, false, true]} />
+    );
+    expect(() => ComponentViaProps()).not.toThrow();
+    expect(() => ComponentDirect()).not.toThrow();
+  });
+
+  it("should infer responsive array props for row v. column", () => {
+    const row: FlexBoxProps["row"] = [true, false, true, false];
+    const column: FlexBoxProps["column"] = [false, true, false, true];
+    const ComponentRowViaProps = () => <FlexBox row={row} />;
+    const ComponentColumnViaProps = () => <FlexBox column={column} />;
+    const ComponentRowDirect = () => <FlexBox row={[true, false, true, false]} />;
+    const ComponentColumnDirect = () => <FlexBox column={[false, true, false, true]} />;
+    expect(() => ComponentRowViaProps()).not.toThrow();
+    expect(() => ComponentColumnViaProps()).not.toThrow();
+    expect(() => ComponentRowDirect()).not.toThrow();
+    expect(() => ComponentColumnDirect()).not.toThrow();
+  });
+});
+
+describe("SxProps & Theme type tests", () => {
+  it("should handle SxProps<Theme>", () => {
+    const sx: SxProps<Theme> = { color: ["red", "blue"] };
+    expect(sx).toBeDefined();
+    const _StockBox = () => <Box sx={sx} />;
+    expect(() => _StockBox()).not.toThrow();
+    const _FlexBox = () => <FlexBox height={100} sx={sx} />;
+    expect(() => _FlexBox()).not.toThrow();
+  });
+
+  it("should handle SxProps without generic", () => {
+    const sx: SxProps = { color: "red" };
+    expect(sx).toBeDefined();
+    const _StockBox = () => <Box sx={sx} />;
+    expect(() => _StockBox()).not.toThrow();
+    const _FlexBox = () => <FlexBox height={100} sx={sx} />;
+    expect(() => _FlexBox()).not.toThrow();
+  });
+});
+
 const GridPropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
   <FlexGrid container>
     <FlexGrid item xs={12} component="header" ref={gridRef} column gap={0}></FlexGrid>
   </FlexGrid>
 );
 
-describe("FlexGrid supports MUIv5 grid props", () => {
+describe("FlexGrid supports Grid props", () => {
   it("should allow ref and component props", () => {
     expect(() => GridPropsTest()).not.toThrow();
   });
 });
+
+//TODO: Proper TypeScript testing import and prop mechanisms for both Grid2 flavors
+
+if (muiVersion < 6) {
+  const Grid2_v5PropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
+    <FlexGrid2 container spacing={2} ref={gridRef}>
+      {/* @ts-ignore */}
+      <FlexGrid2 xs={8} />
+      {/* @ts-ignore */}
+      <FlexGrid2 xs={4} />
+      {/* @ts-ignore */}
+      <FlexGrid2 xs={4}>Child text</FlexGrid2>
+      {/* @ts-ignore */}
+      <FlexGrid2 xs={8} />
+    </FlexGrid2>
+  );
+
+  describe("FlexGrid supports MUIv5 Grid2 props", () => {
+    it("should allow ref and component props", () => {
+      expect(() => Grid2_v5PropsTest()).not.toThrow();
+    });
+  });
+} else {
+  const Grid2_v6PropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
+    <FlexGrid2 container spacing={2} ref={gridRef}>
+      {/* @ts-ignore */}
+      <FlexGrid2 size={8} />
+      {/* @ts-ignore */}
+      <FlexGrid2 size={{ xs: 4, md: 2 }} />
+      {/* @ts-ignore */}
+      <FlexGrid2 size={4}>Child text</FlexGrid2>
+      {/* @ts-ignore */}
+      <FlexGrid2 size={8} />
+    </FlexGrid2>
+  );
+
+  describe("FlexGrid supports MUIv6+ Grid2 props", () => {
+    it("should allow ref and component props", () => {
+      expect(() => Grid2_v6PropsTest()).not.toThrow();
+    });
+  });
+}

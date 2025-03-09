@@ -2,12 +2,17 @@ import { CSSProperties } from "react";
 
 import {
   FlexBoxProps,
+  type FlexGrid2Props,
   FlexGridProps,
+  type ResponsiveFlexBoolean,
   ResponsiveFlexDirection,
   ResponsiveFlexPosition,
 } from "./Flex.types";
 
-const mapAlignment = (alignment?: any): ResponsiveFlexPosition => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _Any = any;
+
+const mapAlignment = (alignment?: _Any): ResponsiveFlexPosition => {
   if (!alignment) return;
   if (typeof alignment === "string") {
     switch (alignment) {
@@ -30,8 +35,8 @@ const mapAlignment = (alignment?: any): ResponsiveFlexPosition => {
 };
 
 const mapDirection = (
-  direction: ResponsiveFlexDirection | null | undefined,
-  reverse: boolean = false
+  direction: ResponsiveFlexDirection | undefined | null,
+  reverse: boolean | undefined | null = false
 ): ResponsiveFlexDirection => {
   if (!direction) return "row";
   if (typeof direction === "string") {
@@ -129,16 +134,142 @@ const resolveAlignment = (
   return { justifyContent: x, alignItems: y };
 };
 
-export const mapFlexProps = <P extends FlexBoxProps | FlexGridProps>(
-  props: FlexBoxProps | FlexGridProps,
-  componentName: "Box" | "Grid" = "Box"
+type CSSFlexDirection = CSSProperties["flexDirection"];
+const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDirection>(
+  row: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null,
+  column: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null,
+  reverse: boolean | undefined | null = false,
+  fallback: ResponsiveFlexDirection = "row"
+): R | CSSFlexDirection | undefined => {
+  /* Maps boolean responsive row/column props to flexDirection values */
+
+  const rowIsNullOrUndefined = row === null || row === undefined;
+  const columnIsNullOrUndefined = column === null || column === undefined;
+
+  if (rowIsNullOrUndefined && columnIsNullOrUndefined) {
+    return mapDirection(fallback, reverse) as R;
+  }
+
+  const rowIsFalse = row === false;
+  const columnIsFalse = column === false;
+
+  let chooseRow = [true, "row"].includes(row as _Any) || columnIsFalse || columnIsNullOrUndefined;
+  let chooseColumn =
+    [true, "column"].includes(column as _Any) || rowIsFalse || rowIsNullOrUndefined;
+
+  if (rowIsFalse && !columnIsFalse) {
+    chooseRow = false;
+    chooseColumn = true;
+  } else if (columnIsFalse && !rowIsFalse) {
+    chooseColumn = false;
+    chooseRow = true;
+  } else if (chooseRow && chooseColumn) {
+    chooseColumn = false;
+  }
+
+  const rowIsArray = Array.isArray(row);
+  const columnIsArray = Array.isArray(column);
+
+  const rowIsObject = typeof row === "object" && !rowIsArray && !rowIsNullOrUndefined;
+  const columnIsObject = typeof column === "object" && !columnIsArray && !columnIsNullOrUndefined;
+
+  if ([!rowIsObject, !columnIsObject, !rowIsArray, !columnIsArray].every(Boolean)) {
+    return mapDirection(chooseColumn ? "column" : chooseRow ? "row" : fallback, reverse) as R;
+  }
+
+  const rowIsFalsy =
+    !row || (rowIsArray && !row.length) || (rowIsObject && !Object.keys(row).length);
+  const columnIsFalsy =
+    !column || (columnIsArray && !column.length) || (columnIsObject && !Object.keys(column).length);
+
+  if (rowIsArray && columnIsFalsy) {
+    return row.map(r => resolveDirection(r, column, reverse, fallback)) as R;
+  }
+
+  if (columnIsArray && rowIsFalsy) {
+    return column.map(c => resolveDirection(row, c, reverse, fallback)) as R;
+  }
+
+  if (rowIsArray && columnIsArray) {
+    const composite: ResponsiveFlexDirection = [];
+    if (row.length !== column.length) {
+      console.warn(
+        `When using Array type ResponsiveFlexDirection for both 'row' and 'column', they should be the same length (have the same number of breakpoints) - got row=${JSON.stringify(
+          row
+        )} and column=${JSON.stringify(column)}. You probably want to use just one or the other.`
+      );
+
+      const longestLength = Math.max(row.length, column.length);
+
+      for (let i = 0; i < longestLength; i++) {
+        const r = row[i] ?? (column[i] === "column" ? "row" : "column");
+        const c = column[i] ?? (row[i] === "row" ? "column" : "row");
+        composite.push(resolveDirection(r, c, reverse, fallback) as CSSFlexDirection);
+      }
+      return composite as R;
+    }
+
+    // if any of the values in each array are both true for the same array index, warn in the console and default to 'row'
+    return row.map((r, i) => {
+      let c = column[i];
+      if (r && c) {
+        console.warn(
+          `When using Array type ResponsiveFlexDirection for both 'row' and 'column', they cannot not both be true for the same breakpoint index - got row=${JSON.stringify(
+            row
+          )} and column=${JSON.stringify(column)}. Defaulting to 'row' for conflicting indices.`
+        );
+        c = false;
+      }
+      return resolveDirection(r, c, reverse, fallback) as CSSFlexDirection;
+    }) as R;
+  }
+
+  if (rowIsObject && columnIsFalsy) {
+    return Object.fromEntries(
+      Object.entries(row)
+        .filter(([, r]) => ![null, undefined].includes(r))
+        .map(([k, r]) => [k, resolveDirection(r, undefined, reverse, fallback)])
+    ) as R;
+  }
+
+  if (columnIsObject && rowIsFalsy) {
+    return Object.fromEntries(
+      Object.entries(column)
+        .filter(([, r]) => ![null, undefined].includes(r))
+        .map(([k, c]) => [k, resolveDirection(undefined, c, reverse, fallback)])
+    ) as R;
+  }
+
+  if (rowIsObject && columnIsObject) {
+    const composite: { [key: string]: CSSFlexDirection } = {};
+    const keys = new Set([...Object.keys(row), ...Object.keys(column)]);
+
+    for (const key of keys) {
+      const r = row[key];
+      const c = column[key];
+      if ([null, undefined].includes(r as _Any) && [null, undefined].includes(c as _Any)) {
+        // if both are empty, omit the key
+        continue;
+      }
+      composite[key] = resolveDirection(r, c, reverse, fallback) as CSSFlexDirection;
+    }
+    return composite as R;
+  }
+};
+
+export const mapFlexProps = <P extends FlexBoxProps | FlexGridProps | FlexGrid2Props>(
+  props: Partial<FlexBoxProps | FlexGridProps | FlexGrid2Props>,
+  ref?: React.Ref<_Any> | null,
+  componentName: "Box" | "Grid" | "Grid2" = "Box"
 ) => {
   const { x, y, row, column, flexDirection, reverse, nowrap, ...rest } = props;
 
-  const axis = (
-    row ? "row" : column && !row ? "column" : flexDirection
-  ) as CSSProperties["flexDirection"];
-  const direction = mapDirection(axis, reverse);
+  const direction = resolveDirection(
+    row,
+    column,
+    reverse,
+    flexDirection as ResponsiveFlexDirection
+  );
 
   const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
   const flexProps = { display: rest.display || "flex", whiteSpace };
@@ -154,6 +285,7 @@ export const mapFlexProps = <P extends FlexBoxProps | FlexGridProps>(
     ...alignments,
     flexDirection: direction,
     className,
+    ref,
   } as unknown as P;
 };
 
@@ -161,4 +293,5 @@ export const _test = {
   mapAlignment,
   mapDirection,
   mapFlexProps,
+  resolveDirection,
 };

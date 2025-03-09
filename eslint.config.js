@@ -60,7 +60,14 @@ export default tseslint.config(
       "react/jsx-no-useless-fragment": "error",
       "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "@typescript-eslint/ban-ts-comment": "off",
       "import-x/first": "error",
       "import-x/newline-after-import": "error",

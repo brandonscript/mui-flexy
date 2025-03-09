@@ -1,7 +1,14 @@
+import alias from "@rollup/plugin-alias";
 import cjs from "@rollup/plugin-commonjs";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
+
+import { version as muiVersion } from "../node_modules/@mui/material/package.json";
+
+const muiMajorVersion = Number(muiVersion.split(".")[0]);
+
+console.log("muiVersion", muiVersion);
 
 export default {
   input: ["src/index.tsx"],
@@ -28,6 +35,17 @@ export default {
     },
   ],
   plugins: [
+    // alias({
+    //   entries: async () => {
+    //     if (muiMajorVersion > 5) return {};
+    //     return {
+    //       "@mui/material/Grid2": import.meta.resolve("@mui/material/Unstable_Grid2"),
+    //       "@mui/material/Grid2/index.js": import.meta.resolve(
+    //         "@mui/material/Unstable_Grid2/index.js"
+    //       ),
+    //     };
+    //   },
+    // }),
     json(),
     resolve({
       extensions: [".ts", ".tsx"],

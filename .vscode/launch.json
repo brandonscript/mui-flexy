@@ -12,7 +12,11 @@
       "internalConsoleOptions": "neverOpen",
       "program": "${workspaceRoot}/node_modules/.bin/jest",
       "cwd": "${workspaceFolder}",
-      "args": ["test", "--runInBand", "--watchAll=false"]
+      "args": [
+        "test",
+        "--runInBand",
+        "--watchAll=false"
+      ]
     },
     {
       "name": "Demo: webpack debug & run",
@@ -20,6 +24,30 @@
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
       "command": "yarn dev"
+    },
+    {
+      "type": "node",
+      "name": "vscode-jest-tests.v2.mui-flexy",
+      "request": "launch",
+      "args": [
+        // "-b",
+        "--runInBand",
+        "--watchAll=false",
+        "--no-cache",
+        "--testNamePattern",
+        "${jest.testNamePattern}",
+        "--runTestsByPath",
+        "${jest.testFile}",
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "program": "node_modules/.bin/jest",
+      "sourceMaps": true,
+      "env": {
+        "NODE_ENV": "test",
+        "NODE_OPTIONS": "--experimental-vm-modules"
+      }
     }
   ]
 }

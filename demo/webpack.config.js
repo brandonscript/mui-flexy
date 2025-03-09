@@ -1,6 +1,12 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
+const muiVersion = require("../node_modules/@mui/material/package.json").version;
+
+const muiMajorVersion = Number(muiVersion.split(".")[0]);
+
+console.log("@mui/material version", muiVersion);
+
 module.exports = {
   output: {
     path: path.join(path.resolve(__dirname, ".."), "/docs"),
@@ -15,11 +21,19 @@ module.exports = {
     port: 8472,
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".json"],
+    extensions: [".ts", ".tsx", ".js", ".jsx", ".json"],
     modules: [path.resolve("../demo/node_modules/")],
     alias: {
       react: path.resolve("../node_modules/react"),
       "react-dom": path.resolve("../node_modules/react-dom"),
+      ...(muiMajorVersion < 6
+        ? {
+            "@mui/material/Grid2": path.resolve(
+              __dirname,
+              "../demo/node_modules/@mui/material/Unstable_Grid2"
+            ),
+          }
+        : {}),
     },
   },
   resolveLoader: {

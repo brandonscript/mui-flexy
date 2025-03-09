@@ -1,18 +1,22 @@
-import styled from "@emotion/styled";
-import { Grid, Link, Typography, TypographyOwnProps } from "@mui/material";
-import { forwardRef, PropsWithChildren, useEffect, useRef, useState } from "react";
+import { Link, styled, Typography, TypographyOwnProps } from "@mui/material";
+import { forwardRef, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { FlexGridProps } from "../../dist";
 import pkg from "../../package.json";
-import { FlexBox, FlexBoxProps, FlexGrid } from "../../src";
+import { FlexBox, type FlexBoxProps, FlexGrid, FlexGrid2 } from "../../src";
 
 // Or: run `npm link ../` or `yarn link ../` in the ./demo directory
 // and import from "mui-flexy":
 // import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
 
-console.log(pkg.name, pkg.version, FlexBox, FlexGrid);
+const muiVersion = await import("@mui/material/package.json").then(pkg => pkg.version);
+
+console.log(pkg.name, pkg.version, FlexBox, FlexGrid, "@mui/material", muiVersion);
+
+const rowEmoji = "🚣";
+const columnEmoji = "🏛";
 
 const rowCombinations: Array<[FlexBoxProps<"row">["x"], FlexBoxProps<"row">["y"]]> = [
   ["left", "top"],
@@ -80,8 +84,13 @@ const columnCombinations: Array<[FlexBoxProps<"column">["y"], FlexBoxProps<"colu
   ["space-evenly", "right"],
 ];
 
+const bgColor = "#f6f5f6";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _Any = any;
+
 const Inner = styled(FlexBox)<FlexBoxProps>(props => ({
-  minHeight: props?.minHeight ?? (props?.sx as any)?.minHeight ?? 120,
+  minHeight: props?.minHeight ?? (props?.sx as _Any)?.minHeight ?? 120,
   border: "1.5px solid #e2ebf8",
   borderRadius: "4px",
   flexGrow: 1,
@@ -89,7 +98,7 @@ const Inner = styled(FlexBox)<FlexBoxProps>(props => ({
   padding: "4px",
   backgroundColor: "#fff",
   "& > span": {
-    backgroundColor: "#efecf4",
+    backgroundColor: bgColor,
     paddingLeft: "4px",
     paddingRight: "4px",
     borderRadius: "4px",
@@ -103,6 +112,23 @@ const Inner = styled(FlexBox)<FlexBoxProps>(props => ({
   },
 }));
 
+const rowArrow = (
+  <span
+    style={{ writingMode: "vertical-rl", textOrientation: "sideways" }}
+    aria-label="left-right arrow"
+  >
+    ⇅
+  </span>
+);
+const colArrow = (
+  <span
+    style={{ writingMode: "vertical-rl", textOrientation: "upright" }}
+    aria-label="up-down arrow"
+  >
+    ⇅
+  </span>
+);
+
 const gridColumns = { xs: 12, md: 4, l: 4, xl: 4 };
 const reponsiveFontSizes = { "& pre": { fontSize: { xs: "0.85rem", md: "1.0vw", lg: "0.85rem" } } };
 
@@ -112,8 +138,13 @@ const Header = forwardRef(
     ref: React.ForwardedRef<HTMLDivElement>
   ) => (
     <FlexGrid item xs={12} component="header" ref={ref} column gap={0}>
-      <Typography component="h2" variant="h5">
+      <Typography component="h2" variant="h5" sx={{ display: "flex", alignItems: "center" }}>
         {text}
+        {text.toLowerCase().includes("row")
+          ? rowArrow
+          : text.toLowerCase().includes("column")
+          ? colArrow
+          : ""}
       </Typography>
       <Typography component="h4" variant="subtitle1">
         {subtitle}
@@ -128,15 +159,28 @@ const Code = ({
   width,
   code,
   children,
+  margin = "",
 }: PropsWithChildren<{
   width?: string | number;
   inline?: boolean;
   code?: string;
+  margin?: number | string;
 }>) => (
   // @ts-ignore - children can be a string, but react-syntax-highlighter expects a ReactElement
   <SyntaxHighlighter
     language="javascript"
-    customStyle={inline ? { display: "inline", padding: "2px 4px", width } : {}}
+    customStyle={
+      inline
+        ? {
+            display: "inline",
+            padding: "2px 4px",
+            width,
+            background: bgColor,
+            borderRadius: 4,
+            margin,
+          }
+        : { background: bgColor, borderRadius: 4, margin }
+    }
     style={atelierCaveLight}
   >
     {children?.toString() || code || ""}
@@ -150,26 +194,27 @@ const Title = () => (
       variant="h4"
       row
       x="left"
-      // y={{ xs: "top" }}
+      y="center"
       gap={2}
     >
       <FlexBox
         width={100}
         height={100}
         mb={2}
+        ml={-1}
         column
         component="img"
         src="apple-touch-icon.png"
         alt="mui-flexy logo"
       />
-      Flexy for{" "}
+      mui-flexy for{" "}
       <Link target="_blank" href="https://mui.com/">
         Material UI
       </Link>
     </FlexBox>
     <Typography variant="body1" component="div">
       {
-        "Flexy for MUI is a component wrapper for flexbox styles that allows you to easily \
+        "mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily \
             align and distribute flexy items in a space in a way that doesn't make you want \
             to pull your hair out trying to remember whether to use "
       }
@@ -182,7 +227,7 @@ const Title = () => (
       }
       <br />
       <br />
-      {"Flexy components inherit from either "}
+      {"Flex components inherit from either "}
       <Link target="_blank" href="https://mui.com/material-ui/react-box/">
         Box
       </Link>{" "}
@@ -205,235 +250,385 @@ const Title = () => (
   </>
 );
 
-const Section = styled((props: FlexGridProps = {}) => (
-  <FlexGrid {...props} item xs={12} component="article" />
+const GridSection = styled((props: FlexGridProps = {}) => (
+  <FlexGrid {...props} container component="section" spacing={[2, 3, 4]} />
+))(({ theme }) =>
+  theme.unstable_sx({
+    "&.MuiGrid-root": {
+      // This adjusts the outer gutter of the grid to match the rest of the page content
+      ml: [-2, -3, -4],
+      maxWidth: "fit-content",
+      width: theme => [
+        `calc(100% + ${theme.spacing(2)})`,
+        `calc(100% + ${theme.spacing(3)})`,
+        `calc(100% + ${theme.spacing(4)})`,
+      ],
+    },
+  })
+);
+
+const Item = styled((props: FlexGridProps = {}) => (
+  <FlexGrid {...props} item xs={12} component="div" />
 ))({
   width: "100%",
 });
 
+const BoxSection = styled(FlexBox)(({ theme }) =>
+  theme.unstable_sx({
+    width: "100%",
+    maxWidth: "100%",
+    rowGap: [2, 3, 4],
+  })
+);
+
+export const useRenderer = () => {
+  const [, _render] = useState({});
+  return useCallback(() => _render({}), []);
+};
+
 export const FlexTest = () => {
   const ref = useRef<HTMLDivElement>(null);
-  const [refState, setRefState] = useState<HTMLDivElement | null>(null);
+  const render = useRenderer();
 
   useEffect(() => {
     if (ref.current) {
-      setRefState(ref.current);
+      render();
     }
-  }, [ref]);
+  }, [ref, render]);
 
   return (
-    <FlexGrid
-      container
+    <FlexBox
       width="100vw"
-      p={4}
-      pr={2}
-      spacing={2}
+      p={[2, 3, 4]}
+      gap={[2, 3, 4]}
       x="center"
       component="main"
       sx={{ bgcolor: "#fff" }}
+      column
     >
-      <FlexGrid item xs={12} column>
+      <FlexBox x="left" y="center" column>
         <Title />
-      </FlexGrid>
-      <Header text="Row" subtitle="Simple: props are string values" />
-      {rowCombinations.map(([x, y], i) => (
-        <Grid item {...gridColumns} key={i} component="article">
-          <Inner x={x} y={y} sx={reponsiveFontSizes}>
+      </FlexBox>
+      <GridSection className="row-basic">
+        <Header text="Row (basic)" subtitle="Props are string values" />
+        {rowCombinations.map(([x, y], i) => (
+          <Item {...gridColumns} key={i} component="div" column>
             <Code
+              margin="0px 16px"
               code={`<FlexBox x="${x}" y="${y}">
   ...
 </FlexBox>`}
             />
-            <span>🚣</span>
-          </Inner>
-        </Grid>
-      ))}
-      <Header
-        text="Row (responsive)"
-        subtitle="Advanced: props are array or object values (resize the window to see the difference)"
-      />
-      <Section>
-        <Inner
-          x={["center", "left", "center", "right"]}
-          y={["center", "top", "center", "bottom"]}
-          sx={{ minHeight: 240 }}
-        >
+            <Inner x={x} y={y} sx={reponsiveFontSizes}>
+              <span>{rowEmoji}</span>
+            </Inner>
+          </Item>
+        ))}
+      </GridSection>
+      <GridSection className="row-responsive">
+        <Header
+          text="Row (responsive)"
+          subtitle="Responsive array or object values (resize the window to see different breakpoints)"
+        />
+        <Item xs={12} lg={6}>
           <Code
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
   y={[ "center", "top", "center", "bottom" ]}\n/>\n
-// (interpreted as [ xs, sm, md, lg ])`}
+// (interpreted as [ xs, sm, md, >= lg ])`}
           />
-          <span>🚣</span>
-        </Inner>
-      </Section>
-      <Section>
-        <Inner
-          x={{ sm: "left", md: "center", lg: "right" }}
-          y={{ sm: "top", md: "center", lg: "bottom" }}
-          sx={{ minHeight: 240, ...reponsiveFontSizes }}
-        >
+          <Inner
+            x={["center", "left", "center", "right"]}
+            y={["center", "top", "center", "bottom"]}
+            sx={{ minHeight: 240 }}
+          >
+            <span>{rowEmoji}</span>
+          </Inner>
+        </Item>
+        <Item xs={12} lg={6}>
           <Code
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
-  y={{ sm: "top", md: "center", lg: "bottom" }}\n/>\n
-// (interpreted as { sm: _, md: _, lg: _ })`}
+  y={{ sm: "top", md: "center", lg: "bottom" }}\n/>`}
           />
-          <span>🚣</span>
-        </Inner>
-      </Section>
-      <Header text="Column" subtitle="Basic: props are string values" />
-      {columnCombinations.map(([y, x], i) => (
-        <Section item {...gridColumns} key={i}>
-          <Inner x={x} y={y} column sx={reponsiveFontSizes}>
+          <Inner
+            x={{ sm: "left", md: "center", lg: "right" }}
+            y={{ sm: "top", md: "center", lg: "bottom" }}
+            sx={{ minHeight: 240, ...reponsiveFontSizes }}
+          >
+            <span>{rowEmoji}</span>
+          </Inner>
+        </Item>
+        <Item xs={12} lg={6}>
+          <Code
+            code={`<FlexBox
+  row={[ false, false, true, true, false ]}
+  // column={[ true, true, false, false, true ]} <- this is implied
+  x={[ "center", "center", "space-between", "space-around" ]}
+  y="center"
+  gap={[2, 3, 4]}\n/>\n`}
+          />
+          <Inner
+            row={[false, false, true, true, false]}
+            // column={[true, true, false, false, true]} <- this is implied
+            x={["center", "center", "space-between", "space-around"]}
+            y="center"
+            gap={[2, 3, 4]}
+            sx={{ minHeight: 240, ...reponsiveFontSizes }}
+          >
+            <span>{rowEmoji}</span>
+            <span>{rowEmoji}</span>
+            <span>{rowEmoji}</span>
+          </Inner>
+        </Item>
+        <Item xs={12} lg={6}>
+          <Code
+            code={`<FlexBox
+  row={{ xs: false, md: true, xl: false }}
+  // column={{ xs: true, md: false, xl: true }} <- this is implied
+  x={{ xs: "center", md: "space-between", lg: "space-around" }}\n/>`}
+          />
+          <Inner
+            row={{ xs: false, md: true, xl: false }}
+            // column={{ xs: true, md: false, xl: true }} <- this is implied
+            x={{ xs: "center", md: "space-between", lg: "space-around" }}
+            gap={[2, 3, 4]}
+            sx={{ minHeight: 240, ...reponsiveFontSizes }}
+          >
+            <span>{rowEmoji}</span>
+            <span>{rowEmoji}</span>
+            <span>{rowEmoji}</span>
+          </Inner>
+        </Item>
+      </GridSection>
+      <GridSection className="column-basic">
+        <Header text="Column (basic)" subtitle="Props are string values" />
+        {columnCombinations.map(([y, x], i) => (
+          <Item item {...gridColumns} key={i} column>
             <Code
+              margin="0px 16px"
               code={`<FlexBox x="${x}" y="${y}" column>
   ...
 </FlexBox>`}
             />
-            <span>🏛️</span>
-          </Inner>
-        </Section>
-      ))}
-
-      <Header
-        text="Column (responsive)"
-        subtitle="Advanced: props are array or object values (resize the window to see the difference)"
-      />
-      <Section item xs={12} md={6}>
-        <Inner
-          x={["center", "left", "center", "right"]}
-          y={["center", "top", "center", "bottom"]}
-          column
-          sx={{ minHeight: [240, 240, 480] }}
-        >
+            <Inner x={x} y={y} column sx={reponsiveFontSizes}>
+              <span>{columnEmoji}</span>
+            </Inner>
+          </Item>
+        ))}
+      </GridSection>
+      <GridSection className="column-responsive">
+        <Header
+          text="Column (responsive)"
+          subtitle="Props are array or object values (resize the window to see different breakpoints)"
+        />
+        <Item xs={12} lg={6}>
           <Code
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
   y={[ "center", "top", "center", "bottom" ]}\n\
-  column\n\/>\n
+  column\n/>\n
 // (interpreted as [ xs, sm, md, lg ])`}
           />
-          <span>🏛️</span>
-        </Inner>
-      </Section>
-      <Section item xs={12} md={6}>
-        <Inner
-          x={{ sm: "left", md: "center", lg: "right" }}
-          y={{ sm: "top", md: "center", lg: "bottom" }}
-          column
-          sx={{ minHeight: [240, 240, 480] }}
-        >
+          <Inner
+            x={["center", "left", "center", "right"]}
+            y={["center", "top", "center", "bottom"]}
+            column
+            sx={{ minHeight: [240, 240, 480] }}
+          >
+            <span>{columnEmoji}</span>
+          </Inner>
+        </Item>
+        <Item xs={12} lg={6}>
           <Code
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
   y={{ sm: "top", md: "center", lg: "bottom" }}\n\
-  column\n\/>\n
+  column\n/>\n
 // (interpreted as { sm: _, md: _, lg: _ })`}
           />
-          <span>🏛️</span>
-        </Inner>
-      </Section>
-      <Header text="Basic CSS Grid (FlexGrid)" />
-      <FlexBox x="center" y="center" pl={2}>
-        <FlexGrid container spacing={2}>
-          {[...Array(12).keys()].map(i => (
-            <FlexGrid item key={i} xs={12} sm={6} md={4} lg={3} xl={2}>
-              <Inner x="center" y="center">
-                <Code
-                  code={`<FlexGrid item>
+          <Inner
+            x={{ sm: "left", md: "center", lg: "right" }}
+            y={{ sm: "top", md: "center", lg: "bottom" }}
+            column
+            sx={{ minHeight: [240, 240, 480] }}
+          >
+            <span>{columnEmoji}</span>
+          </Inner>
+        </Item>
+      </GridSection>
+      <GridSection className="css-grid-basic">
+        <Header text="Basic CSS Grid (FlexGrid)" />
+        <FlexGrid item x="center" y="center">
+          <FlexGrid container spacing={2}>
+            {[...Array(12).keys()].map(i => (
+              <FlexGrid item key={i} xs={12} sm={6} md={4} lg={3} xl={2}>
+                <Inner x="center" y="center">
+                  <Code
+                    code={`<FlexGrid item>
   ${i + 1}
+</FlexGrid>`}
+                  />
+                </Inner>
+              </FlexGrid>
+            ))}
+          </FlexGrid>
+        </FlexGrid>
+      </GridSection>
+      <BoxSection className="css-grid-templating" column>
+        <Header text="CSS Grid (FlexGrid) with grid templating" />
+        <FlexGrid
+          item
+          x="center"
+          y="center"
+          ml={1}
+          mr={-1}
+          width="100%"
+          sx={{ display: { xs: "flex", md: "none" }, opacity: 0.5 }}
+        >
+          (This demo is not formatted for smaller screens)
+        </FlexGrid>
+        <FlexGrid
+          item
+          x="center"
+          y="center"
+          width="100%"
+          sx={{ display: { xs: "none", md: "flex" } }}
+        >
+          <FlexGrid
+            container
+            spacing={[2, 3, 4]}
+            display="grid"
+            sx={{
+              width: "100%",
+              bgcolor: "background.default",
+              gridTemplateColumns: "auto 1fr auto",
+              gridTemplateRows: "auto 1fr auto",
+              gridAutoRows: "minmax(150px, 1fr)",
+              gridTemplateAreas: `
+              "header header header"
+              "left center right"
+              "footer footer footer"`,
+              gridAutoFlow: "row",
+              "& .header": { gridArea: "header" },
+              "& .left": { gridArea: "left" },
+              "& .center": { gridArea: "center" },
+              "& .right": { gridArea: "right" },
+              "& .footer": { gridArea: "footer" },
+            }}
+          >
+            <FlexGrid item className="header">
+              <Inner x="center" y="center" minHeight="auto">
+                <Code code={`<FlexGrid item className="header">Header</FlexGrid>`} />
+              </Inner>
+            </FlexGrid>
+            <FlexGrid item className="left">
+              <Inner x="center" y="center" minHeight="auto">
+                <Code
+                  code={`<FlexGrid item className="left">
+  Left
 </FlexGrid>`}
                 />
               </Inner>
             </FlexGrid>
-          ))}
-        </FlexGrid>
-      </FlexBox>
-      <Header text="CSS Grid (FlexGrid) with grid templating" />
-      <FlexBox x="center" y="center" mt={2} ml={1} mr={-1} width="100%">
-        <FlexGrid
-          container
-          spacing={2}
-          display="grid"
-          sx={{
-            width: "100%",
-            bgcolor: "background.default",
-            gridTemplateColumns: "auto 1fr auto",
-            gridTemplateRows: "auto 1fr auto",
-            gridAutoRows: "minmax(150px, 1fr)",
-            gridTemplateAreas: `
-              "header header header"
-              "left center right"
-              "footer footer footer"`,
-            gridAutoFlow: "row",
-            "& .header": { gridArea: "header" },
-            "& .left": { gridArea: "left" },
-            "& .center": { gridArea: "center" },
-            "& .right": { gridArea: "right" },
-            "& .footer": { gridArea: "footer" },
-          }}
-        >
-          <FlexGrid item className="header">
-            <Inner x="center" y="center" minHeight="auto">
-              <Code code={`<FlexGrid item className="header">Header</FlexGrid>`} />
-            </Inner>
-          </FlexGrid>
-          <FlexGrid item className="left">
-            <Inner x="center" y="center" minHeight="auto">
-              <Code
-                code={`<FlexGrid item className="left">
-  Left
-</FlexGrid>`}
-              />
-            </Inner>
-          </FlexGrid>
-          <FlexGrid item className="center">
-            <Inner x="center" y="center" minHeight="auto">
-              <Code
-                code={`<FlexGrid item className="center">
+            <FlexGrid item className="center">
+              <Inner x="center" y="center" minHeight="auto">
+                <Code
+                  code={`<FlexGrid item className="center">
   Center
 </FlexGrid>`}
-              />
-            </Inner>
-          </FlexGrid>
-          <FlexGrid item className="right">
-            <Inner x="center" y="center" minHeight="auto">
-              <Code
-                code={`<FlexGrid item className="right">
+                />
+              </Inner>
+            </FlexGrid>
+            <FlexGrid item className="right">
+              <Inner x="center" y="center" minHeight="auto">
+                <Code
+                  code={`<FlexGrid item className="right">
   Right
 </FlexGrid>`}
-              />
-            </Inner>
-          </FlexGrid>
-          <FlexGrid item className="footer">
-            <Inner x="center" y="center" minHeight={"auto"}>
-              <Code code={`<FlexGrid item className="footer">Footer</FlexGrid>`} />
-            </Inner>
+                />
+              </Inner>
+            </FlexGrid>
+            <FlexGrid item className="footer">
+              <Inner x="center" y="center" minHeight={"auto"}>
+                <Code code={`<FlexGrid item className="footer">Footer</FlexGrid>`} />
+              </Inner>
+            </FlexGrid>
           </FlexGrid>
         </FlexGrid>
-      </FlexBox>
-      <Header text="Ref test" ref={ref} />
-      <FlexGrid item xs={12} component="article">
+      </BoxSection>
+      {muiVersion.startsWith("5") ? (
+        <GridSection className="mui-grid2-v5">
+          <Header text="Unstable_Grid2 (@mui v5)" />
+          <FlexGrid item x="center" y="center">
+            <FlexGrid2 container spacing={2}>
+              {[...Array(12).keys()].map(i => (
+                // @ts-ignore - Grid2 props change between v5 and v6
+                <FlexGrid2
+                  key={i}
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  xl={2}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
+                >
+                  <Inner x="center" y="center">
+                    <Code
+                      code={`<FlexGrid2>
+  ${i + 1}
+</FlexGrid2>`}
+                    />
+                  </Inner>
+                </FlexGrid2>
+              ))}
+            </FlexGrid2>
+          </FlexGrid>
+        </GridSection>
+      ) : (
+        <GridSection className="mui-grid2-v5">
+          <Header text="Grid2 (@mui v6+)" />
+          <FlexGrid item x="center" y="center">
+            <FlexGrid2 container spacing={2}>
+              {[...Array(12).keys()].map(i => (
+                // @ts-ignore - Grid2 props change between v5 and v6
+                <FlexGrid2 key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
+                  <Inner x="center" y="center">
+                    <Code
+                      code={`<FlexGrid2>
+  ${i + 1}
+</FlexGrid2>`}
+                    />
+                  </Inner>
+                </FlexGrid2>
+              ))}
+            </FlexGrid2>
+          </FlexGrid>
+        </GridSection>
+      )}
+      <BoxSection className="ref-test" column>
+        <Header text="Ref test" ref={ref} />
         <Inner x="center" y="center" column>
           <span>
             {ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}
           </span>
           <Code code={ref?.current?.toString()} />
         </Inner>
-      </FlexGrid>
-      <Header text="Complex props test" />
-      {(() => {
-        const invalidProps = { prop: "invalid" } as FlexBoxProps;
-        return (
-          <FlexGrid item xs={12} component="article">
-            <Inner x="center" y="center" column {...{ prop: "invalid" }}>
-              <span>Complex props test</span>
-              <Code code={JSON.stringify(invalidProps)} />
-            </Inner>
-          </FlexGrid>
-        );
-      })()}
-    </FlexGrid>
+      </BoxSection>
+      <BoxSection className="complex-props-test" column>
+        <Header text="Complex props test" />
+        {(() => {
+          const invalidProps = { prop: "invalid" } as FlexBoxProps<"column">;
+          return (
+            <FlexBox column>
+              <Code code={`<FlexBox prop="invalid" />`} margin="0px 16px" />
+              <Inner x="center" y="center" column {...invalidProps}>
+                <span>Complex props test</span>
+              </Inner>
+            </FlexBox>
+          );
+        })()}
+      </BoxSection>
+    </FlexBox>
   );
 };

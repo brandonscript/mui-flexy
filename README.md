@@ -6,17 +6,17 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 
 ## The problem
 
-If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, and you've lost sleep, hair, or brain cells because centering a div is hard, then say no more, and `yarn add mui-flexy` or `npm install mui-flexy`.
+If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
 
-See, CSS dictates that:
+Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
 
-`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, your alignments go bonkers.
+`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, you have to re-write your alignments. This gets exponentially more difficult when you introduce responsive breakpoints.
 
 ## The solution
 
-What if we took an approach from science and math and 2-dimensional space?
+Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
 
-Flexy gives you a way to align things in 2-dimensional space using sensible props like x and y instead, and does all the hard CSS stuff for you so you don't have to.
+mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
 
 ![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
@@ -30,11 +30,9 @@ yarn add mui-flexy
 npm install mui-flexy
 ```
 
-Make sure you've got `@mui/material` and its dependencies installed. And React, don't forget React.
+Note: This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
 
-If you're not using TypesScript, expect for now that everything will be angry and you will be mad at me. File an issue or submit a PR if you want to live in Wild West.js land.
-
-Then add to your project:
+Make sure you've got `@mui/material` and its dependencies installed, as well as React, then add to your project:
 
 ```jsx
 import { Typography } from "@mui/material"; // or use a <p> if you don't like fun typography
@@ -45,9 +43,9 @@ import { FlexBox, FlexGrid } from "mui-flex";
 </FlexBox>;
 ```
 
-## Meaty bits of fun usage and more words
+## Using a FlexBox
 
-It's like magic:
+FlexBox can be used as a drop-in replacement for MUI's Box component, with the added benefit of `x` and `y` props for alignment:
 
 ```jsx
 const YouTooCanCenterADiv = () => (
@@ -87,7 +85,7 @@ produces {
 }
 ```
 
-Just like MUI (via Emotion) lets you use arrays and object notation, Flexy does too (because it's a wrapper for Box and Grid):
+It also supports ResponsiveStyleObject arrays/object notation:
 
 ```jsx
 {
@@ -113,11 +111,38 @@ produces {
   alignItems: ["flex-start", "space-between"],
   flexDirection: ["row", "column"]
 }
-```
 
-Want to get crafty with a `ResponsiveStyleObject`?
+//
 
-```jsx
+{
+  x: {
+    xs: "left",
+    sm: "center",
+    md: "right"
+  },
+  y: {
+    xs: "bottom",
+    sm: "center",
+    md: "top"
+  },
+  row: true
+}
+produces {
+  justifyContent: {
+    xs: "flex-start",
+    sm: "center",
+    md: "flex-end"
+  },
+  alignItems: {
+    xs: "flex-end",
+    sm: "center",
+    md: "flex-start"
+  },
+  flexDirection: "row"
+}
+
+//
+
 {
   x: {
     xs: "left",
@@ -166,9 +191,27 @@ produces {
 }
 ```
 
-Neato, burrito! That's pretty easy, right?
+As of v1.2.0, you can now use responsive arrays/objects for `row` and `column` properties, too:
 
-Oh, one last thing—you can get clever with `reverse`, too:
+```jsx
+{
+  x: "center",
+  y: "center",
+  row: [true, true, false], // xs, sm: 'row', md+: 'column'
+  // column: [false, false, true] // implied, not required
+}
+
+// or
+
+{
+  x: "center",
+  y: "center",
+  row: { xs: true, md: false },
+  column: { xs: false, md: true } // implied, not required, but helps with readability
+}
+```
+
+It supports `reverse`, too:
 
 ```jsx
 {
@@ -184,15 +227,48 @@ produces {
 }
 ```
 
-Coming soon, perhas it's worth having some shorthand like this:
+## Using a FlexGrid
+
+Like FlexBox, FlexGrid is a drop-in replacement for MUI's Grid component. Note that with @mui/material v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated.
 
 ```jsx
-<FlexRow box />
-<FlexColumn grid />
+// Grid (v5), based on @mui/material/Grid
+<FlexGrid container x="center" y="center">
+  <FlexGrid item xs={12} sm={6} md={4} lg={3}>
+    <Typography>Grids are cool</Typography>
+  </FlexGrid>
+</FlexGrid>
 
-// and
+// Grid2 (v5), based on @mui/material/Unstable_Grid2
+<FlexGrid2 container x="center" y="center">
+  <FlexGrid2 xs={12} sm={6} md={4} lg={3}>
+    <Typography>Grids are cool</Typography>
+  </FlexGrid2>
+</FlexGrid2>
 
-<FlexBox row top-left />
+// Grid2 (v6), based on @mui/material/Grid2
+<FlexGrid2 container x="center" y="center">
+  <FlexGrid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+    <Typography>Grids are cool</Typography>
+  </FlexGrid2>
+</FlexGrid2>
+```
 
-// maybe?
+## Refs & component overrides
+
+Both FlexBox and FlexGrid are wrapped with forwardRef, so you can pass a ref to FlexBox and FlexGrid. You can also pass a `component` prop to override the default `div`:
+
+```jsx
+import { forwardRef } from "react";
+
+const boxRef = useRef(null);
+
+<FlexBox ref={boxRef} id="my-flex-box">
+  <Typography>{`I'm a FlexBox with id ${boxRef.current?.id}`}</Typography>
+</FlexBox>;
+```
+
+```jsx
+const SpanFlex = <FlexBox component="span" x="center" y="center" />;
+const TypographyFlex = <FlexBox component={Typography} x="center" y="center" variant="subtitle1" />;
 ```
