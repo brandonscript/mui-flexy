@@ -4,25 +4,15 @@
 
 A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
-## The problem
+![NPM Version](https://img.shields.io/npm/v/mui-flexy)
+![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/brandonscript/mui-flexy)
+![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6-blue)
+![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018-8A2BE2)
 
-If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
+## Get started
 
-Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
-
-`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, you have to re-write your alignments. This gets exponentially more difficult when you introduce responsive breakpoints.
-
-## The solution
-
-Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
-
-mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
-
-![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
-
-Want to see for yourself? [Try it out!](https://brandonscript.github.io/mui-flexy/)
-
-## Getting started
+### Install
 
 ```shell
 yarn add mui-flexy
@@ -30,12 +20,43 @@ yarn add mui-flexy
 npm install mui-flexy
 ```
 
-Notes:
+> Notes:
+>
+> - This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
+> - As of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
 
-- This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
-- As of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
+### Dependencies
 
-Make sure you've got `@mui/material` and its dependencies installed, as well as React, then add to your project:
+Make sure you've got `@mui/material` and its dependencies installed, as well as React:
+
+```shell
+yarn add @mui/material @emotion/react @emotion/styled react react-dom
+# or
+npm install @mui/material @emotion/react @emotion/styled react react-dom
+```
+
+If you haven't already, make sure to wrap your app with the MUI `ThemeProvider`:
+
+```jsx
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+
+const theme = createTheme({
+  palette: {
+    mode: "light", // or "dark"
+  },
+});
+const App = () => (
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <YourApp />
+  </ThemeProvider>
+);
+```
+
+### Basic usage
+
+Import the `FlexBox` or `FlexGrid` components from `mui-flexy` and use them in your app as you would with MUI's `Box` or `Grid` components:
 
 ```jsx
 import { Typography } from "@mui/material"; // or use a <p> if you don't like fun typography
@@ -46,7 +67,27 @@ import { FlexBox, FlexGrid } from "mui-flex";
 </FlexBox>;
 ```
 
-## Using a FlexBox
+## Why `mui-flexy`?
+
+### The problem
+
+If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
+
+Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
+
+`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, you have to re-write your alignments. This gets exponentially more difficult when you introduce responsive breakpoints.
+
+### The solution
+
+Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
+
+mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
+
+![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
+
+## Usage & features
+
+Check out the [live demo](https://brandonscript.github.io/mui-flexy/) for examples of all `mui-flexy`'s features.
 
 FlexBox can be used as a drop-in replacement for MUI's Box component, with the added benefit of `x` and `y` props for alignment:
 
