@@ -7,3 +7,4 @@ mui-flexy*.tgz
 /.rollup.cache
 /.yarn
 /demo/.yarn
+/.npmrc

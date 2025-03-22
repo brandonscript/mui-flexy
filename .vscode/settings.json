@@ -30,5 +30,8 @@
   "jest.nodeEnv": {
     "NODE_ENV": "test",
     "NODE_OPTIONS": "--experimental-vm-modules"
+  },
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   }
 }
