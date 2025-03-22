@@ -7112,7 +7112,7 @@ __metadata:
   peerDependencies:
     "@emotion/react": ^11
     "@emotion/styled": ^11
-    "@mui/material": ^5
+    "@mui/material": ^5 || ^6
     react: ^17 || ^18 || ^19
     react-dom: ^17 || ^18 || ^19
     typescript: ">=5.4"

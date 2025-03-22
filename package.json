@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "type": "module",
   "main": "dist/cjs/index.cjs",
@@ -27,14 +27,14 @@
     "build:all": "yarn build && yarn build:docs",
     "docs": "cd docs && npx http-server -o ./",
     "ship": "./ship.sh",
-    "up": "./up.sh",
+    "bump": "./up.sh",
     "test": "NODE_OPTIONS=--experimental-vm-modules ./node_modules/.bin/jest --config jest.config.js",
     "prepare": "husky"
   },
   "peerDependencies": {
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@mui/material": "^5",
+    "@mui/material": "^5 || ^6",
     "react": "^17 || ^18 || ^19",
     "react-dom": "^17 || ^18 || ^19",
     "typescript": ">=5.4"

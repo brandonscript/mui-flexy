@@ -156,6 +156,7 @@ echo "✓ Done"
 
 # Run build command
 echo "Building the project..."
+yarn add -P "@mui/material@^5 || ^6"
 yarn build:all >/dev/null || {
   echo "Error: Build failed."
   exit 1
@@ -163,5 +164,46 @@ yarn build:all >/dev/null || {
 
 # Commit the changes
 git add .
-git commit -m "$new_version"
-git tag -a "$new_version" -m "v$new_version"
+git commit -m "$new_version" --no-verify || {
+  echo "Error: Failed to commit changes."
+  exit 1
+}
+
+# If the commit message on any of the the latest commits is the same as the new version, squash the commit
+# before adding the tag
+commits_to_squash=()
+for commit in $(git rev-list --no-merges HEAD); do
+  commit_message=$(git log -1 --pretty=format:%s "$commit")
+  if [[ $commit_message == "$new_version" ]]; then
+    commits_to_squash+=("$commit")
+  fi
+done
+echo "${#commits_to_squash[@]} commits to squash for version $new_version"
+if [[ ${#commits_to_squash[@]} -gt 0 ]]; then
+  num_squash_commits=${#commits_to_squash[@]}
+  git reset --soft HEAD~"$num_squash_commits"
+  git commit -m "$new_version" --no-verify || {
+    echo "Error: Failed to squash commits."
+    exit 1
+  }
+  git push origin main --force || {
+    echo "Error: Failed to push squashed commits."
+    exit 1
+  }
+fi
+
+# Get latest commit hash and add tag
+latest_commit_hash=$(git rev-parse HEAD)
+
+# Delete the old tag if it exists
+if git rev-parse "v$new_version" >/dev/null 2>&1; then
+  git tag -d "v$new_version"
+  git push origin ":refs/tags/v$new_version"
+fi
+
+git tag -a "v$new_version" -m "v$new_version" "$latest_commit_hash"
+
+# Create a new release
+git push origin main
+git push origin "v$new_version"
+echo "✓ Done"
