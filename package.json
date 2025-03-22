@@ -26,7 +26,8 @@
     "build:docs": "yarn install && yarn clean:docs && rollup -c rollup.docs.mjs",
     "build:all": "yarn build && yarn build:docs",
     "docs": "cd docs && npx http-server -o ./",
-    "ship": "npm run build && if [ $? -eq 0 ]; then npm whoami && npm publish; else echo 'Build failed'; fi",
+    "ship": "./ship.sh",
+    "up": "./up.sh",
     "test": "NODE_OPTIONS=--experimental-vm-modules ./node_modules/.bin/jest --config jest.config.js",
     "prepare": "husky"
   },
