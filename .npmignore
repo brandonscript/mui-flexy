@@ -1,6 +1,6 @@
 .*
 **/tsconfig.json
-**/webpack.config.js
+**/webpack.config.*
 node_modules
 src
 demo

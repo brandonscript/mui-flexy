@@ -1,12 +1,7 @@
 import type { Grid2TypeMap } from "@mui/material";
 import type { GridTypeMap } from "@mui/material/Grid";
 import type { OverrideProps } from "@mui/material/OverridableComponent";
-import type {
-  BoxTypeMap,
-  Breakpoint,
-  ResponsiveStyleValue,
-  Theme as SystemTheme,
-} from "@mui/system";
+import type { BoxTypeMap, Breakpoint, ResponsiveStyleValue, Theme as SystemTheme } from "@mui/system";
 import type { CSSProperties } from "react";
 import React from "react";
 
@@ -24,15 +19,7 @@ type JustifyContent =
   | "inherit"
   | "unset";
 
-type AlignItems =
-  | "flex-start"
-  | "flex-end"
-  | "center"
-  | "stretch"
-  | "baseline"
-  | "initial"
-  | "inherit"
-  | "unset";
+type AlignItems = "flex-start" | "flex-end" | "center" | "stretch" | "baseline" | "initial" | "inherit" | "unset";
 
 export type HorizontalAlign = "left" | "right" | "center";
 export type VerticalAlign = "top" | "bottom" | "center";
@@ -72,37 +59,37 @@ export type ResponsiveFlexBoolean = ResponsiveStyleValue<boolean | null | undefi
 type InferFlexProps<
   Orientation extends FlexOrientation | undefined = undefined,
   R = FlexRowProps,
-  C = FlexColumnProps
+  C = FlexColumnProps,
 > = Orientation extends "row"
   ? { row?: true; column?: false | never } & R
   : Orientation extends "column"
-  ? { column: true; row?: false | never } & C
-  :
-      | ({ row: true; column?: false | never } & R)
-      | ({ column: true; row?: false | never } & C)
-      | ({ row: false; column?: true } & C)
-      | ({ column: false; row?: true } & R)
-      | ({ row?: undefined; column?: undefined } & R)
-      | ({
-          row: StrictResponsiveStyleValue<boolean>;
-          column?: false | never | StrictResponsiveStyleValue<boolean>;
-        } & R)
-      | ({
-          column: StrictResponsiveStyleValue<boolean>;
-          row?: false | never | StrictResponsiveStyleValue<boolean>;
-        } & C);
+    ? { column: true; row?: false | never } & C
+    :
+        | ({ row: true; column?: false | never } & R)
+        | ({ column: true; row?: false | never } & C)
+        | ({ row: false; column?: true } & C)
+        | ({ column: false; row?: true } & R)
+        | ({ row?: undefined; column?: undefined } & R)
+        | ({
+            row: StrictResponsiveStyleValue<boolean>;
+            column?: false | never | StrictResponsiveStyleValue<boolean>;
+          } & R)
+        | ({
+            column: StrictResponsiveStyleValue<boolean>;
+            row?: false | never | StrictResponsiveStyleValue<boolean>;
+          } & C);
 
 export type FlexBoxTypeMap<
   Orientation extends FlexOrientation | undefined = undefined,
   AdditionalProps = {},
   RootComponent extends React.ElementType = "div",
-  Theme extends object = SystemTheme
+  Theme extends object = SystemTheme,
 > = BoxTypeMap<AdditionalProps & InferFlexProps<Orientation>, RootComponent, Theme>;
 
 export type FlexBoxProps<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = BoxTypeMap["defaultComponent"],
-  AdditionalProps = {}
+  AdditionalProps = {},
 > = OverrideProps<FlexBoxTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
   component?: React.ElementType;
 };
@@ -112,13 +99,13 @@ export type FlexBoxProps<
 export type FlexGridTypeMap<
   Orientation extends FlexOrientation | undefined = undefined,
   AdditionalProps = {},
-  RootComponent extends React.ElementType = "div"
+  RootComponent extends React.ElementType = "div",
 > = GridTypeMap<AdditionalProps & InferFlexProps<Orientation>, RootComponent>;
 
 export type FlexGridProps<
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = FlexGridTypeMap["defaultComponent"],
-  AdditionalProps = {}
+  AdditionalProps = {},
 > = OverrideProps<FlexGridTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
   component?: React.ElementType;
 };
@@ -130,7 +117,7 @@ export type FlexGrid2TypeMap<
   AdditionalProps = {
     component?: React.ElementType;
   },
-  RootComponent extends React.ElementType = "div"
+  RootComponent extends React.ElementType = "div",
 > = Grid2TypeMap<AdditionalProps & InferFlexProps<Orientation>, RootComponent>;
 
 export type FlexGrid2Props<
@@ -138,7 +125,7 @@ export type FlexGrid2Props<
   RootComponent extends React.ElementType = FlexGrid2TypeMap["defaultComponent"],
   AdditionalProps = {
     component?: React.ElementType;
-  }
+  },
 > = OverrideProps<FlexGrid2TypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
   component?: React.ElementType;
 };

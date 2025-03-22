@@ -19,11 +19,46 @@
       ]
     },
     {
-      "name": "Demo: webpack debug & run",
+      "name": "Demo: webpack dev server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
-      "command": "yarn dev"
+      "command": "yarn add '@mui/material@^5 || ^6' yarn dev"
+    },
+    {
+      "name": "Demo: (force v5)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo",
+      "request": "launch",
+      "command": "yarn add @mui/material@^5 && yarn dev"
+    },
+    {
+      "name": "Demo: (force v6)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demo",
+      "request": "launch",
+      "command": "yarn add @mui/material@^6 && yarn dev"
+    },
+    {
+      "name": "Docs: http-server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/docs",
+      "request": "launch",
+      "command": "yarn run build:docs && npx serve ./ -p 8036 -c serve.json"
+    },
+    {
+      "name": "Docs: (force v5)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn run build:docs && npx serve ./docs -p 8036 -c serve_v5.json"
+    },
+    {
+      "name": "Docs: (force v6)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/docs",
+      "request": "launch",
+      "command": "yarn run build:docs && npx serve ./ -p 8036 -c serve.json"
     },
     {
       "type": "node",

@@ -1,17 +1,25 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable no-undef */
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const muiVersion = require("../node_modules/@mui/material/package.json").version;
-
-const muiMajorVersion = Number(muiVersion.split(".")[0]);
+const muiVersion = require("@mui/material/version").default;
+const muiMajorVersion = require("@mui/material/version").major;
 
 console.log("@mui/material version", muiVersion);
 
+const grid2Resolve = path.resolve(
+  `./node_modules/@mui/material/${muiMajorVersion < 6 ? "Unstable_Grid2" : "Grid2"}`
+);
+
+console.log("Demo webpack.config.js using Grid2 path", grid2Resolve);
+
+// verify the Grid2 resolve path exists and is a directory
+if (!path.isAbsolute(grid2Resolve)) {
+  throw new Error(`Grid2 resolve path doesn't exist: ${grid2Resolve}`);
+}
+
 module.exports = {
-  output: {
-    path: path.join(path.resolve(__dirname, ".."), "/docs"),
-    filename: "app.bundle.js",
-  },
   plugins: [
     new HtmlWebpackPlugin({
       template: "src/template.html",
@@ -26,14 +34,8 @@ module.exports = {
     alias: {
       react: path.resolve("../node_modules/react"),
       "react-dom": path.resolve("../node_modules/react-dom"),
-      ...(muiMajorVersion < 6
-        ? {
-            "@mui/material/Grid2": path.resolve(
-              __dirname,
-              "../demo/node_modules/@mui/material/Unstable_Grid2"
-            ),
-          }
-        : {}),
+      "@mui/material/Grid2": grid2Resolve,
+      "@mui/material/Unstable_Grid2": grid2Resolve,
     },
   },
   resolveLoader: {
@@ -57,5 +59,9 @@ module.exports = {
   },
   stats: {
     modules: false,
+  },
+  externals: {
+    react: "React",
+    "react-dom": "ReactDOM",
   },
 };

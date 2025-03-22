@@ -1,12 +1,37 @@
 import { Box, Grid, styled, type SxProps, type Theme, Typography } from "@mui/material";
+import { major as muiVersion } from "@mui/material/version";
 
 import type { FlexBoxProps } from "@/Flex.types";
 
-import { FlexBox, FlexGrid, FlexGrid2 } from "../src";
+import { FlexBox, FlexGrid } from "../src";
 
-const muiVersion = await import("@mui/material/package.json").then(pkg =>
-  Number(pkg.version?.split(".")[0] ?? 5)
-);
+console.log("Tests running with MUI version:", muiVersion);
+
+describe("Verify MUI version", () => {
+  it("should be MUI version 5 or higher", () => {
+    expect(muiVersion).toBeGreaterThanOrEqual(5);
+  });
+
+  it("should load Unstable_FlexGrid2 for MUI version 5 or skip for v6+", () => {
+    if (muiVersion < 6) {
+      expect(() => import("../src/v5/Flex_v5")).not.toThrow();
+    } else {
+      expect(() => import("../src/v6/Flex_v6")).not.toThrow();
+    }
+  });
+  it("should load FlexGrid2 for MUI version 6+", () => {
+    if (muiVersion >= 6) {
+      expect(() => import("../src/v6/Flex_v6")).not.toThrow();
+    } else {
+      expect(() => import("../src/v5/Flex_v5")).not.toThrow();
+    }
+  });
+});
+
+const FlexGrid2 =
+  muiVersion > 5
+    ? (await import("../src/v6/Flex_v6")).createFlexGrid2()
+    : (await import("../src/v5/Flex_v5")).createUnstable_FlexGrid2();
 
 const RowTests = [
   () => <FlexBox row />,

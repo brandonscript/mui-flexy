@@ -1,0 +1,12 @@
+dist
+eslint.config.js
+package-lock.json
+tsconfig.*
+yarn-error.log
+*.code-workspace
+*.js
+*.cjs
+*.mjs
+*.html
+.*
+tests/*

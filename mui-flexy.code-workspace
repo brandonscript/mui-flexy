@@ -9,6 +9,10 @@
       "name": "🌍 demo"
     },
     {
+      "path": "docs",
+      "name": "📘 docs"
+    },
+    {
       "path": "dist",
       "name": "🚀 dist"
     }
@@ -41,7 +45,7 @@
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
-    "typescript.tsdk": "🏗️ mui-flexy/node_modules/typescript/lib",
+    "typescript.tsdk": "🌍 demo/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
@@ -51,6 +55,7 @@
     "files.exclude": {
       "dist": true,
       "demo": true,
+      "docs": true,
     },
     "search.exclude": {
       "**/node_modules": true,

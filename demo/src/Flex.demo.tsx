@@ -1,19 +1,21 @@
 import { Link, styled, Typography, TypographyOwnProps } from "@mui/material";
+import { major as muiVersionMajor, version as muiVersion } from "@mui/material/version";
 import { forwardRef, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
-import { FlexGridProps } from "../../dist";
 import pkg from "../../package.json";
+import { FlexGridProps } from "../../src";
 import { FlexBox, type FlexBoxProps, FlexGrid, FlexGrid2 } from "../../src";
 
 // Or: run `npm link ../` or `yarn link ../` in the ./demo directory
 // and import from "mui-flexy":
 // import { FlexBox, FlexBoxProps, FlexGrid } from "mui-flexy";
 
-const muiVersion = await import("@mui/material/package.json").then(pkg => pkg.version);
-
-console.log(pkg.name, pkg.version, FlexBox, FlexGrid, "@mui/material", muiVersion);
+console.log(pkg.name, pkg.version, "@mui/material", muiVersion);
+console.log("FlexBox:", FlexBox);
+console.log("FlexGrid:", FlexGrid);
+console.log("FlexGrid2:", FlexGrid2);
 
 const rowEmoji = "🚣";
 const columnEmoji = "🏛";
@@ -89,7 +91,7 @@ const bgColor = "#f6f5f6";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type _Any = any;
 
-const Inner = styled(FlexBox)<FlexBoxProps>(props => ({
+const Inner = styled(FlexBox)<FlexBoxProps>((props) => ({
   minHeight: props?.minHeight ?? (props?.sx as _Any)?.minHeight ?? 120,
   border: "1.5px solid #e2ebf8",
   borderRadius: "4px",
@@ -113,18 +115,12 @@ const Inner = styled(FlexBox)<FlexBoxProps>(props => ({
 }));
 
 const rowArrow = (
-  <span
-    style={{ writingMode: "vertical-rl", textOrientation: "sideways" }}
-    aria-label="left-right arrow"
-  >
+  <span style={{ writingMode: "vertical-rl", textOrientation: "sideways" }} aria-label="left-right arrow">
     ⇅
   </span>
 );
 const colArrow = (
-  <span
-    style={{ writingMode: "vertical-rl", textOrientation: "upright" }}
-    aria-label="up-down arrow"
-  >
+  <span style={{ writingMode: "vertical-rl", textOrientation: "upright" }} aria-label="up-down arrow">
     ⇅
   </span>
 );
@@ -133,24 +129,17 @@ const gridColumns = { xs: 12, md: 4, l: 4, xl: 4 };
 const reponsiveFontSizes = { "& pre": { fontSize: { xs: "0.85rem", md: "1.0vw", lg: "0.85rem" } } };
 
 const Header = forwardRef(
-  (
-    { text, subtitle }: { text: string; subtitle?: string },
-    ref: React.ForwardedRef<HTMLDivElement>
-  ) => (
+  ({ text, subtitle }: { text: string; subtitle?: string }, ref: React.ForwardedRef<HTMLDivElement>) => (
     <FlexGrid item xs={12} component="header" ref={ref} column gap={0}>
       <Typography component="h2" variant="h5" sx={{ display: "flex", alignItems: "center" }}>
         {text}
-        {text.toLowerCase().includes("row")
-          ? rowArrow
-          : text.toLowerCase().includes("column")
-          ? colArrow
-          : ""}
+        {text.toLowerCase().includes("row") ? rowArrow : text.toLowerCase().includes("column") ? colArrow : ""}
       </Typography>
       <Typography component="h4" variant="subtitle1">
         {subtitle}
       </Typography>
     </FlexGrid>
-  )
+  ),
 );
 Header.displayName = "Header";
 
@@ -207,9 +196,9 @@ const Title = () => (
         src="apple-touch-icon.png"
         alt="mui-flexy logo"
       />
-      mui-flexy for{" "}
-      <Link target="_blank" href="https://mui.com/">
-        Material UI
+      mui-flexy for
+      <Link target="_blank" href="https://mui.com/" sx={{ ml: -0.75 }}>
+        @mui/material^{muiVersionMajor}
       </Link>
     </FlexBox>
     <Typography variant="body1" component="div">
@@ -258,18 +247,16 @@ const GridSection = styled((props: FlexGridProps = {}) => (
       // This adjusts the outer gutter of the grid to match the rest of the page content
       ml: [-2, -3, -4],
       maxWidth: "fit-content",
-      width: theme => [
+      width: (theme) => [
         `calc(100% + ${theme.spacing(2)})`,
         `calc(100% + ${theme.spacing(3)})`,
         `calc(100% + ${theme.spacing(4)})`,
       ],
     },
-  })
+  }),
 );
 
-const Item = styled((props: FlexGridProps = {}) => (
-  <FlexGrid {...props} item xs={12} component="div" />
-))({
+const Item = styled((props: FlexGridProps = {}) => <FlexGrid {...props} item xs={12} component="div" />)({
   width: "100%",
 });
 
@@ -278,7 +265,7 @@ const BoxSection = styled(FlexBox)(({ theme }) =>
     width: "100%",
     maxWidth: "100%",
     rowGap: [2, 3, 4],
-  })
+  }),
 );
 
 export const useRenderer = () => {
@@ -286,7 +273,7 @@ export const useRenderer = () => {
   return useCallback(() => _render({}), []);
 };
 
-export const FlexTest = () => {
+const FlexDemo = () => {
   const ref = useRef<HTMLDivElement>(null);
   const render = useRenderer();
 
@@ -297,15 +284,7 @@ export const FlexTest = () => {
   }, [ref, render]);
 
   return (
-    <FlexBox
-      width="100vw"
-      p={[2, 3, 4]}
-      gap={[2, 3, 4]}
-      x="center"
-      component="main"
-      sx={{ bgcolor: "#fff" }}
-      column
-    >
+    <FlexBox width="100vw" p={[2, 3, 4]} gap={[2, 3, 4]} x="center" component="main" sx={{ bgcolor: "#fff" }} column>
       <FlexBox x="left" y="center" column>
         <Title />
       </FlexBox>
@@ -461,7 +440,7 @@ export const FlexTest = () => {
         <Header text="Basic CSS Grid (FlexGrid)" />
         <FlexGrid item x="center" y="center">
           <FlexGrid container spacing={2}>
-            {[...Array(12).keys()].map(i => (
+            {[...Array(12).keys()].map((i) => (
               <FlexGrid item key={i} xs={12} sm={6} md={4} lg={3} xl={2}>
                 <Inner x="center" y="center">
                   <Code
@@ -488,13 +467,7 @@ export const FlexTest = () => {
         >
           (This demo is not formatted for smaller screens)
         </FlexGrid>
-        <FlexGrid
-          item
-          x="center"
-          y="center"
-          width="100%"
-          sx={{ display: { xs: "none", md: "flex" } }}
-        >
+        <FlexGrid item x="center" y="center" width="100%" sx={{ display: { xs: "none", md: "flex" } }}>
           <FlexGrid
             container
             spacing={[2, 3, 4]}
@@ -557,22 +530,14 @@ export const FlexTest = () => {
           </FlexGrid>
         </FlexGrid>
       </BoxSection>
-      {muiVersion.startsWith("5") ? (
+      {muiVersion?.startsWith("5") ? (
         <GridSection className="mui-grid2-v5">
           <Header text="Unstable_Grid2 (@mui v5)" />
           <FlexGrid item x="center" y="center">
             <FlexGrid2 container spacing={2}>
-              {[...Array(12).keys()].map(i => (
+              {[...Array(12).keys()].map((i) => (
                 // @ts-ignore - Grid2 props change between v5 and v6
-                <FlexGrid2
-                  key={i}
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  xl={2}
-                  size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}
-                >
+                <FlexGrid2 key={i} xs={12} sm={6} md={4} lg={3} xl={2} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                   <Inner x="center" y="center">
                     <Code
                       code={`<FlexGrid2>
@@ -590,7 +555,7 @@ export const FlexTest = () => {
           <Header text="Grid2 (@mui v6+)" />
           <FlexGrid item x="center" y="center">
             <FlexGrid2 container spacing={2}>
-              {[...Array(12).keys()].map(i => (
+              {[...Array(12).keys()].map((i) => (
                 // @ts-ignore - Grid2 props change between v5 and v6
                 <FlexGrid2 key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                   <Inner x="center" y="center">
@@ -609,9 +574,7 @@ export const FlexTest = () => {
       <BoxSection className="ref-test" column>
         <Header text="Ref test" ref={ref} />
         <Inner x="center" y="center" column>
-          <span>
-            {ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}
-          </span>
+          <span>{ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}</span>
           <Code code={ref?.current?.toString()} />
         </Inner>
       </BoxSection>
@@ -623,7 +586,7 @@ export const FlexTest = () => {
             <FlexBox column>
               <Code code={`<FlexBox prop="invalid" />`} margin="0px 16px" />
               <Inner x="center" y="center" column {...invalidProps}>
-                <span>Complex props test</span>
+                <span>Complex &amp; invalid props test</span>
               </Inner>
             </FlexBox>
           );
@@ -632,3 +595,6 @@ export const FlexTest = () => {
     </FlexBox>
   );
 };
+
+export default FlexDemo;
+export { FlexDemo };

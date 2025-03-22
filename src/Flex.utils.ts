@@ -26,24 +26,24 @@ const mapAlignment = (alignment?: _Any): ResponsiveFlexPosition => {
         return alignment as ResponsiveFlexPosition;
     }
   } else if (Array.isArray(alignment)) {
-    return alignment.map(a => mapAlignment(a)) as ResponsiveFlexPosition;
+    return alignment.map((a) => mapAlignment(a)) as ResponsiveFlexPosition;
   } else if (typeof alignment === "object") {
     return Object.fromEntries(
-      Object.entries(alignment).map(([k, a]) => [k, mapAlignment(a)])
+      Object.entries(alignment).map(([k, a]) => [k, mapAlignment(a)]),
     ) as ResponsiveFlexPosition;
   }
 };
 
 const mapDirection = (
   direction: ResponsiveFlexDirection | undefined | null,
-  reverse: boolean | undefined | null = false
+  reverse: boolean | undefined | null = false,
 ): ResponsiveFlexDirection => {
   if (!direction) return "row";
   if (typeof direction === "string") {
     if (!["row", "row-reverse", "column", "column-reverse"].includes(direction)) {
       console.warn(
         `Using { flex-direction: ${direction} } with mui-flexy shorthand is not recommended \
-because it can cause unexpected alignment and orientation anomalies.`
+because it can cause unexpected alignment and orientation anomalies.`,
       );
     }
     switch (direction) {
@@ -54,13 +54,10 @@ because it can cause unexpected alignment and orientation anomalies.`
         return direction;
     }
   } else if (Array.isArray(direction)) {
-    return direction.map(d => (!d ? "row" : mapDirection(d, reverse))) as ResponsiveFlexDirection;
+    return direction.map((d) => (!d ? "row" : mapDirection(d, reverse))) as ResponsiveFlexDirection;
   } else if (typeof direction === "object") {
     return Object.fromEntries(
-      Object.entries(direction).map(([k, d]) => [
-        k,
-        mapDirection(d as ResponsiveFlexDirection, reverse),
-      ])
+      Object.entries(direction).map(([k, d]) => [k, mapDirection(d as ResponsiveFlexDirection, reverse)]),
     ) as ResponsiveFlexDirection;
   }
 };
@@ -76,35 +73,25 @@ const stringOrArrayValue = <V = unknown>(value: V, index: number) => {
 const mapResponsiveObject = (
   direction: { [key: string]: CSSProperties["flexDirection"] | null } | undefined | null,
   main: ResponsiveFlexPosition,
-  cross: ResponsiveFlexPosition
+  cross: ResponsiveFlexPosition,
 ) => {
   return Object.fromEntries(
     Object.entries(direction ?? []).map(([key, d]) => {
       if (typeof d !== "string") {
         throw new Error(
-          "Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }"
+          "Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }",
         );
       }
       if (d.startsWith("column")) {
-        return [
-          key,
-          typeof cross === "string" ? cross : mapAlignment(cross)?.[key as keyof typeof cross],
-        ];
+        return [key, typeof cross === "string" ? cross : mapAlignment(cross)?.[key as keyof typeof cross]];
       } else {
-        return [
-          key,
-          typeof main === "string" ? main : mapAlignment(main)?.[key as keyof typeof main],
-        ];
+        return [key, typeof main === "string" ? main : mapAlignment(main)?.[key as keyof typeof main]];
       }
-    })
+    }),
   );
 };
 
-const resolveAlignment = (
-  direction: ResponsiveFlexDirection,
-  x: ResponsiveFlexPosition,
-  y: ResponsiveFlexPosition
-) => {
+const resolveAlignment = (direction: ResponsiveFlexDirection, x: ResponsiveFlexPosition, y: ResponsiveFlexPosition) => {
   if (typeof direction === "string") {
     const isColumn = direction.startsWith("column");
     return {
@@ -115,12 +102,8 @@ const resolveAlignment = (
 
   if (Array.isArray(direction)) {
     return {
-      justifyContent: direction.map((d, i) =>
-        stringOrArrayValue(mapAlignment(d?.startsWith("column") ? y : x), i)
-      ),
-      alignItems: direction.map((d, i) =>
-        stringOrArrayValue(mapAlignment(d?.startsWith("column") ? x : y), i)
-      ),
+      justifyContent: direction.map((d, i) => stringOrArrayValue(mapAlignment(d?.startsWith("column") ? y : x), i)),
+      alignItems: direction.map((d, i) => stringOrArrayValue(mapAlignment(d?.startsWith("column") ? x : y), i)),
     };
   }
 
@@ -139,7 +122,7 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
   row: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null,
   column: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null,
   reverse: boolean | undefined | null = false,
-  fallback: ResponsiveFlexDirection = "row"
+  fallback: ResponsiveFlexDirection = "row",
 ): R | CSSFlexDirection | undefined => {
   /* Maps boolean responsive row/column props to flexDirection values */
 
@@ -154,8 +137,7 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
   const columnIsFalse = column === false;
 
   let chooseRow = [true, "row"].includes(row as _Any) || columnIsFalse || columnIsNullOrUndefined;
-  let chooseColumn =
-    [true, "column"].includes(column as _Any) || rowIsFalse || rowIsNullOrUndefined;
+  let chooseColumn = [true, "column"].includes(column as _Any) || rowIsFalse || rowIsNullOrUndefined;
 
   if (rowIsFalse && !columnIsFalse) {
     chooseRow = false;
@@ -177,17 +159,15 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
     return mapDirection(chooseColumn ? "column" : chooseRow ? "row" : fallback, reverse) as R;
   }
 
-  const rowIsFalsy =
-    !row || (rowIsArray && !row.length) || (rowIsObject && !Object.keys(row).length);
-  const columnIsFalsy =
-    !column || (columnIsArray && !column.length) || (columnIsObject && !Object.keys(column).length);
+  const rowIsFalsy = !row || (rowIsArray && !row.length) || (rowIsObject && !Object.keys(row).length);
+  const columnIsFalsy = !column || (columnIsArray && !column.length) || (columnIsObject && !Object.keys(column).length);
 
   if (rowIsArray && columnIsFalsy) {
-    return row.map(r => resolveDirection(r, column, reverse, fallback)) as R;
+    return row.map((r) => resolveDirection(r, column, reverse, fallback)) as R;
   }
 
   if (columnIsArray && rowIsFalsy) {
-    return column.map(c => resolveDirection(row, c, reverse, fallback)) as R;
+    return column.map((c) => resolveDirection(row, c, reverse, fallback)) as R;
   }
 
   if (rowIsArray && columnIsArray) {
@@ -195,8 +175,8 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
     if (row.length !== column.length) {
       console.warn(
         `When using Array type ResponsiveFlexDirection for both 'row' and 'column', they should be the same length (have the same number of breakpoints) - got row=${JSON.stringify(
-          row
-        )} and column=${JSON.stringify(column)}. You probably want to use just one or the other.`
+          row,
+        )} and column=${JSON.stringify(column)}. You probably want to use just one or the other.`,
       );
 
       const longestLength = Math.max(row.length, column.length);
@@ -215,8 +195,8 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
       if (r && c) {
         console.warn(
           `When using Array type ResponsiveFlexDirection for both 'row' and 'column', they cannot not both be true for the same breakpoint index - got row=${JSON.stringify(
-            row
-          )} and column=${JSON.stringify(column)}. Defaulting to 'row' for conflicting indices.`
+            row,
+          )} and column=${JSON.stringify(column)}. Defaulting to 'row' for conflicting indices.`,
         );
         c = false;
       }
@@ -228,7 +208,7 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
     return Object.fromEntries(
       Object.entries(row)
         .filter(([, r]) => ![null, undefined].includes(r))
-        .map(([k, r]) => [k, resolveDirection(r, undefined, reverse, fallback)])
+        .map(([k, r]) => [k, resolveDirection(r, undefined, reverse, fallback)]),
     ) as R;
   }
 
@@ -236,7 +216,7 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
     return Object.fromEntries(
       Object.entries(column)
         .filter(([, r]) => ![null, undefined].includes(r))
-        .map(([k, c]) => [k, resolveDirection(undefined, c, reverse, fallback)])
+        .map(([k, c]) => [k, resolveDirection(undefined, c, reverse, fallback)]),
     ) as R;
   }
 
@@ -260,22 +240,15 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
 export const mapFlexProps = <P extends FlexBoxProps | FlexGridProps | FlexGrid2Props>(
   props: Partial<FlexBoxProps | FlexGridProps | FlexGrid2Props>,
   ref?: React.Ref<_Any> | null,
-  componentName: "Box" | "Grid" | "Grid2" = "Box"
+  componentName: "Box" | "Grid" | "Grid2" = "Box",
 ) => {
   const { x, y, row, column, flexDirection, reverse, nowrap, ...rest } = props;
 
-  const direction = resolveDirection(
-    row,
-    column,
-    reverse,
-    flexDirection as ResponsiveFlexDirection
-  );
+  const direction = resolveDirection(row, column, reverse, flexDirection as ResponsiveFlexDirection);
 
   const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
   const flexProps = { display: rest.display || "flex", whiteSpace };
-  const className = `${props.className || ""} MuiFlex-root${
-    componentName ? ` MuiFlex${componentName}-root` : ""
-  }`;
+  const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`;
 
   const alignments = resolveAlignment(direction, x, y);
 

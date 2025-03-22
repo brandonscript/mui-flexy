@@ -1,6 +1,6 @@
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 
-import { FlexTest } from "./Flex.demo";
+import FlexDemo from "./Flex.demo";
 
 const fontFamily = [
   '"Source Sans 3Variable"',
@@ -39,7 +39,7 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <FlexTest />
+      <FlexDemo />
     </ThemeProvider>
   );
 };

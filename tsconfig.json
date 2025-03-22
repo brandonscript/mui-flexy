@@ -44,7 +44,7 @@
     "**eslint**",
     "jest.config.**",
     "webpack.config.js",
-    "rollup.config.mjs",
+    "rollup.config.base.mjs",
     "coverage",
     ".eslintrc.js",
     "eslint.config.js",
