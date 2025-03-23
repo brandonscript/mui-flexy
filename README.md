@@ -4,8 +4,8 @@
 
 A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
-![NPM Version](https://img.shields.io/npm/v/mui-flexy)
-![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)
+<a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Version](https://img.shields.io/npm/v/mui-flexy)</a>
+<a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)</a>
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/brandonscript/mui-flexy)
 ![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018-8A2BE2)
@@ -25,6 +25,28 @@ Vanilla CSS requires a lot of mental gymnastics to remember which alignment prop
 Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
 
 mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
+
+So instead of:
+
+```jsx
+<FlexBox
+  justifyContent="center" // is this the main or cross axis?
+  alignItems="center" // maybe I can use stretch or space-around? 🤷‍♂️
+  flexDirection="row" // if I change this to column, do I need to change the other two?
+  width="100vw"
+  height="100vh"
+/>
+```
+
+You can just do:
+
+```jsx
+<FlexBox x="center" y="center" width="100vw" height="100vh" />
+
+// and
+
+<FlexBox column x="left" y="bottom" />
+```
 
 ![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
 
@@ -96,12 +118,13 @@ const FlexGrid2 = React.lazy(() => import("mui-flexy/FlexGrid2"));
 const FlexGrid2 = React.lazy(() => import("mui-flexy/Unstable_FlexGrid2"));
 
 // Then use it in a <Suspense> block:
-<Suspense fallback={<div>{/* Optionally add loading indicator here */}</div>}>
+<Suspense fallback={<div>{/* Loading... */}</div>}>
   <FlexGrid2 container x="center" y="center">
     <FlexGrid2 item xs={12} sm={6} md={4} lg={3}>
       <Typography>Grids are cool</Typography>
     </FlexGrid2>
   </FlexGrid2>
+</Suspense>;
 ```
 
 If your transpiler supports top-level `await`, you can also use `await import("mui-flexy/FlexGrid2")`:
