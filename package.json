@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "type": "module",
   "main": "dist/cjs/index.cjs",
