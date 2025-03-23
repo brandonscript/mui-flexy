@@ -23,21 +23,21 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
-      "command": "yarn add '@mui/material@^5 || ^6' yarn dev"
+      "command": "yarn add '@mui/material@^5 || ^6' && yarn && yarn dev"
     },
     {
       "name": "Demo: (force v5)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
-      "command": "yarn add @mui/material@^5 && yarn dev"
+      "command": "yarn add @mui/material@^5 && yarn && yarn dev"
     },
     {
       "name": "Demo: (force v6)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
-      "command": "yarn add @mui/material@^6 && yarn dev"
+      "command": "yarn add @mui/material@^6 && yarn && yarn dev"
     },
     {
       "name": "Docs: http-server",

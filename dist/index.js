@@ -1,2 +1,2 @@
-export { FlexBox, FlexGrid, FlexGrid2 } from './Flex.js';
+export { FlexBox, FlexGrid } from './Flex.js';
 //# sourceMappingURL=index.js.map

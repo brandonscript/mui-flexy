@@ -1,12 +1,20 @@
 import { Link, styled, Typography, TypographyOwnProps } from "@mui/material";
 import { major as muiVersionMajor, version as muiVersion } from "@mui/material/version";
+import * as React from "react";
 import { forwardRef, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import pkg from "../../package.json";
 import { FlexGridProps } from "../../src";
-import { FlexBox, type FlexBoxProps, FlexGrid, FlexGrid2 } from "../../src";
+import { FlexBox, type FlexBoxProps, FlexGrid } from "../../src";
+
+let FlexGrid2 = undefined;
+if (muiVersionMajor < 6) {
+  FlexGrid2 = React.lazy(() => import("../../src/Unstable_FlexGrid2"));
+} else {
+  FlexGrid2 = React.lazy(() => import("../../src/FlexGrid2"));
+}
 
 // Or: run `npm link ../` or `yarn link ../` in the ./demo directory
 // and import from "mui-flexy":

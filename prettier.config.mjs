@@ -1,5 +1,4 @@
-/** @type {import("prettier").Config} */
-module.exports = {
+export default {
   plugins: [],
   printWidth: 120,
   tabWidth: 2,

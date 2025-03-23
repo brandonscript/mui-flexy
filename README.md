@@ -10,6 +10,24 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 ![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018-8A2BE2)
 
+## Why?
+
+### The problem
+
+If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
+
+Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
+
+`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, you have to re-write your alignments. This gets exponentially more difficult when you introduce responsive breakpoints.
+
+### The solution
+
+Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
+
+mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
+
+![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
+
 ## Get started
 
 ### Install
@@ -67,25 +85,44 @@ import { FlexBox, FlexGrid } from "mui-flex";
 </FlexBox>;
 ```
 
-## Why `mui-flexy`?
+### FlexGrid2
 
-### The problem
+As of v1.2.0, you can also use `FlexGrid2` for MUI v6, which is a drop-in replacement for `@mui/material/Grid2`. Because both v5 and v6 are supported simultaneously in this package, you should use `React.lazy()` to import `FlexGrid2`:
 
-If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
+```jsx
+// @mui/material v6+
+const FlexGrid2 = React.lazy(() => import("mui-flexy/FlexGrid2"));
+// @mui/material v5
+const FlexGrid2 = React.lazy(() => import("mui-flexy/Unstable_FlexGrid2"));
 
-Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
+// Then use it in a <Suspense> block:
+<Suspense fallback={<div>{/* Optionally add loading indicator here */}</div>}>
+  <FlexGrid2 container x="center" y="center">
+    <FlexGrid2 item xs={12} sm={6} md={4} lg={3}>
+      <Typography>Grids are cool</Typography>
+    </FlexGrid2>
+  </FlexGrid2>
+```
 
-`justify-content` aligns along the main axis and `align-items` aligns along the cross axis. When you change the axis, you have to re-write your alignments. This gets exponentially more difficult when you introduce responsive breakpoints.
+If your transpiler supports top-level `await`, you can also use `await import("mui-flexy/FlexGrid2")`:
 
-### The solution
+```jsx
+const FlexGrid2 = muiVersion > 5 ? await import("../src/FlexGrid2") : await import("../src/Unstable_FlexGrid2");
+```
 
-Science and math solved this problem a long time ago with constants like `x` and `y` to represent 2-dimensional space, where `x` is the horizontal axis and `y` is the vertical axis.
+Or import `createFlexGrid2` / `createUnstableFlexGrid2` from `mui-flexy` and export your own `FlexGrid2`:
 
-mui-flexy gives you a way to align things in the same way using `x` and `y` props instead, calculating all the hard CSS stuff for you so you don't have to.
+```jsx
+// for @mui/material v6+
+import { createFlexGrid2 } from "mui-flexy/FlexGrid2";
+const FlexGrid2 = createFlexGrid2();
 
-![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)
+// for @mui/material v5
+import { createUnstable_FlexGrid2 } from "mui-flexy/Unstable_FlexGrid2";
+const FlexGrid2 = createUnstable_FlexGrid2();
+```
 
-## Usage & features
+## More usage & features
 
 Check out the [live demo](https://brandonscript.github.io/mui-flexy/) for examples of all `mui-flexy`'s features.
 

@@ -5,6 +5,7 @@ import type { FlexBoxProps } from "@/Flex.types";
 
 import { FlexBox, FlexGrid } from "../src";
 
+
 console.log("Tests running with MUI version:", muiVersion);
 
 describe("Verify MUI version", () => {
@@ -14,24 +15,24 @@ describe("Verify MUI version", () => {
 
   it("should load Unstable_FlexGrid2 for MUI version 5 or skip for v6+", () => {
     if (muiVersion < 6) {
-      expect(() => import("../src/v5/Flex_v5")).not.toThrow();
+      expect(async () => await import("../src/Unstable_FlexGrid2")).not.toThrow();
     } else {
-      expect(() => import("../src/v6/Flex_v6")).not.toThrow();
+      expect(async() => await import("../src/FlexGrid2")).not.toThrow();
     }
   });
   it("should load FlexGrid2 for MUI version 6+", () => {
     if (muiVersion >= 6) {
-      expect(() => import("../src/v6/Flex_v6")).not.toThrow();
+      expect(async() => await import("../src/FlexGrid2")).not.toThrow();
     } else {
-      expect(() => import("../src/v5/Flex_v5")).not.toThrow();
+      expect(async() => await import("../src/Unstable_FlexGrid2")).not.toThrow();
     }
   });
 });
 
 const FlexGrid2 =
   muiVersion > 5
-    ? (await import("../src/v6/Flex_v6")).createFlexGrid2()
-    : (await import("../src/v5/Flex_v5")).createUnstable_FlexGrid2();
+    ? (await import("../src/FlexGrid2")).createFlexGrid2()
+    : (await import("../src/Unstable_FlexGrid2")).createUnstable_FlexGrid2();
 
 const RowTests = [
   () => <FlexBox row />,

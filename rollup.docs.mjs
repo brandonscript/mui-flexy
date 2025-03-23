@@ -13,6 +13,7 @@ export default {
     format: "es",
     name: "MuiFlexy",
     sourcemap: true,
+    inlineDynamicImports: true,
     globals: {
       react: "React",
       "react-dom": "ReactDOM",
