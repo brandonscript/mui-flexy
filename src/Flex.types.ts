@@ -79,6 +79,15 @@ type InferFlexProps<
             row?: false | never | StrictResponsiveStyleValue<boolean>;
           } & C);
 
+type OnlyRow<T> = Omit<T, "row" | "column"> & {
+  row: true | undefined;
+  column?: false | never;
+};
+type OnlyColumn<T> = Omit<T, "row" | "column"> & {
+  column: true | undefined;
+  row?: false | never;
+};
+
 export type FlexBoxTypeMap<
   Orientation extends FlexOrientation | undefined = undefined,
   AdditionalProps = {},
@@ -91,6 +100,20 @@ export type FlexBoxProps<
   RootComponent extends React.ElementType = BoxTypeMap["defaultComponent"],
   AdditionalProps = {},
 > = OverrideProps<FlexBoxTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexBoxRowProps<
+  RootComponent extends React.ElementType = FlexBoxTypeMap["defaultComponent"],
+  AdditionalProps = {},
+> = OverrideProps<OnlyRow<FlexBoxTypeMap<"row", AdditionalProps, RootComponent>>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexBoxColumnProps<
+  RootComponent extends React.ElementType = FlexBoxTypeMap["defaultComponent"],
+  AdditionalProps = {},
+> = OverrideProps<OnlyColumn<FlexBoxTypeMap<"column", AdditionalProps, RootComponent>>, RootComponent> & {
   component?: React.ElementType;
 };
 
@@ -107,6 +130,20 @@ export type FlexGridProps<
   RootComponent extends React.ElementType = FlexGridTypeMap["defaultComponent"],
   AdditionalProps = {},
 > = OverrideProps<FlexGridTypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexGridRowProps<
+  RootComponent extends React.ElementType = FlexGridTypeMap["defaultComponent"],
+  AdditionalProps = {},
+> = OverrideProps<OnlyRow<FlexGridTypeMap<"row", AdditionalProps, RootComponent>>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexGridColumnProps<
+  RootComponent extends React.ElementType = FlexGridTypeMap["defaultComponent"],
+  AdditionalProps = {},
+> = OverrideProps<OnlyColumn<FlexGridTypeMap<"column", AdditionalProps, RootComponent>>, RootComponent> & {
   component?: React.ElementType;
 };
 
@@ -127,5 +164,23 @@ export type FlexGrid2Props<
     component?: React.ElementType;
   },
 > = OverrideProps<FlexGrid2TypeMap<Orientation, AdditionalProps, RootComponent>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexGrid2RowProps<
+  RootComponent extends React.ElementType = FlexGrid2TypeMap["defaultComponent"],
+  AdditionalProps = {
+    component?: React.ElementType;
+  },
+> = OverrideProps<OnlyRow<FlexGrid2TypeMap<"row", AdditionalProps, RootComponent>>, RootComponent> & {
+  component?: React.ElementType;
+};
+
+export type FlexGrid2ColumnProps<
+  RootComponent extends React.ElementType = FlexGrid2TypeMap["defaultComponent"],
+  AdditionalProps = {
+    component?: React.ElementType;
+  },
+> = OverrideProps<OnlyColumn<FlexGrid2TypeMap<"column", AdditionalProps, RootComponent>>, RootComponent> & {
   component?: React.ElementType;
 };

@@ -1,4 +1,4 @@
-import { FlexBoxProps, FlexGridProps } from "@/Flex.types";
+import { FlexBoxColumnProps, type FlexBoxProps, FlexBoxRowProps, FlexGridProps } from "@/Flex.types";
 
 describe("Flex.types", () => {
   it("should support FlexBoxProps and FlexGridProps along with standard CSS props", () => {
@@ -130,44 +130,44 @@ describe("Flex.types", () => {
     const oBothFalse: FlexBoxProps = { row: false, column: false };
     const oRowTrueColFalse: FlexBoxProps = { row: true, column: false };
     const oRowFalseColTrue: FlexBoxProps = { row: false, column: true };
-    const rRowTrue: FlexBoxProps<"row"> = { row: true };
+    const rRowTrue: FlexBoxRowProps = { row: true };
     // @ts-expect-error
-    const rColTrue: FlexBoxProps<"row"> = { column: true };
+    const rColTrue: FlexBoxRowProps = { column: true };
     // @ts-expect-error
-    const rRowFalse: FlexBoxProps<"row"> = { row: false };
-    const rColFalse: FlexBoxProps<"row"> = { column: false };
-    const rrRowTrue: FlexBoxProps<"row">["row"] = true;
+    const rRowFalse: FlexBoxRowProps = { row: false };
+    const rColFalse: FlexBoxRowProps = { column: false };
+    const rrRowTrue: FlexBoxRowProps["row"] = true;
     // @ts-expect-error
-    const rrColTrue: FlexBoxProps<"row">["column"] = true;
-    const rrColFalse: FlexBoxProps<"row">["column"] = false;
+    const rrColTrue: FlexBoxRowProps["column"] = true;
+    const rrColFalse: FlexBoxRowProps["column"] = false;
     // @ts-expect-error
-    const rrRowFalse: FlexBoxProps<"row">["row"] = false;
-    const rrRowEqTrue = ("" as unknown as FlexBoxProps<"row">["row"]) === true;
+    const rrRowFalse: FlexBoxRowProps["row"] = false;
+    const rrRowEqTrue = ("" as unknown as FlexBoxRowProps["row"]) === true;
     // @ts-expect-error
-    const rrRowEqFalse = ("" as unknown as FlexBoxProps<"row">["row"]) === false;
-    const rrColEqFalse = ("" as unknown as FlexBoxProps<"row">["column"]) === false;
+    const rrRowEqFalse = ("" as unknown as FlexBoxRowProps["row"]) === false;
+    const rrColEqFalse = ("" as unknown as FlexBoxRowProps["column"]) === false;
     // @ts-expect-error
-    const rrColEqTrue = ("" as unknown as FlexBoxProps<"row">["column"]) === true;
+    const rrColEqTrue = ("" as unknown as FlexBoxRowProps["column"]) === true;
     // @ts-expect-error
-    const cRowTrue: FlexBoxProps<"column"> = { row: true };
-    const cColTrue: FlexBoxProps<"column"> = { column: true };
+    const cRowTrue: FlexBoxColumnProps = { row: true };
+    const cColTrue: FlexBoxColumnProps = { column: true };
     // @ts-expect-error
-    const cColFalse: FlexBoxProps<"column"> = { column: false };
+    const cColFalse: FlexBoxColumnProps = { column: false };
     // @ts-expect-error
-    const cRowFalse: FlexBoxProps<"column"> = { row: false };
+    const cRowFalse: FlexBoxColumnProps = { row: false };
 
-    const ccColTrue: FlexBoxProps<"column">["column"] = true;
+    const ccColTrue: FlexBoxColumnProps["column"] = true;
     // @ts-expect-error
-    const ccRowTrue: FlexBoxProps<"column">["row"] = true;
-    const ccRowFalse: FlexBoxProps<"column">["row"] = false;
+    const ccRowTrue: FlexBoxColumnProps["row"] = true;
+    const ccRowFalse: FlexBoxColumnProps["row"] = false;
     // @ts-expect-error
-    const ccColFalse: FlexBoxProps<"column">["column"] = false;
-    const ccColEqTrue = ("" as unknown as FlexBoxProps<"column">["column"]) === true;
+    const ccColFalse: FlexBoxColumnProps["column"] = false;
+    const ccColEqTrue = ("" as unknown as FlexBoxColumnProps["column"]) === true;
     // @ts-expect-error
-    const ccColEqFalse = ("" as unknown as FlexBoxProps<"column">["column"]) === false;
-    const ccRowEqFalse = ("" as unknown as FlexBoxProps<"column">["row"]) === false;
+    const ccColEqFalse = ("" as unknown as FlexBoxColumnProps["column"]) === false;
+    const ccRowEqFalse = ("" as unknown as FlexBoxColumnProps["row"]) === false;
     // @ts-expect-error
-    const ccRowEqTrue = ("" as unknown as FlexBoxProps<"column">["row"]) === true;
+    const ccRowEqTrue = ("" as unknown as FlexBoxColumnProps["row"]) === true;
 
     for (const value of [
       oRowTrue,
@@ -245,28 +245,47 @@ describe("Flex.types", () => {
     expect(flexGridProps).toBeDefined();
   });
 
-  // it("should allow explicit usage of orientation-based props", () => {
-  //   const flexBoxRowProps = {} as FlexBoxProps<"row">;
-  //   const fleXColumnAlign = {} as FlexProps<"column">;
+  it("should allow explicit usage of orientation-based props", () => {
+    const flexBoxRowProps = {} as FlexBoxRowProps;
+    const fleXColumnAlign = {} as FlexBoxColumnProps;
 
-  //   expect(flexBoxRowProps).toBeDefined();
-  //   expect(fleXColumnAlign).toBeDefined();
+    expect(flexBoxRowProps).toBeDefined();
+    expect(fleXColumnAlign).toBeDefined();
 
-  //   const { row: rowWhenRow } = flexBoxRowProps;
-  //   const { row: rowWhenColumn } = fleXColumnAlign;
-  //   const { column: columnWhenColumn } = fleXColumnAlign;
-  //   const { column: columnWhenRow } = flexBoxRowProps;
+    const { row: rowWhenRow } = flexBoxRowProps;
+    const { row: rowWhenColumn } = fleXColumnAlign;
+    const { column: columnWhenColumn } = fleXColumnAlign;
+    const { column: columnWhenRow } = flexBoxRowProps;
 
-  //   if (rowWhenRow === true) {
-  //   }
-  //   // @ts-expect-error
-  //   if (rowWhenRow === false) {
-  //   }
+    if (rowWhenRow === true) {
+      expect(rowWhenRow).toBe(true);
+    }
+    // @ts-expect-error
+    if (rowWhenRow === false) {
+      expect(rowWhenRow).toBe(false);
+    }
 
-  //   if (rowWhenColumn === false) {
-  //   }
-  //   // @ts-expect-error
-  //   if (rowWhenColumn === true) {
-  //   }
-  // });
+    if (rowWhenColumn === false) {
+      expect(rowWhenColumn).toBe(false);
+    }
+    // @ts-expect-error
+    if (rowWhenColumn === true) {
+      expect(rowWhenColumn).toBe(true);
+    }
+
+    if (columnWhenColumn === true) {
+      expect(columnWhenColumn).toBe(true);
+    }
+    // @ts-expect-error
+    if (columnWhenColumn === false) {
+      expect(columnWhenColumn).toBe(false);
+    }
+    if (columnWhenRow === false) {
+      expect(columnWhenRow).toBe(false);
+    }
+    // @ts-expect-error
+    if (columnWhenRow === true) {
+      expect(columnWhenRow).toBe(true);
+    }
+  });
 });
