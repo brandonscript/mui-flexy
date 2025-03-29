@@ -1,4 +1,15 @@
 yarn test
-yarn exec prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
+yarn run typecheck
+yarn run lint
 yarn run build:all
+
+# Check for unstaged changes after build:all
+if ! git ls-files ./dist --exclude-standard --others -m; then
+  # If there are changes, stage them, but then don't commit
+  git add "$(git rev-parse --show-toplevel)/dist/*"
+  git stage "$(git rev-parse --show-toplevel)/dist/*"
+  echo "Changes detected in dist folder. Please review and commit the changes." >&2
+  exit 1
+fi
+
 git update-index --again

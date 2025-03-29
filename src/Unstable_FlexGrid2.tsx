@@ -3,7 +3,13 @@ import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import { major as muiVersion } from "@mui/material/version";
 import { forwardRef, Suspense } from "react";
 
-import type { FlexGrid2Props, FlexGrid2TypeMap, FlexOrientation } from "./Flex.types";
+import type {
+  FlexGrid2ColumnProps,
+  FlexGrid2Props,
+  FlexGrid2RowProps,
+  FlexGrid2TypeMap,
+  FlexOrientation,
+} from "./Flex.types";
 import { mapFlexProps } from "./Flex.utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,7 +17,11 @@ type _Any = any;
 
 const versionMismatchErr = `@mui/material version is ${muiVersion}, but Unstable_FlexGrid2 is only available in v5. Please use FlexGrid2 instead.`;
 
-export { FlexGrid2Props as Unstable_FlexGrid2Props };
+export {
+  FlexGrid2ColumnProps as Unstable_FlexGrid2ColumnProps,
+  FlexGrid2Props as Unstable_FlexGrid2Props,
+  FlexGrid2RowProps as Unstable_FlexGrid2RowProps,
+};
 export const createUnstable_FlexGrid2 = <
   Orientation extends FlexOrientation | undefined = undefined,
   RootComponent extends React.ElementType = "div",

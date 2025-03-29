@@ -30,6 +30,7 @@ export default tseslint.config(
       "**/out/**",
       "**/dist/**",
       "**/build/**",
+      "**/docs/static/*.js",
       "*.json",
       "*.code-workspace",
     ],

@@ -1,9 +1,8 @@
+import type { BoxProps, Grid2Props, GridProps } from "@mui/material";
 import { CSSProperties } from "react";
 
 import {
-  FlexBoxProps,
-  type FlexGrid2Props,
-  FlexGridProps,
+  type InferFlexProps,
   type ResponsiveFlexBoolean,
   ResponsiveFlexDirection,
   ResponsiveFlexPosition,
@@ -237,8 +236,10 @@ const resolveDirection = <R extends ResponsiveFlexDirection = ResponsiveFlexDire
   }
 };
 
-export const mapFlexProps = <P extends FlexBoxProps | FlexGridProps | FlexGrid2Props>(
-  props: Partial<FlexBoxProps | FlexGridProps | FlexGrid2Props>,
+type MappableFlexProps = Partial<InferFlexProps> & Partial<BoxProps | GridProps | Grid2Props>;
+
+export const mapFlexProps = <P extends MappableFlexProps = MappableFlexProps>(
+  props: P,
   ref?: React.Ref<_Any> | null,
   componentName: "Box" | "Grid" | "Grid2" = "Box",
 ) => {

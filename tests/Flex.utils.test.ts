@@ -1,12 +1,7 @@
 import { jest } from "@jest/globals";
 import { CSSProperties } from "react";
 
-import {
-  HorizontalAlign,
-  type ResponsiveFlexBoolean,
-  type ResponsiveFlexDirection,
-  VerticalAlign,
-} from "@/Flex.types";
+import { HorizontalAlign, type ResponsiveFlexBoolean, type ResponsiveFlexDirection, VerticalAlign } from "@/Flex.types";
 
 import { _test } from "../src/Flex.utils";
 
@@ -72,12 +67,12 @@ const cssAlignItems: CSSProperties["alignItems"][] = [
 
 describe("mapDirection", () => {
   it('should accept all standard "flexDirection" CSS properties', () => {
-    cssFlexDirection.forEach(flexDirection => {
+    cssFlexDirection.forEach((flexDirection) => {
       expect(mapDirection(flexDirection)).toBe(flexDirection);
     });
   });
   it('should accept all standard "flexDirection" CSS properties with (reverse=true)', () => {
-    cssFlexDirection.forEach(flexDirection => {
+    cssFlexDirection.forEach((flexDirection) => {
       const reverse = mapDirection(flexDirection, true);
       if (flexDirection === "row" || flexDirection === "column") {
         expect(reverse).toBe(flexDirection + "-reverse");
@@ -115,9 +110,12 @@ describe("mapDirection", () => {
       xs: "row-reverse",
       sm: "column-reverse",
     });
-    expect(
-      mapDirection({ xs: "row", sm: "column", md: "row-reverse", lg: "inherit" }, true)
-    ).toMatchObject({ xs: "row-reverse", sm: "column-reverse", md: "row-reverse", lg: "inherit" });
+    expect(mapDirection({ xs: "row", sm: "column", md: "row-reverse", lg: "inherit" }, true)).toMatchObject({
+      xs: "row-reverse",
+      sm: "column-reverse",
+      md: "row-reverse",
+      lg: "inherit",
+    });
   });
 });
 
@@ -140,9 +138,9 @@ describe("resolveDirection", () => {
     const columnValues = [undefined, null, true, false, "column"] as DirectionTestType;
     const reverseValues = [undefined, null, true, false];
 
-    rowValues.forEach(row => {
-      columnValues.forEach(column => {
-        reverseValues.forEach(reverse => {
+    rowValues.forEach((row) => {
+      columnValues.forEach((column) => {
+        reverseValues.forEach((reverse) => {
           const rowString = typeof row === "string" ? `"${row}"` : row;
           const columnString = typeof column === "string" ? `"${column}"` : column;
           const reverseString = reverse === undefined ? "" : `, ↺ ${reverse}`;
@@ -165,37 +163,33 @@ describe("resolveDirection", () => {
       let rowArrValues: _Any[] = [];
       let columnArrValues: _Any[] = [];
 
-      values.forEach(value => {
-        const rowArr = values.map(value2 => [value, value2]);
-        const colArr = values.map(value2 => [value2, value]);
+      values.forEach((value) => {
+        const rowArr = values.map((value2) => [value, value2]);
+        const colArr = values.map((value2) => [value2, value]);
         rowArrValues.push(([[value]] as typeof rowArr).concat(rowArr));
         columnArrValues.push(([[value]] as typeof colArr).concat(colArr));
       });
 
       rowArrValues = values
-        .map(value => [value])
-        .concat(values.map(value => values.map(value2 => [value, value2])).flat());
+        .map((value) => [value])
+        .concat(values.map((value) => values.map((value2) => [value, value2])).flat());
 
       columnArrValues = values
-        .map(value => [value])
-        .concat(values.map(value => values.map(value2 => [value2, value])).flat());
+        .map((value) => [value])
+        .concat(values.map((value) => values.map((value2) => [value2, value])).flat());
 
       // remove any duplicates that exist at the exact same index from rowArrValues and columnArrValues
       rowArrValues = rowArrValues.filter((value, i) => {
         return (
           rowArrValues.findIndex(
-            value2 =>
-              value.length === value2.length &&
-              value.every((v: _Any, j: string | number) => v === value2[j])
+            (value2) => value.length === value2.length && value.every((v: _Any, j: string | number) => v === value2[j]),
           ) === i
         );
       });
       columnArrValues = columnArrValues.filter((value, i) => {
         return (
           columnArrValues.findIndex(
-            value2 =>
-              value.length === value2.length &&
-              value.every((v: _Any, j: string | number) => v === value2[j])
+            (value2) => value.length === value2.length && value.every((v: _Any, j: string | number) => v === value2[j]),
           ) === i
         );
       });
@@ -208,13 +202,13 @@ describe("resolveDirection", () => {
     // Just in case, let's make sure we don't run the same test case twice
     const uniqueTests: string[] = [];
 
-    reverseValues.map(reverse => {
-      rowArrTestCases.map(_rowChildArr => {
+    reverseValues.map((reverse) => {
+      rowArrTestCases.map((_rowChildArr) => {
         if (!Array.isArray(_rowChildArr)) {
           throw new Error("rowChildArr is not an array");
         }
 
-        columnArrTestCases.map(_columnChildArr => {
+        columnArrTestCases.map((_columnChildArr) => {
           if (!Array.isArray(_columnChildArr)) {
             throw new Error("columnChildArr is not an array");
           }
@@ -276,24 +270,22 @@ describe("resolveDirection", () => {
 
       // Remove all `undefined` keys + values from every value in every object
       const filterUndefined = (arr: Record<string, _Any>[]) => {
-        if (arr.map(o => Object.keys(o).length === 1).every(Boolean)) {
+        if (arr.map((o) => Object.keys(o).length === 1).every(Boolean)) {
           return arr;
         }
         return arr
-          .map(obj =>
-            Object.fromEntries(Object.entries(obj).filter(([, value]) => value !== undefined))
-          )
-          .filter(obj => Object.keys(obj).length > 0);
+          .map((obj) => Object.fromEntries(Object.entries(obj).filter(([, value]) => value !== undefined)))
+          .filter((obj) => Object.keys(obj).length > 0);
       };
 
       const filterDupes = (arr: Record<string, _Any>[]) => {
-        const arrStrSet = new Set(arr.map(obj => JSON.stringify(obj)));
-        return Array.from(arrStrSet).map(str => JSON.parse(str));
+        const arrStrSet = new Set(arr.map((obj) => JSON.stringify(obj)));
+        return Array.from(arrStrSet).map((str) => JSON.parse(str));
       };
 
       // { xs: value }, { sm: value }, { md: value }, { lg: value }, { xl: value }
       const singles = singleKeys
-        .map(keys => values.map(value => Object.fromEntries(keys.map(key => [key, value]))))
+        .map((keys) => values.map((value) => Object.fromEntries(keys.map((key) => [key, value]))))
         .map(filterUndefined);
 
       // reduce permutations by only using `true` and `false` for multiple breakpoints tests
@@ -301,67 +293,65 @@ describe("resolveDirection", () => {
 
       // { xs: value, sm: value }, ..., { lg: value, xl: value }
       const doubles = doubleKeys
-        .map(keys =>
-          boolValues.flatMap(value1 =>
-            boolValues.map(value2 => ({
+        .map((keys) =>
+          boolValues.flatMap((value1) =>
+            boolValues.map((value2) => ({
               [keys[0]]: value1,
               [keys[1]]: value2,
-            }))
-          )
+            })),
+          ),
         )
         .map(filterUndefined);
 
       // { xs: value, sm: value, md: value }, ..., { md: value, lg: value, xl: value }
-      const triples = tripleKeys.map(keys =>
-        boolValues.flatMap(value1 =>
-          boolValues.flatMap(value2 =>
-            boolValues.map(value3 => ({
+      const triples = tripleKeys.map((keys) =>
+        boolValues.flatMap((value1) =>
+          boolValues.flatMap((value2) =>
+            boolValues.map((value3) => ({
               [keys[0]]: value1,
               [keys[1]]: value2,
               [keys[2]]: value3,
-            }))
-          )
-        )
+            })),
+          ),
+        ),
       );
 
       // { xs: value, sm: value, md: value, lg: value }, ..., { sm: value, md: value, lg: value, xl: value }
-      const quads = quadKeys.map(keys =>
-        boolValues.flatMap(value1 =>
-          boolValues.flatMap(value2 =>
-            boolValues.flatMap(value3 =>
-              boolValues.map(value4 => ({
+      const quads = quadKeys.map((keys) =>
+        boolValues.flatMap((value1) =>
+          boolValues.flatMap((value2) =>
+            boolValues.flatMap((value3) =>
+              boolValues.map((value4) => ({
                 [keys[0]]: value1,
                 [keys[1]]: value2,
                 [keys[2]]: value3,
                 [keys[3]]: value4,
-              }))
-            )
-          )
-        )
+              })),
+            ),
+          ),
+        ),
       );
 
       // { xs: value, sm: value, md: value, lg: value, xl: value }
-      const all = allKeys.map(keys =>
-        boolValues.flatMap(value1 =>
-          boolValues.flatMap(value2 =>
-            boolValues.flatMap(value3 =>
-              boolValues.flatMap(value4 =>
-                boolValues.map(value5 => ({
+      const all = allKeys.map((keys) =>
+        boolValues.flatMap((value1) =>
+          boolValues.flatMap((value2) =>
+            boolValues.flatMap((value3) =>
+              boolValues.flatMap((value4) =>
+                boolValues.map((value5) => ({
                   [keys[0]]: value1,
                   [keys[1]]: value2,
                   [keys[2]]: value3,
                   [keys[3]]: value4,
                   [keys[4]]: value5,
-                }))
-              )
-            )
-          )
-        )
+                })),
+              ),
+            ),
+          ),
+        ),
       );
 
-      const rowObjValues = filterDupes(
-        [{}, ...singles, ...doubles, ...triples, ...quads, ...all].flat()
-      );
+      const rowObjValues = filterDupes([{}, ...singles, ...doubles, ...triples, ...quads, ...all].flat());
       const columnObjValues = [...rowObjValues];
       return [rowObjValues, columnObjValues];
     };
@@ -377,29 +367,24 @@ describe("resolveDirection", () => {
 
     let reverseTestsCount = 0;
 
-    rowObjTestCases.map(rowChildObj => {
+    rowObjTestCases.map((rowChildObj) => {
       if (!rowChildObj || typeof rowChildObj !== "object") {
         throw new Error("rowObj is not an object");
       }
 
-      columnObjTestCases.map(columnChildObj => {
+      columnObjTestCases.map((columnChildObj) => {
         if (!columnChildObj || typeof columnChildObj !== "object") {
           throw new Error("columnObj is not an object");
         }
 
         const testBreakpoints = breakpoints.filter(
-          bk =>
-            [true, false].includes(rowChildObj[bk] as _Any) ||
-            [true, false].includes(columnChildObj[bk] as _Any)
+          (bk) => [true, false].includes(rowChildObj[bk] as _Any) || [true, false].includes(columnChildObj[bk] as _Any),
         );
 
         const rowKeys = Object.keys(rowChildObj);
         const columnKeys = Object.keys(columnChildObj);
 
-        if (
-          rowKeys.length !== columnKeys.length &&
-          Math.max(rowKeys.length, columnKeys.length) > 3
-        ) {
+        if (rowKeys.length !== columnKeys.length && Math.max(rowKeys.length, columnKeys.length) > 3) {
           return; // No need to test mismatched breakpoints when there are more than 3 breakpoints
         }
 
@@ -416,11 +401,11 @@ describe("resolveDirection", () => {
 
           const reverseString = reverse === undefined ? "" : `, ↺ ${reverse}`;
           const expected = Object.fromEntries(
-            testBreakpoints.map(bk => {
+            testBreakpoints.map((bk) => {
               const row = rowChildObj[bk] as boolean | null | undefined;
               const column = columnChildObj[bk] as boolean | null | undefined;
               return [bk, determineExpected(row, column, reverse)];
-            })
+            }),
           );
           const expectedString = JSON.stringify(expected);
           const responsiveObjectTestCase = `expect (↔︎ ${rowString}, ↕ ${columnString}${reverseString}) to be ${expectedString}`;
@@ -437,7 +422,7 @@ describe("resolveDirection", () => {
 
         if (testBreakpoints.length <= 2) {
           // To keep number of tests manageable, only test `reverse` when there are <= 2 breakpoints
-          reverseValues.map(reverse => {
+          reverseValues.map((reverse) => {
             excTest(reverse);
           });
         } else {
@@ -464,8 +449,8 @@ describe("resolveDirection", () => {
     ] as ResponsiveFlexDirection[];
     const reverseValues = [undefined, true];
 
-    fallbackPrimitives.map(fallback => {
-      reverseValues.map(reverse => {
+    fallbackPrimitives.map((fallback) => {
+      reverseValues.map((reverse) => {
         const reverseString = reverse === undefined ? "" : `, ↺ ${reverse}`;
         const expected = mapDirection(fallback, reverse);
         it(`expect (fallback: ${fallback}${reverseString}) to be '${expected}'`, () => {
@@ -474,8 +459,8 @@ describe("resolveDirection", () => {
       });
     });
 
-    fallbackArrays.map(fallback => {
-      reverseValues.map(reverse => {
+    fallbackArrays.map((fallback) => {
+      reverseValues.map((reverse) => {
         const fallbackString = JSON.stringify(fallback);
         const reverseString = reverse === undefined ? "" : `, ↺ ${reverse}`;
         const expected = mapDirection(fallback, reverse);
@@ -485,14 +470,12 @@ describe("resolveDirection", () => {
       });
     });
 
-    fallbackObjects.map(fallback => {
-      reverseValues.map(reverse => {
+    fallbackObjects.map((fallback) => {
+      reverseValues.map((reverse) => {
         const fallbackString = JSON.stringify(fallback);
         const reverseString = reverse === undefined ? "" : `, ↺ ${reverse}`;
         const expected = mapDirection(fallback, reverse);
-        it(`expect (fallback: ${fallbackString}${reverseString}) to be '${JSON.stringify(
-          expected
-        )}'`, () => {
+        it(`expect (fallback: ${fallbackString}${reverseString}) to be '${JSON.stringify(expected)}'`, () => {
           expect(resolveDirection(undefined, undefined, reverse, fallback)).toEqual(expected);
         });
       });
@@ -502,13 +485,13 @@ describe("resolveDirection", () => {
 
 describe("mapAlignment", () => {
   it('should accept all standard "justifyContent" CSS properties', () => {
-    cssJustifyContent.forEach(justifyContent => {
+    cssJustifyContent.forEach((justifyContent) => {
       expect(mapAlignment(justifyContent)).toBe(justifyContent);
     });
   });
 
   it('should accept all standard "alignItems" CSS properties', () => {
-    cssAlignItems.forEach(alignItems => {
+    cssAlignItems.forEach((alignItems) => {
       expect(mapAlignment(alignItems)).toBe(alignItems);
     });
   });
@@ -607,7 +590,7 @@ describe("mapFlexProps", () => {
         x: ["left", "center", "right"],
         y: ["bottom", "center", "top"],
         row: true,
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: ["flex-start", "center", "flex-end"],
       alignItems: ["flex-end", "center", "flex-start"],
@@ -618,7 +601,7 @@ describe("mapFlexProps", () => {
         x: ["left", "center", "right"],
         y: ["bottom", "center", "top"],
         column: true,
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: ["flex-end", "center", "flex-start"],
       alignItems: ["flex-start", "center", "flex-end"],
@@ -632,9 +615,7 @@ describe("mapFlexProps", () => {
       alignItems: "flex-end",
       flexDirection: "row",
     });
-    expect(
-      mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"] } as _Any)
-    ).toMatchObject({
+    expect(mapFlexProps({ x: ["left", "center", "right"], y: ["bottom", "center", "top"] } as _Any)).toMatchObject({
       justifyContent: ["flex-start", "center", "flex-end"],
       alignItems: ["flex-end", "center", "flex-start"],
       flexDirection: "row",
@@ -655,7 +636,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "center" },
         y: { xs: "top", sm: "bottom" },
         row: true,
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "center" },
       alignItems: { xs: "flex-start", sm: "flex-end" },
@@ -666,7 +647,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "center" },
         y: { xs: "top", sm: "bottom" },
         column: true,
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "flex-end" },
       alignItems: { xs: "flex-start", sm: "center" },
@@ -680,7 +661,7 @@ describe("mapFlexProps", () => {
         x: ["left", "center"],
         y: ["center", "bottom"],
         flexDirection: ["row", "column"],
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       //              x: ["left"], y: ["bottom"],
       justifyContent: ["flex-start", "flex-end"],
@@ -696,7 +677,7 @@ describe("mapFlexProps", () => {
         x: ["center", "left"],
         y: "center",
         flexDirection: ["column", "row"],
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: ["center", "flex-start"],
       alignItems: ["center", "center"],
@@ -710,7 +691,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "space-between" },
         y: { xs: "center", sm: "inherit" },
         flexDirection: { xs: "row", sm: "column" },
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "inherit" },
       alignItems: { xs: "center", sm: "space-between" },
@@ -724,7 +705,7 @@ describe("mapFlexProps", () => {
         x: { xs: "left", sm: "space-between" },
         y: "center",
         flexDirection: { xs: "row", sm: "column" },
-      } as _Any)
+      } as _Any),
     ).toMatchObject({
       justifyContent: { xs: "flex-start", sm: "center" },
       alignItems: { xs: "center", sm: "space-between" },

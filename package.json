@@ -28,7 +28,9 @@
     "docs": "cd docs && npx http-server -o ./",
     "ship": "./ship.sh",
     "bump": "./up.sh",
+    "lint": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown && eslint --config eslint.config.js --ext .ts,.tsx src",
     "test": "NODE_OPTIONS=--experimental-vm-modules ./node_modules/.bin/jest --config jest.config.js",
+    "typecheck": "npx tsc --project tsconfig.json --noEmit",
     "prepare": "husky"
   },
   "peerDependencies": {

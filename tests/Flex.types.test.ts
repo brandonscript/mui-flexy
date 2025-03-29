@@ -122,6 +122,7 @@ describe("Flex.types", () => {
   it("should correctly infer row/column values based on props", () => {
     const oRowTrue: FlexBoxProps = { row: true };
     const oColTrue: FlexBoxProps = { column: true };
+    // @ts-expect-error
     const oRowFalse: FlexBoxProps = { row: false };
     const oColFalse: FlexBoxProps = { column: false };
     // @ts-expect-error
@@ -153,7 +154,6 @@ describe("Flex.types", () => {
     const cColTrue: FlexBoxColumnProps = { column: true };
     // @ts-expect-error
     const cColFalse: FlexBoxColumnProps = { column: false };
-    // @ts-expect-error
     const cRowFalse: FlexBoxColumnProps = { row: false };
 
     const ccColTrue: FlexBoxColumnProps["column"] = true;

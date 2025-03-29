@@ -1,10 +1,9 @@
 import { Box, Grid, styled, type SxProps, type Theme, Typography } from "@mui/material";
 import { major as muiVersion } from "@mui/material/version";
 
-import type { FlexBoxProps } from "@/Flex.types";
+import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps } from "@/Flex.types";
 
 import { FlexBox, FlexGrid } from "../src";
-
 
 console.log("Tests running with MUI version:", muiVersion);
 
@@ -17,14 +16,14 @@ describe("Verify MUI version", () => {
     if (muiVersion < 6) {
       expect(async () => await import("../src/Unstable_FlexGrid2")).not.toThrow();
     } else {
-      expect(async() => await import("../src/FlexGrid2")).not.toThrow();
+      expect(async () => await import("../src/FlexGrid2")).not.toThrow();
     }
   });
   it("should load FlexGrid2 for MUI version 6+", () => {
     if (muiVersion >= 6) {
-      expect(async() => await import("../src/FlexGrid2")).not.toThrow();
+      expect(async () => await import("../src/FlexGrid2")).not.toThrow();
     } else {
-      expect(async() => await import("../src/Unstable_FlexGrid2")).not.toThrow();
+      expect(async () => await import("../src/Unstable_FlexGrid2")).not.toThrow();
     }
   });
 });
@@ -37,6 +36,8 @@ const FlexGrid2 =
 const RowTests = [
   () => <FlexBox row />,
   () => <FlexBox row={true} />,
+  () => <FlexBox row x="left" />,
+  () => <FlexBox row x="left" y="top" />,
   () => <FlexBox x="left" y="top" />,
   () => <FlexBox x="left" y="center" />,
   () => <FlexBox x="left" y="bottom" />,
@@ -96,6 +97,7 @@ const RowTests = [
 const ColumnTests = [
   () => <FlexBox column />,
   () => <FlexBox column={true} />,
+  () => <FlexBox column x="left" />,
   () => <FlexBox column x="left" y="top" />,
   () => <FlexBox column x="left" y="center" />,
   () => <FlexBox column x="left" y="bottom" />,
@@ -177,25 +179,25 @@ const OverrideGridTests = [
 
 describe("FlexBox JSX tests", () => {
   it("should exec RowTests without errors", () => {
-    RowTests.forEach(TestComponent => {
+    RowTests.forEach((TestComponent) => {
       expect(() => TestComponent()).not.toThrow();
     });
   });
 
   it("should exec ColumnTests without errors", () => {
-    ColumnTests.forEach(TestComponent => {
+    ColumnTests.forEach((TestComponent) => {
       expect(() => TestComponent()).not.toThrow();
     });
   });
 
   it("should exec OverrideBoxTests without errors", () => {
-    OverrideBoxTests.forEach(TestComponent => {
+    OverrideBoxTests.forEach((TestComponent) => {
       expect(() => TestComponent()).not.toThrow();
     });
   });
 
   it("should exec OverrideGridTests without errors", () => {
-    OverrideGridTests.forEach(TestComponent => {
+    OverrideGridTests.forEach((TestComponent) => {
       expect(() => TestComponent()).not.toThrow();
     });
   });
@@ -220,15 +222,11 @@ const _PropsTests = [
     // @ts-expect-error
     <FlexBox row {...rest} x={x} y={y} sx={{ ...sx, backgroundColor: "blue", color: "black" }} />
   ),
-  // @ts-expect-error -- cases, probably should be allowed but currently not supported
-  ({ row: _r, column: _c, ...rest }: FlexBoxProps) => <FlexBox column row={false} {...rest} />,
-  // @ts-expect-error -- cases, probably should be allowed but currently not supported
-  ({ row: _r, column: _c, ...rest }: FlexBoxProps) => <FlexBox row column={false} {...rest} />,
+  ({ row: _r, column: _c, ...rest }: FlexBoxColumnProps) => <FlexBox column row={false} {...rest} />,
+  ({ row: _r, column: _c, ...rest }: FlexBoxRowProps) => <FlexBox row column={false} {...rest} />,
   (props: FlexBoxProps) => <FlexBox {...props} />,
-  // @ts-expect-error -- cases, probably should be allowed but currently not supported
-  (props: FlexBoxProps) => <FlexBox {...props} row />,
-  // @ts-expect-error -- cases, probably should be allowed but currently not supported
-  (props: FlexBoxProps) => <FlexBox {...props} column />,
+  (props: FlexBoxRowProps) => <FlexBox {...props} row />,
+  (props: FlexBoxColumnProps) => <FlexBox {...props} column />,
   // @ts-expect-error
   (props: FlexBoxProps) => <FlexBox {...props} row column />,
 
@@ -281,6 +279,9 @@ describe("FlexBoxProps<T> type", () => {
       y: "stretch",
     };
 
+    expect(flexRowProps.row).toBe(true);
+    expect(flexRowProps.column).toBeUndefined();
+
     const FlexRow = () => <FlexBox {...flexRowProps} />;
     expect(() => FlexRow()).not.toThrow();
   });
@@ -304,6 +305,9 @@ describe("FlexBoxProps<T> type", () => {
       x: "stretch",
       y: "top",
     };
+
+    expect(flexColumnProps.column).toBe(true);
+    expect(flexColumnProps.row).toBeUndefined();
 
     const FlexColumn = () => <FlexBox {...flexColumnProps} />;
     expect(() => FlexColumn()).not.toThrow();
@@ -336,7 +340,7 @@ describe("FlexBox with styled()", () => {
         "& .MuiTypography-body2:first-of-type": {
           opacity: 0.5,
         },
-      })
+      }),
     );
   });
 });
@@ -360,11 +364,7 @@ describe("Responsive prop & sx tests", () => {
     const sx: FlexBoxProps<"row">["sx"] = { minHeight: { xs: 240, sm: 300 } };
     const ComponentViaProps = () => <FlexBox x={x} y={y} sx={sx} />;
     const ComponentDirect = () => (
-      <FlexBox
-        x={["center", "left", "center", "right"]}
-        y={["stretch", "top", "center", "bottom"]}
-        sx={sx}
-      />
+      <FlexBox x={["center", "left", "center", "right"]} y={["stretch", "top", "center", "bottom"]} sx={sx} />
     );
     expect(() => ComponentViaProps()).not.toThrow();
     expect(() => ComponentDirect()).not.toThrow();
@@ -374,9 +374,7 @@ describe("Responsive prop & sx tests", () => {
     const row: FlexBoxProps["row"] = [true, false, true, false];
     const column: FlexBoxProps["column"] = [false, true, false, true];
     const ComponentViaProps = () => <FlexBox row={row} column={column} />;
-    const ComponentDirect = () => (
-      <FlexBox row={[true, false, true, false]} column={[false, true, false, true]} />
-    );
+    const ComponentDirect = () => <FlexBox row={[true, false, true, false]} column={[false, true, false, true]} />;
     expect(() => ComponentViaProps()).not.toThrow();
     expect(() => ComponentDirect()).not.toThrow();
   });

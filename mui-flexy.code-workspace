@@ -45,7 +45,7 @@
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
-    "typescript.tsdk": "🌍 demo/node_modules/typescript/lib",
+    "typescript.tsdk": "🏗️ mui-flexy/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,

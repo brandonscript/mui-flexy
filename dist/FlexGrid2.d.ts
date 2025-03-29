@@ -1,6 +1,6 @@
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
-import type { FlexGrid2Props, FlexGrid2TypeMap, FlexOrientation } from "./Flex.types";
-export { FlexGrid2Props };
-export declare const createFlexGrid2: <Orientation extends FlexOrientation | undefined = undefined, RootComponent extends React.ElementType = "div", AdditionalProps = {}>() => OverridableComponent<FlexGrid2TypeMap<Orientation, AdditionalProps, RootComponent>>;
+import type { FlexGrid2ColumnProps, FlexGrid2Props, FlexGrid2RowProps, FlexGrid2TypeMap, FlexOrientation } from "./Flex.types";
+export { FlexGrid2ColumnProps, FlexGrid2Props, FlexGrid2RowProps };
+export declare const createFlexGrid2: <O extends FlexOrientation | undefined = undefined, D extends React.ElementType = "div", P = {}>() => OverridableComponent<FlexGrid2TypeMap<O, P, D>>;
 export declare const FlexGrid2: OverridableComponent<FlexGrid2TypeMap<undefined, {}, "div">>;
 export default FlexGrid2;

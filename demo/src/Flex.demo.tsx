@@ -589,10 +589,12 @@ const FlexDemo = () => {
       <BoxSection className="complex-props-test" column>
         <Header text="Complex props test" />
         {(() => {
+          // @ts-expect-error
           const invalidProps = { prop: "invalid" } as FlexBoxProps<"column">;
           return (
             <FlexBox column>
               <Code code={`<FlexBox prop="invalid" />`} margin="0px 16px" />
+              {/* @ts-expect-error */}
               <Inner x="center" y="center" column {...invalidProps}>
                 <span>Complex &amp; invalid props test</span>
               </Inner>

@@ -3,7 +3,13 @@ import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import { major as muiVersion } from "@mui/material/version";
 import { forwardRef, Suspense } from "react";
 
-import type { FlexGrid2Props, FlexGrid2TypeMap, FlexOrientation } from "./Flex.types";
+import type {
+  FlexGrid2ColumnProps,
+  FlexGrid2Props,
+  FlexGrid2RowProps,
+  FlexGrid2TypeMap,
+  FlexOrientation,
+} from "./Flex.types";
 import { mapFlexProps } from "./Flex.utils";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -11,11 +17,11 @@ type _Any = any;
 
 const versionMismatchErr = `@mui/material version is ${muiVersion}, but v6 or above is required to use FlexGrid2. Please use Unstable_FlexGrid2 instead.`;
 
-export { FlexGrid2Props };
+export { FlexGrid2ColumnProps, FlexGrid2Props, FlexGrid2RowProps };
 export const createFlexGrid2 = <
-  Orientation extends FlexOrientation | undefined = undefined,
-  RootComponent extends React.ElementType = "div",
-  AdditionalProps = {},
+  O extends FlexOrientation | undefined = undefined,
+  D extends React.ElementType = "div",
+  P = {},
 >() => {
   let MuiGrid2: _Any = undefined;
   try {
@@ -28,7 +34,7 @@ export const createFlexGrid2 = <
     console.warn(versionMismatchErr);
   }
 
-  return forwardRef<Grid2Props["ref"], FlexGrid2Props<Orientation, RootComponent, AdditionalProps>>((props, ref) => {
+  return forwardRef<Grid2Props["ref"], FlexGrid2Props<O, D, P>>((props, ref) => {
     const { xs, sm, md, lg, xl, size, ...rest } = props as _Any;
     const sizeValues = [xs, sm, md, lg, xl].filter((value) => value !== null && value !== undefined);
     const sizeProps =
@@ -39,7 +45,7 @@ export const createFlexGrid2 = <
         <MuiGrid2 {...mapFlexProps(props, ref, "Grid2")} />
       </Suspense>
     );
-  }) as OverridableComponent<FlexGrid2TypeMap<Orientation, AdditionalProps, RootComponent>>;
+  }) as OverridableComponent<FlexGrid2TypeMap<O, P, D>>;
 };
 
 export const FlexGrid2 = createFlexGrid2();

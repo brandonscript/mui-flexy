@@ -49,6 +49,7 @@
     ".eslintrc.js",
     "eslint.config.js",
     ".babelrc.js",
-    ".babelrc"
+    ".babelrc",
+    "docs/static/**/*",
   ]
 }
