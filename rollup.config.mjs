@@ -47,7 +47,6 @@ export default {
       sourcemap: true,
       strict: false,
       preserveModules: true,
-      preserveModulesRoot: "src",
       entryFileNames: "[name].js",
       globals: {
         "react/jsx-runtime": "jsxRuntime",

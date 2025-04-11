@@ -7,6 +7,7 @@
     "declarationDir": "./dist",
     "emitDeclarationOnly": true,
     "jsx": "react-jsx",
+    "outDir": "./dist"
   },
   "files": [
     "src/Flex.tsx",
@@ -20,6 +21,8 @@
     "demo",
     "tests",
     "jest.config.**",
+    "jest-setup.ts",
+    "rollup.config.js",
     "webpack.config.js",
     "coverage/",
     ".eslintrc.js",
