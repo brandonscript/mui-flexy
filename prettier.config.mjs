@@ -9,7 +9,7 @@ export default {
   bracketSpacing: true,
   overrides: [
     {
-      files: ["*.ts", "*.tsx"],
+      files: ["*.ts", "*.tsx", "*.js", "*.jsx"],
     },
   ],
 };

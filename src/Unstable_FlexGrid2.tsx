@@ -23,10 +23,12 @@ export {
   FlexGrid2RowProps as Unstable_FlexGrid2RowProps,
 };
 export const createUnstable_FlexGrid2 = <
-  Orientation extends FlexOrientation | undefined = undefined,
-  RootComponent extends React.ElementType = "div",
-  AdditionalProps = {},
->() => {
+  O extends FlexOrientation | undefined = undefined,
+  D extends React.ElementType = "div",
+  P = {},
+>(
+  defaultProps: FlexGrid2Props<O, D, P> = {} as FlexGrid2Props<O, D, P>,
+) => {
   let MuiUnstable_Grid2: _Any = undefined;
   try {
     if (muiVersion > 5) {
@@ -37,28 +39,28 @@ export const createUnstable_FlexGrid2 = <
   } catch (_err) {
     console.warn(versionMismatchErr);
   }
-  return forwardRef<Unstable_Grid2Props["ref"], FlexGrid2Props<Orientation, RootComponent, AdditionalProps>>(
-    (props, ref) => {
-      const { size, ...rest } = props as _Any;
-      const xs = typeof size === "number" || typeof size === "string" ? size : size?.xs;
-      const { xs: _xs, sm, md, lg, xl } = size || {};
-      props = {
-        ...rest,
-        xs: xs || _xs,
-        sm,
-        md,
-        lg,
-        xl,
-        ref,
-      };
-      return (
-        <Suspense fallback={<div data-mui-flexy-unstable-grid2="loading" />}>
-          <MuiUnstable_Grid2 {...mapFlexProps(props, ref, "Grid2")} />;
-        </Suspense>
-      );
-    },
-  ) as OverridableComponent<FlexGrid2TypeMap<Orientation, AdditionalProps, RootComponent>>;
+  return forwardRef<Unstable_Grid2Props["ref"], FlexGrid2Props<O, D, P>>((props, ref) => {
+    const { size, ...rest } = props as _Any;
+    const xs = typeof size === "number" || typeof size === "string" ? size : size?.xs;
+    const { xs: _xs, sm, md, lg, xl } = size || {};
+    props = {
+      ...rest,
+      xs: xs || _xs,
+      sm,
+      md,
+      lg,
+      xl,
+      ref,
+    };
+    return (
+      <Suspense fallback={<div data-mui-flexy-unstable-grid2="loading" />}>
+        <MuiUnstable_Grid2 {...defaultProps} {...mapFlexProps(props, ref, "Grid2")} />
+      </Suspense>
+    );
+  }) as OverridableComponent<FlexGrid2TypeMap<O, P, D>>;
 };
 
 export const Unstable_FlexGrid2 = createUnstable_FlexGrid2();
+export const Unstable_FlexGrid2Row = createUnstable_FlexGrid2<"row">({ row: true });
+export const Unstable_FlexGrid2Column = createUnstable_FlexGrid2<"column">({ column: true });
 export default Unstable_FlexGrid2;

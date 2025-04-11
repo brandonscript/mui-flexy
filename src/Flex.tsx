@@ -1,7 +1,7 @@
-import MuiBox, { BoxProps } from "@mui/material/Box";
-import MuiGrid, { GridProps } from "@mui/material/Grid";
+import _MuiBox, { BoxProps } from "@mui/material/Box";
+import _MuiGrid, { GridProps } from "@mui/material/Grid";
 import { Theme as MaterialTheme } from "@mui/material/styles";
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 
 import type {
   AsComponent,
@@ -17,29 +17,35 @@ import type {
 } from "./Flex.types";
 import { mapFlexProps } from "./Flex.utils";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type _Any = any;
+// @ts-ignore
+const MuiBox = _MuiBox?.default ?? _MuiBox;
+// @ts-ignore
+const MuiGrid = _MuiGrid?.default ?? _MuiGrid;
 
 export { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps };
 const createFlexBox = <
-  Orientation extends FlexOrientation | undefined = undefined,
-  RootComponent extends React.ElementType = "div",
-  AdditionalProps = {},
-  Theme extends object = MaterialTheme,
->() =>
-  forwardRef<BoxProps["ref"], FlexBoxProps<Orientation, RootComponent, AdditionalProps>>((props, ref) => (
-    <MuiBox {...mapFlexProps(props, ref, "Box")} />
-  )) as AsComponent<FlexBoxTypeMap<Orientation, AdditionalProps, RootComponent, Theme>>;
+  O extends FlexOrientation | undefined = undefined,
+  D extends React.ElementType = "div",
+  P = {},
+  T extends object = MaterialTheme,
+>(
+  defaultProps: FlexBoxProps<O, D, P> = {} as FlexBoxProps<O, D, P>,
+) =>
+  forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => (
+    <MuiBox {...defaultProps} {...mapFlexProps(props, ref, "Box")} />
+  )) as AsComponent<FlexBoxTypeMap<O, P, D, T>>;
 export const FlexBox = createFlexBox();
+export const FlexRowBox = createFlexBox<"row">({ row: true });
+export const FlexColumnBox = createFlexBox<"column">({ column: true });
 
 export { FlexGridColumnProps, FlexGridProps, FlexGridRowProps };
-const createFlexGrid = <
-  Orientation extends FlexOrientation | undefined = undefined,
-  RootComponent extends React.ElementType = "div",
-  AdditionalProps = {},
->() =>
-  forwardRef<GridProps["ref"], FlexGridProps<Orientation, RootComponent, AdditionalProps>>(
+const createFlexGrid = <O extends FlexOrientation | undefined = undefined, D extends React.ElementType = "div", P = {}>(
+  defaultProps: FlexGridProps<O, D, P> = {} as FlexGridProps<O, D, P>,
+) =>
+  forwardRef<GridProps["ref"], FlexGridProps<O, D, P>>(
     // @ts-ignore
-    (props, ref) => <MuiGrid {...mapFlexProps(props, ref, "Grid")} />,
-  ) as AsComponent<FlexGridTypeMap<Orientation, AdditionalProps, RootComponent>>;
+    (props, ref) => <MuiGrid {...defaultProps} {...mapFlexProps(props, ref, "Grid")} />,
+  ) as AsComponent<FlexGridTypeMap<O, P, D>>;
 export const FlexGrid = createFlexGrid();
+export const FlexGridRow = createFlexGrid<"row">({ row: true });
+export const FlexGridColumn = createFlexGrid<"column">({ column: true });

@@ -4,7 +4,7 @@ package-lock.json
 tsconfig.*
 yarn-error.log
 *.code-workspace
-*.js
+# *.js
 *.cjs
 *.mjs
 *.html

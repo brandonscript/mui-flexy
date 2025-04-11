@@ -25,7 +25,6 @@ const StyledListContainer = styled((props: StyledListContainerProps) => (
     },
   }),
 );
-
 type StyledSelectContainerProps = FlexBoxColumnProps & {
   doNotFwdThisProp?: string;
 };

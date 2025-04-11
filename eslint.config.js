@@ -3,6 +3,7 @@ import { fixupPluginRules } from "@eslint/compat";
 import eslint from "@eslint/js";
 import { createTypeScriptImportResolver } from "eslint-import-resolver-typescript";
 import importPlugin from "eslint-plugin-import-x";
+import jestdom from "eslint-plugin-jest-dom";
 import react from "eslint-plugin-react";
 import _eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import sisPlugin from "eslint-plugin-simple-import-sort";
@@ -21,6 +22,7 @@ const reactConfigs = {
 export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
+  
   reactConfigs,
   {
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
@@ -39,6 +41,7 @@ export default tseslint.config(
       "simple-import-sort": sisPlugin,
       "unused-imports": unusedImportsPlugin,
       "react-hooks": eslintPluginReactHooks,
+      "jest-dom": jestdom,
     },
     languageOptions: {
       ecmaVersion: "latest",
@@ -79,6 +82,10 @@ export default tseslint.config(
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "no-unused-vars": "off",
+      "jest-dom/prefer-checked": "error",
+      "jest-dom/prefer-enabled-disabled": "error",
+      "jest-dom/prefer-required": "error",
+      "jest-dom/prefer-to-have-attribute": "error",
     },
     settings: {
       react: {

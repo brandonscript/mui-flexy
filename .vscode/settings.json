@@ -25,6 +25,7 @@
     "fail",
     "unknown"
   ],
+  // "jest.jestCommandLine": "NODE_OPTIONS=\"--experimental-vm-modules --experimental-require-module\" node_modules/.bin/jest",
   "jest.jestCommandLine": "node_modules/.bin/jest",
   "jest.rootPath": ".",
   "jest.nodeEnv": {

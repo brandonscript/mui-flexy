@@ -6,10 +6,10 @@ import { TS_TRANSFORM_PATTERN } from "ts-jest";
 
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 export default {
-  preset: "ts-jest/presets/default-esm",
-  testEnvironment: "node",
+  // preset: "ts-jest",
+  testEnvironment: "jsdom",
   extensionsToTreatAsEsm: [".ts", ".tsx"],
-  silent: true,
+  // silent: true,
   transform: {
     [TS_TRANSFORM_PATTERN]: [
       "ts-jest",
@@ -18,6 +18,20 @@ export default {
         useESM: true,
       },
     ],
+    // "@mui/material/styled/.*\\.js$": "babel-jest",
+    // "@mui/system/createStyled/.*\\.js$": "babel-jest",
+    // "^.+\\.(js|jsx)$": "babel-jest",
   },
+  setupFilesAfterEnv: ["@testing-library/jest-dom", "<rootDir>/jest-setup.ts"],
+  // snapshotSerializers: [
+  //   '@emotion/jest/serializer'
+  // ]
+  // transformIgnorePatterns: [
+  //   "node_modules/@mui/material",
+  // ],
+  // moduleNameMapper: {
+  //   "^@emotion/styled": "@mui/material/styles/styled.js",
+
+  // },
   // exclude: ["dist/**", "demo/**", ".rollup.cache/**"],
 };

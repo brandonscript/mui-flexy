@@ -22,7 +22,9 @@ export const createFlexGrid2 = <
   O extends FlexOrientation | undefined = undefined,
   D extends React.ElementType = "div",
   P = {},
->() => {
+>(
+  defaultProps: FlexGrid2Props<O, D, P> = {} as FlexGrid2Props<O, D, P>,
+) => {
   let MuiGrid2: _Any = undefined;
   try {
     if (muiVersion < 6) {
@@ -42,11 +44,13 @@ export const createFlexGrid2 = <
     props = { ...rest, size: sizeProps };
     return (
       <Suspense fallback={<div data-mui-flexy-grid2="loading" />}>
-        <MuiGrid2 {...mapFlexProps(props, ref, "Grid2")} />
+        <MuiGrid2 {...defaultProps} {...mapFlexProps(props, ref, "Grid2")} />
       </Suspense>
     );
   }) as OverridableComponent<FlexGrid2TypeMap<O, P, D>>;
 };
 
 export const FlexGrid2 = createFlexGrid2();
+export const FlexGrid2Row = createFlexGrid2<"row">({ row: true });
+export const FlexGrid2Column = createFlexGrid2<"column">({ column: true });
 export default FlexGrid2;
