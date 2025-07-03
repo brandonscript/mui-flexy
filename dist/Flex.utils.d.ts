@@ -8,7 +8,7 @@ export declare const mapFlexProps: <P extends MappableFlexProps = MappableFlexPr
 export declare const _test: {
     mapAlignment: (alignment?: _Any) => ResponsiveFlexPosition;
     mapDirection: (direction: ResponsiveFlexDirection | undefined | null, reverse?: boolean | undefined | null) => ResponsiveFlexDirection;
-    mapFlexProps: <P extends MappableFlexProps = MappableFlexProps>(props: P, ref?: React.Ref<_Any> | null, componentName?: "Box" | "Grid" | "Grid2") => P;
+    mapFlexProps: <P extends MappableFlexProps = any>(props: P, ref?: React.Ref<_Any> | null, componentName?: "Box" | "Grid" | "Grid2") => P;
     resolveDirection: <R extends ResponsiveFlexDirection = ResponsiveFlexDirection>(row: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null, column: ResponsiveFlexDirection | ResponsiveFlexBoolean | undefined | null, reverse?: boolean | undefined | null, fallback?: ResponsiveFlexDirection) => R | CSSFlexDirection | undefined;
 };
 export {};

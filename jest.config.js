@@ -4,7 +4,7 @@
  */
 import { TS_TRANSFORM_PATTERN } from "ts-jest";
 
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+/** @type {import('jest').Config} */
 export default {
   // preset: "ts-jest",
   testEnvironment: "jsdom",

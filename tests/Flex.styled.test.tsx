@@ -1,26 +1,27 @@
-import "@emotion/jest";
 import "@testing-library/jest-dom";
 
+import { createSerializer } from "@emotion/jest";
 import _StockBox, { type BoxProps } from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { render, screen } from "@testing-library/react";
-
 import * as React from "react";
 
 import { type FlexBoxColumnProps, type FlexBoxProps } from "../src";
 import { FlexBox } from "../src";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { createSerializer } from "@emotion/jest";
-expect.addSnapshotSerializer(createSerializer());
 
-// @ts-ignore
-const StockBox = _StockBox.default;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _Any = any;
+
+const StockBox = (_StockBox as _Any)?.default || _StockBox;
+
+expect.addSnapshotSerializer(createSerializer());
 
 const theme = createTheme();
 const withThemeProvider = <P,>(Component: React.ComponentType<P>) => {
   return function WrappedComponent(props = {} as P) {
     return (
       <ThemeProvider theme={theme}>
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
         <Component {...(props as any)} />
       </ThemeProvider>
     );
@@ -37,7 +38,7 @@ const _StyledStockBox = styled((props: WithDataTestId<BoxProps>) => (
   theme.unstable_sx({
     padding: 1,
     margin: 1,
-    borderRadius: `${theme.shape.borderRadius * 2}px`, // 4 * 2 = 8
+    borderRadius: `${(theme.shape.borderRadius as number) * 2}px`, // 4 * 2 = 8
     backgroundColor: "aquamarine",
   }),
 );
@@ -83,7 +84,7 @@ describe("baseline", () => {
 
   it("should inherit props from the styled component when using styled() sx", () => {
     const el = <StyledStockBox data-testid="styled-mui-box" />;
-    const tree = render(el);
+    const _tree = render(el);
     const styledMuiBox = screen.getByTestId("styled-mui-box");
     expect(styledMuiBox).toBeInTheDocument();
     expect(styledMuiBox).toHaveAttribute("data-testid", "styled-mui-box");
@@ -115,7 +116,7 @@ const StyledFlexBox = styled(ForwardRefFlexBox)<FlexBoxProps>(({ theme }) =>
     // We want to ensure that the props from the styled component are passed to the FlexBox component
     padding: 1,
     margin: 1,
-    borderRadius: `${theme.shape.borderRadius * 2}px`,
+    borderRadius: `${(theme.shape.borderRadius as number) * 2}px`,
     backgroundColor: "aquamarine",
   }),
 );

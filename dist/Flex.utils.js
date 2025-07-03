@@ -1,6 +1,8 @@
 import { objectWithoutProperties as _objectWithoutProperties, objectSpread2 as _objectSpread2, typeof as _typeof, slicedToArray as _slicedToArray, toConsumableArray as _toConsumableArray, createForOfIteratorHelper as _createForOfIteratorHelper } from './_virtual/_rollupPluginBabelHelpers.js';
 
 var _excluded = ["x", "y", "row", "column", "flexDirection", "reverse", "nowrap"];
+// @ts-ignore
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
 var _mapAlignment = function mapAlignment(alignment) {
@@ -16,18 +18,21 @@ var _mapAlignment = function mapAlignment(alignment) {
       default:
         return alignment;
     }
-  } else if (Array.isArray(alignment)) {
-    return alignment.map(function (a) {
-      return _mapAlignment(a);
-    });
-  } else if (_typeof(alignment) === "object") {
-    return Object.fromEntries(Object.entries(alignment).map(function (_ref) {
-      var _ref2 = _slicedToArray(_ref, 2),
-        k = _ref2[0],
-        a = _ref2[1];
-      return [k, _mapAlignment(a)];
-    }));
   }
+  if (Array.isArray(alignment)) {
+    return alignment.map(_mapAlignment);
+  }
+  if (_typeof(alignment) === "object") {
+    var mapped = {};
+    for (var _i = 0, _Object$entries = Object.entries(alignment); _i < _Object$entries.length; _i++) {
+      var _Object$entries$_i = _slicedToArray(_Object$entries[_i], 2),
+        key = _Object$entries$_i[0],
+        value = _Object$entries$_i[1];
+      mapped[key] = _mapAlignment(value);
+    }
+    return mapped;
+  }
+  return alignment;
 };
 var _mapDirection = function mapDirection(direction) {
   var reverse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -48,12 +53,14 @@ var _mapDirection = function mapDirection(direction) {
       return !d ? "row" : _mapDirection(d, reverse);
     });
   } else if (_typeof(direction) === "object") {
-    return Object.fromEntries(Object.entries(direction).map(function (_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 2),
-        k = _ref4[0],
-        d = _ref4[1];
-      return [k, _mapDirection(d, reverse)];
-    }));
+    var mapped = {};
+    for (var _i2 = 0, _Object$entries2 = Object.entries(direction); _i2 < _Object$entries2.length; _i2++) {
+      var _Object$entries2$_i = _slicedToArray(_Object$entries2[_i2], 2),
+        key = _Object$entries2$_i[0],
+        value = _Object$entries2$_i[1];
+      mapped[key] = _mapDirection(value, reverse);
+    }
+    return mapped;
   }
 };
 var stringOrArrayValue = function stringOrArrayValue(value, index) {
@@ -64,10 +71,10 @@ var stringOrArrayValue = function stringOrArrayValue(value, index) {
   }
 };
 var mapResponsiveObject = function mapResponsiveObject(direction, main, cross) {
-  return Object.fromEntries(Object.entries(direction !== null && direction !== void 0 ? direction : []).map(function (_ref5) {
-    var _ref6 = _slicedToArray(_ref5, 2),
-      key = _ref6[0],
-      d = _ref6[1];
+  return Object.fromEntries(Object.entries(direction !== null && direction !== void 0 ? direction : []).map(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+      key = _ref2[0],
+      d = _ref2[1];
     if (typeof d !== "string") {
       throw new Error("Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }");
     }
@@ -176,26 +183,26 @@ var _resolveDirection = function resolveDirection(row, column) {
     });
   }
   if (rowIsObject && columnIsFalsy) {
-    return Object.fromEntries(Object.entries(row).filter(function (_ref7) {
-      var _ref8 = _slicedToArray(_ref7, 2),
-        r = _ref8[1];
+    return Object.fromEntries(Object.entries(row).filter(function (_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 2),
+        r = _ref4[1];
       return ![null, undefined].includes(r);
-    }).map(function (_ref9) {
-      var _ref10 = _slicedToArray(_ref9, 2),
-        k = _ref10[0],
-        r = _ref10[1];
+    }).map(function (_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 2),
+        k = _ref6[0],
+        r = _ref6[1];
       return [k, _resolveDirection(r, undefined, reverse, fallback)];
     }));
   }
   if (columnIsObject && rowIsFalsy) {
-    return Object.fromEntries(Object.entries(column).filter(function (_ref11) {
-      var _ref12 = _slicedToArray(_ref11, 2),
-        r = _ref12[1];
+    return Object.fromEntries(Object.entries(column).filter(function (_ref7) {
+      var _ref8 = _slicedToArray(_ref7, 2),
+        r = _ref8[1];
       return ![null, undefined].includes(r);
-    }).map(function (_ref13) {
-      var _ref14 = _slicedToArray(_ref13, 2),
-        k = _ref14[0],
-        c = _ref14[1];
+    }).map(function (_ref9) {
+      var _ref0 = _slicedToArray(_ref9, 2),
+        k = _ref0[0],
+        c = _ref0[1];
       return [k, _resolveDirection(undefined, c, reverse, fallback)];
     }));
   }

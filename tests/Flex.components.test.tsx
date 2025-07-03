@@ -19,19 +19,26 @@ describe("Verify MUI version", () => {
       expect(async () => await import("../src/FlexGrid2")).not.toThrow();
     }
   });
-  it("should load FlexGrid2 for MUI version 6+", () => {
+  it("should load FlexGrid2 for MUI version 6", () => {
     if (muiVersion >= 6) {
       expect(async () => await import("../src/FlexGrid2")).not.toThrow();
     } else {
       expect(async () => await import("../src/Unstable_FlexGrid2")).not.toThrow();
     }
   });
+  it("should load FlexGrid for MUI version 7+", () => {
+    if (muiVersion >= 7) {
+      expect(async () => await import("../src/FlexGrid")).not.toThrow();
+    }
+  });
 });
 
 const FlexGrid2 =
-  muiVersion > 5
-    ? (await import("../src/FlexGrid2")).createFlexGrid2()
-    : (await import("../src/Unstable_FlexGrid2")).createUnstable_FlexGrid2();
+  muiVersion >= 7
+    ? (await import("../src/FlexGrid")).createFlexGrid()
+    : muiVersion >= 6
+      ? (await import("../src/FlexGrid2")).createFlexGrid2()
+      : (await import("../src/Unstable_FlexGrid2")).createUnstable_FlexGrid2();
 
 const RowTests = [
   () => <FlexBox row />,
@@ -446,7 +453,7 @@ if (muiVersion < 6) {
       expect(() => Grid2_v5PropsTest()).not.toThrow();
     });
   });
-} else {
+} else if (muiVersion === 6) {
   const Grid2_v6PropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
     <FlexGrid2 container spacing={2} ref={gridRef}>
       {/* @ts-ignore */}
@@ -460,9 +467,27 @@ if (muiVersion < 6) {
     </FlexGrid2>
   );
 
-  describe("FlexGrid supports MUIv6+ Grid2 props", () => {
+  describe("FlexGrid supports MUIv6 Grid2 props", () => {
     it("should allow ref and component props", () => {
       expect(() => Grid2_v6PropsTest()).not.toThrow();
+    });
+  });
+} else {
+  const Grid_v7PropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
+    <FlexGrid container spacing={2} ref={gridRef}>
+      {/* @ts-ignore */}
+      <FlexGrid size={8} />
+      {/* @ts-ignore */}
+      <FlexGrid size={{ xs: 4, md: 2 }} />
+      {/* @ts-ignore */}
+      <FlexGrid size={4}>Child text</FlexGrid>
+      {/* @ts-ignore */}
+      <FlexGrid size={8} />
+    </FlexGrid>
+  );
+  describe("FlexGrid supports MUIv7+ Grid props", () => {
+    it("should allow ref and component props", () => {
+      expect(() => Grid_v7PropsTest()).not.toThrow();
     });
   });
 }

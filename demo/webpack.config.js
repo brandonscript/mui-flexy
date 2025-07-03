@@ -9,7 +9,7 @@ const muiMajorVersion = require("@mui/material/version").major;
 console.log("@mui/material version", muiVersion);
 
 const grid2Resolve = path.resolve(
-  `./node_modules/@mui/material/${muiMajorVersion < 6 ? "Unstable_Grid2" : "Grid2"}`
+  `./node_modules/@mui/material/${muiMajorVersion < 6 ? "Unstable_Grid2" : muiMajorVersion >= 7 ? "Grid" : "Grid2"}`,
 );
 
 console.log("Demo webpack.config.js using Grid2 path", grid2Resolve);
@@ -48,20 +48,12 @@ module.exports = {
         exclude: /node_modules/,
         loader: "babel-loader",
         options: {
-          presets: [
-            "@babel/preset-env",
-            ["@babel/preset-react", { runtime: "automatic" }],
-            "@babel/preset-typescript",
-          ],
+          presets: ["@babel/preset-env", ["@babel/preset-react", { runtime: "automatic" }], "@babel/preset-typescript"],
         },
       },
     ],
   },
   stats: {
     modules: false,
-  },
-  externals: {
-    react: "React",
-    "react-dom": "ReactDOM",
   },
 };

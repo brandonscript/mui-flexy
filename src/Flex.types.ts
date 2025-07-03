@@ -1,9 +1,14 @@
-import type { GridOwnProps } from "@mui/material/Grid";
+// @ts-ignore
+import type { GridBaseProps as _GridBaseProps } from "@mui/material/Grid";
+// @ts-ignore
+import type { GridOwnProps as _GridOwnProps } from "@mui/material/Grid2";
 import type { DefaultComponentProps, OverridableTypeMap, OverrideProps } from "@mui/material/OverridableComponent";
 import { Theme as MaterialTheme } from "@mui/material/styles";
 import type { BoxOwnProps, Breakpoint, GridBaseProps, ResponsiveStyleValue, SxProps, SystemProps } from "@mui/system";
 import type { CSSProperties } from "react";
 import React from "react";
+
+type GridOwnProps = _GridOwnProps | _GridBaseProps;
 
 export interface AsComponent<T extends OverridableTypeMap> {
   <RootComponent extends React.ElementType>(

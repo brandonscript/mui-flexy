@@ -1,5 +1,5 @@
 #!/bin/bash
-yarn test
+yarn test:all
 yarn run typecheck
 yarn run lint
 yarn run build:all

@@ -12,8 +12,10 @@ import { FlexBox, type FlexBoxProps, FlexGrid } from "../../src";
 let FlexGrid2 = undefined;
 if (muiVersionMajor < 6) {
   FlexGrid2 = React.lazy(() => import("../../src/Unstable_FlexGrid2"));
-} else {
+} else if (muiVersionMajor === 6) {
   FlexGrid2 = React.lazy(() => import("../../src/FlexGrid2"));
+} else {
+  FlexGrid2 = React.lazy(() => import("../../src/FlexGrid"));
 }
 
 // Or: run `npm link ../` or `yarn link ../` in the ./demo directory
@@ -133,12 +135,22 @@ const colArrow = (
   </span>
 );
 
-const gridColumns = { xs: 12, md: 4, l: 4, xl: 4 };
+// Helper function to handle Grid size props for different MUI versions
+const getGridSizeProps = (sizeObj: Record<string, number>) => {
+  if (muiVersionMajor >= 7) {
+    // For MUI v7+, convert old props to new size format
+    return { size: sizeObj };
+  }
+  // For MUI v5/v6, use the old format
+  return sizeObj;
+};
+
+const gridColumns = getGridSizeProps({ xs: 12, md: 4, lg: 4, xl: 4 });
 const reponsiveFontSizes = { "& pre": { fontSize: { xs: "0.85rem", md: "1.0vw", lg: "0.85rem" } } };
 
 const Header = forwardRef(
   ({ text, subtitle }: { text: string; subtitle?: string }, ref: React.ForwardedRef<HTMLDivElement>) => (
-    <FlexGrid item xs={12} component="header" ref={ref} column gap={0}>
+    <FlexGrid item {...getGridSizeProps({ xs: 12 })} component="header" ref={ref} column gap={0}>
       <Typography component="h2" variant="h5" sx={{ display: "flex", alignItems: "center" }}>
         {text}
         {text.toLowerCase().includes("row") ? rowArrow : text.toLowerCase().includes("column") ? colArrow : ""}
@@ -248,23 +260,16 @@ const Title = () => (
 );
 
 const GridSection = styled((props: FlexGridProps = {}) => (
-  <FlexGrid {...props} container component="section" spacing={[2, 3, 4]} />
+  <FlexGrid {...props} container component="section" spacing={[0.5, 1, 2]} />
 ))(({ theme }) =>
   theme.unstable_sx({
-    "&.MuiGrid-root": {
-      // This adjusts the outer gutter of the grid to match the rest of the page content
-      ml: [-2, -3, -4],
-      maxWidth: "fit-content",
-      width: (theme) => [
-        `calc(100% + ${theme.spacing(2)})`,
-        `calc(100% + ${theme.spacing(3)})`,
-        `calc(100% + ${theme.spacing(4)})`,
-      ],
+    "&.MuiGrid-root, &.MuiGrid2-root": {
+      maxWidth: "100%",
     },
   }),
 );
 
-const Item = styled((props: FlexGridProps = {}) => <FlexGrid {...props} item xs={12} component="div" />)({
+const Item = styled((props: FlexGridProps = {}) => <FlexGrid {...props} item component="div" />)({
   width: "100%",
 });
 
@@ -274,7 +279,7 @@ const BoxSection = styled(FlexBox)(({ theme }) =>
     maxWidth: "100%",
     rowGap: [2, 3, 4],
   }),
-);
+).withComponent("section");
 
 export const useRenderer = () => {
   const [, _render] = useState({});
@@ -317,8 +322,9 @@ const FlexDemo = () => {
           text="Row (responsive)"
           subtitle="Responsive array or object values (resize the window to see different breakpoints)"
         />
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
   y={[ "center", "top", "center", "bottom" ]}\n/>\n
@@ -332,8 +338,9 @@ const FlexDemo = () => {
             <span>{rowEmoji}</span>
           </Inner>
         </Item>
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
   y={{ sm: "top", md: "center", lg: "bottom" }}\n/>`}
@@ -346,8 +353,9 @@ const FlexDemo = () => {
             <span>{rowEmoji}</span>
           </Inner>
         </Item>
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox
   row={[ false, false, true, true, false ]}
   // column={[ true, true, false, false, true ]} <- this is implied
@@ -368,8 +376,9 @@ const FlexDemo = () => {
             <span>{rowEmoji}</span>
           </Inner>
         </Item>
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox
   row={{ xs: false, md: true, xl: false }}
   // column={{ xs: true, md: false, xl: true }} <- this is implied
@@ -409,8 +418,9 @@ const FlexDemo = () => {
           text="Column (responsive)"
           subtitle="Props are array or object values (resize the window to see different breakpoints)"
         />
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox\n\
   x={[ "center", "left", "center", "right" ]}\n\
   y={[ "center", "top", "center", "bottom" ]}\n\
@@ -426,8 +436,9 @@ const FlexDemo = () => {
             <span>{columnEmoji}</span>
           </Inner>
         </Item>
-        <Item xs={12} lg={6}>
+        <Item {...getGridSizeProps({ xs: 12, lg: 6 })}>
           <Code
+            margin="0px 16px"
             code={`<FlexBox\n\
   x={{ sm: "left", md: "center", lg: "right" }}\n\
   y={{ sm: "top", md: "center", lg: "bottom" }}\n\
@@ -449,7 +460,7 @@ const FlexDemo = () => {
         <FlexGrid item x="center" y="center">
           <FlexGrid container spacing={2}>
             {[...Array(12).keys()].map((i) => (
-              <FlexGrid item key={i} xs={12} sm={6} md={4} lg={3} xl={2}>
+              <FlexGrid item key={i} {...getGridSizeProps({ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 })}>
                 <Inner x="center" y="center">
                   <Code
                     code={`<FlexGrid item>
@@ -545,7 +556,7 @@ const FlexDemo = () => {
             <FlexGrid2 container spacing={2}>
               {[...Array(12).keys()].map((i) => (
                 // @ts-ignore - Grid2 props change between v5 and v6
-                <FlexGrid2 key={i} xs={12} sm={6} md={4} lg={3} xl={2} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
+                <FlexGrid2 key={i} size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }}>
                   <Inner x="center" y="center">
                     <Code
                       code={`<FlexGrid2>
@@ -581,7 +592,7 @@ const FlexDemo = () => {
       )}
       <BoxSection className="ref-test" column>
         <Header text="Ref test" ref={ref} />
-        <Inner x="center" y="center" column>
+        <Inner x="center" y="center" column mt={[0.5, 1, 2]}>
           <span>{ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}</span>
           <Code code={ref?.current?.toString()} />
         </Inner>
@@ -592,7 +603,7 @@ const FlexDemo = () => {
           // @ts-expect-error
           const invalidProps = { prop: "invalid" } as FlexBoxProps<"column">;
           return (
-            <FlexBox column>
+            <FlexBox column mt={[0.5, 1, 2]}>
               <Code code={`<FlexBox prop="invalid" />`} margin="0px 16px" />
               {/* @ts-expect-error */}
               <Inner x="center" y="center" column {...invalidProps}>

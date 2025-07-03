@@ -8,3 +8,5 @@ mui-flexy*.tgz
 /.yarn
 /demo/.yarn
 /.npmrc
+demo/dist/*
+dist/_virtual/*

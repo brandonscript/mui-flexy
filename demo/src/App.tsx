@@ -16,10 +16,14 @@ const fontFamily = [
 
 const preFontFamily = ['"SF Mono"', '"Roboto Mono"', "Menlo", '"Source Code Pro"', "monospace"];
 
-const theme = createTheme({
+const baseTheme = createTheme({
   typography: {
     fontFamily: fontFamily.join(","),
   },
+});
+
+const theme = createTheme({
+  ...baseTheme,
   components: {
     MuiCssBaseline: {
       styleOverrides: {

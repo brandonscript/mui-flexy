@@ -9,12 +9,20 @@
   "scripts": {
     "dev": "webpack serve --hot --mode development",
     "build": "webpack --mode production",
-    "lint": "eslint --ext .ts src"
+    "lint": "eslint --ext .ts src",
+    "dev:mui5": "yarn add @mui/material@^5 && yarn dev",
+    "dev:mui6": "yarn add @mui/material@^6 && yarn dev",
+    "dev:mui7": "yarn add @mui/material@^7 && yarn dev",
+    "dev:mui-latest": "yarn add @mui/material@latest && yarn dev",
+    "build:mui5": "yarn add @mui/material@^5 && yarn build",
+    "build:mui6": "yarn add @mui/material@^6 && yarn build",
+    "build:mui7": "yarn add @mui/material@^7 && yarn build",
+    "build:mui-latest": "yarn add @mui/material@latest && yarn build"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@mui/material": "^5 || ^6",
+    "@mui/material": "^7",
     "dev": "^0.1.3",
     "mui-flexy": "*",
     "react": "^18.3.1",

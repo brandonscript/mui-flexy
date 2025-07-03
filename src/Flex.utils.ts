@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { BoxProps, Grid2Props, GridProps } from "@mui/material";
 import { CSSProperties } from "react";
 
@@ -24,13 +25,18 @@ const mapAlignment = (alignment?: _Any): ResponsiveFlexPosition => {
       default:
         return alignment as ResponsiveFlexPosition;
     }
-  } else if (Array.isArray(alignment)) {
-    return alignment.map((a) => mapAlignment(a)) as ResponsiveFlexPosition;
-  } else if (typeof alignment === "object") {
-    return Object.fromEntries(
-      Object.entries(alignment).map(([k, a]) => [k, mapAlignment(a)]),
-    ) as ResponsiveFlexPosition;
   }
+  if (Array.isArray(alignment)) {
+    return alignment.map(mapAlignment) as ResponsiveFlexPosition;
+  }
+  if (typeof alignment === "object") {
+    const mapped: _Any = {};
+    for (const [key, value] of Object.entries(alignment)) {
+      mapped[key] = mapAlignment(value);
+    }
+    return mapped as ResponsiveFlexPosition;
+  }
+  return alignment as ResponsiveFlexPosition;
 };
 
 const mapDirection = (
@@ -55,9 +61,11 @@ because it can cause unexpected alignment and orientation anomalies.`,
   } else if (Array.isArray(direction)) {
     return direction.map((d) => (!d ? "row" : mapDirection(d, reverse))) as ResponsiveFlexDirection;
   } else if (typeof direction === "object") {
-    return Object.fromEntries(
-      Object.entries(direction).map(([k, d]) => [k, mapDirection(d as ResponsiveFlexDirection, reverse)]),
-    ) as ResponsiveFlexDirection;
+    const mapped: _Any = {};
+    for (const [key, value] of Object.entries(direction)) {
+      mapped[key] = mapDirection(value, reverse);
+    }
+    return mapped as ResponsiveFlexDirection;
   }
 };
 

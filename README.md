@@ -7,7 +7,7 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 <a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Version](https://img.shields.io/npm/v/mui-flexy)</a>
 <a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)</a>
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/brandonscript/mui-flexy)
-![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6-blue)
+![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6%20%7C%20v7-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018-8A2BE2)
 
 ## Why?
@@ -109,10 +109,10 @@ import { FlexBox, FlexGrid } from "mui-flex";
 
 ### FlexGrid2
 
-As of v1.2.0, you can also use `FlexGrid2` for MUI v6, which is a drop-in replacement for `@mui/material/Grid2`. Because both v5 and v6 are supported simultaneously in this package, you should use `React.lazy()` to import `FlexGrid2`:
+As of v1.2.0, you can also use `FlexGrid2` for MUI v6+, which is a drop-in replacement for `@mui/material/Grid2` (v6) or `@mui/material/Grid` (v7+). Because v5, v6, and v7 are supported simultaneously in this package, you should use `React.lazy()` to import `FlexGrid2`:
 
 ```jsx
-// @mui/material v6+
+// @mui/material v6+ (includes v7)
 const FlexGrid2 = React.lazy(() => import("mui-flexy/FlexGrid2"));
 // @mui/material v5
 const FlexGrid2 = React.lazy(() => import("mui-flexy/Unstable_FlexGrid2"));
@@ -136,7 +136,7 @@ const FlexGrid2 = muiVersion > 5 ? await import("../src/FlexGrid2") : await impo
 Or import `createFlexGrid2` / `createUnstableFlexGrid2` from `mui-flexy` and export your own `FlexGrid2`:
 
 ```jsx
-// for @mui/material v6+
+// for @mui/material v6+ (includes v7)
 import { createFlexGrid2 } from "mui-flexy/FlexGrid2";
 const FlexGrid2 = createFlexGrid2();
 
@@ -333,7 +333,7 @@ produces {
 
 ## Using a FlexGrid
 
-Like FlexBox, FlexGrid is a drop-in replacement for MUI's Grid component. Note that with @mui/material v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated.
+Like FlexBox, FlexGrid is a drop-in replacement for MUI's Grid component. Note that with @mui/material v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated. In v7, `Grid2` has been moved to the main `Grid` component.
 
 ```jsx
 // Grid (v5), based on @mui/material/Grid
@@ -351,6 +351,7 @@ Like FlexBox, FlexGrid is a drop-in replacement for MUI's Grid component. Note t
 </FlexGrid2>
 
 // Grid2 (v6), based on @mui/material/Grid2
+// Grid2 (v7+), based on @mui/material/Grid
 <FlexGrid2 container x="center" y="center">
   <FlexGrid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
     <Typography>Grids are cool</Typography>

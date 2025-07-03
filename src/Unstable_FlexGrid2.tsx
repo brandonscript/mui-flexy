@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { Grid2Props as Unstable_Grid2Props } from "@mui/material";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import { major as muiVersion } from "@mui/material/version";

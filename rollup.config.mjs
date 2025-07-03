@@ -3,9 +3,10 @@ import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import { readFileSync } from "fs";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
-import muiPkg from "./node_modules/@mui/material/package.json" assert { type: "json" };
+const muiPkg = JSON.parse(readFileSync("./node_modules/@mui/material/package.json", "utf8"));
 
 const muiVersion = muiPkg?.version;
 
@@ -15,11 +16,11 @@ console.log("rollup building mui-flexy for @mui/material version", muiVersion);
 const aliasEntries = muiVersion => [
   {
     find: "@mui/material/Grid2",
-    replacement: `@mui/material/${muiVersion < 6 ? "Unstable_Grid2" : "Grid2"}`,
+    replacement: `@mui/material/${muiVersion < 6 ? "Unstable_Grid2" : muiVersion >= 7 ? "Grid" : "Grid2"}`,
   },
   {
     find: "@mui/material/Unstable_Grid2",
-    replacement: `@mui/material/${muiVersion < 6 ? "Unstable_Grid2" : "Grid2"}`,
+    replacement: `@mui/material/${muiVersion < 6 ? "Unstable_Grid2" : muiVersion >= 7 ? "Grid" : "Grid2"}`,
   },
 ];
 
@@ -31,6 +32,11 @@ const replaceEntries = muiVersion => ({
   ...(muiVersion < 6
     ? {
         "@mui/material/Grid2": "@mui/material/Unstable_Grid2",
+      }
+    : muiVersion >= 7
+    ? {
+        "@mui/material/Grid2": "@mui/material/Grid",
+        "@mui/material/Unstable_Grid2": "@mui/material/Grid",
       }
     : {
         "@mui/material/Unstable_Grid2": "@mui/material/Grid2",
