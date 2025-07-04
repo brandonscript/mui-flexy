@@ -13,6 +13,8 @@ export interface AsComponent<T extends OverridableTypeMap> {
     (props: DefaultComponentProps<T>): React.JSX.Element | null;
 }
 export type FlexOrientation = "row" | "column";
+export type ColumnFlexProps<D extends React.ElementType = "div"> = FlexBoxColumnProps<D>;
+export type RowFlexProps<D extends React.ElementType = "div"> = FlexBoxRowProps<D>;
 type JustifyContent = "flex-start" | "flex-end" | "center" | "space-between" | "space-around" | "space-evenly" | "initial" | "inherit" | "unset";
 type AlignItems = "flex-start" | "flex-end" | "center" | "stretch" | "baseline" | "initial" | "inherit" | "unset";
 export type HorizontalAlign = "left" | "right" | "center";
@@ -59,60 +61,124 @@ type ColumnIsResponsive = FlexCommonProps & {
     y?: YColumnAlign | YRowAlign | ResponsiveAlign;
 };
 export type InferFlexProps = FlexColumnProps | ColumnIsResponsive | FlexRowProps | RowIsResponsive;
-type OnlyRow<T> = Omit<T, "row" | "column"> & {
+interface FlexBoxBaseProps<D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> extends BoxOwnProps<MaterialTheme> {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+}
+export interface FlexBoxRowProps<D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> extends BoxOwnProps<MaterialTheme> {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
     row?: true | StrictResponsiveStyleValue<boolean>;
     column?: false | never | StrictResponsiveStyleValue<boolean>;
-};
-type OnlyColumn<T> = Omit<T, "row" | "column"> & {
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
+    y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+}
+export interface FlexBoxColumnProps<D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> extends BoxOwnProps<MaterialTheme> {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
     column?: true | StrictResponsiveStyleValue<boolean>;
     row?: false | never | StrictResponsiveStyleValue<boolean>;
-};
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
+    y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
+}
+export type FlexBoxProps<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> = O extends "row" ? FlexBoxRowProps<D, P> : O extends "column" ? FlexBoxColumnProps<D, P> : FlexBoxBaseProps<D, P> & InferFlexProps;
 export interface FlexBoxTypeMap<O extends FlexOrientation | undefined = undefined, P = {}, D extends React.ElementType = "div", T extends object = MaterialTheme> {
     props: P & BoxOwnProps<T> & {
         sx?: SxProps<MaterialTheme>;
     } & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
     defaultComponent: D;
 }
-export type FlexBoxProps<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = FlexBoxTypeMap<O>["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OverrideProps<FlexBoxTypeMap<O, P, D, MaterialTheme>, D>;
-export type FlexBoxRowProps<D extends React.ElementType = FlexBoxTypeMap<"row">["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OnlyRow<FlexBoxProps<"row", D, P>>;
-export type FlexBoxColumnProps<D extends React.ElementType = FlexBoxTypeMap<"column">["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OnlyColumn<FlexBoxProps<"column", D, P>>;
 /**
  * @deprecated Use the FlexGrid2 (via [`Grid2`](https://mui.com/material-ui/react-grid2/)) component instead.
  */
+export interface FlexGridRowProps<D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> extends GridOwnProps {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+    row?: true | StrictResponsiveStyleValue<boolean>;
+    column?: false | never | StrictResponsiveStyleValue<boolean>;
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
+    y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+}
+/**
+ * @deprecated Use the FlexGrid2 (via [`Grid2`](https://mui.com/material-ui/react-grid2/)) component instead.
+ */
+export interface FlexGridColumnProps<D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> extends GridOwnProps {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+    column?: true | StrictResponsiveStyleValue<boolean>;
+    row?: false | never | StrictResponsiveStyleValue<boolean>;
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
+    y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
+}
+/**
+ * @deprecated Use the FlexGrid2 (via [`Grid2`](https://mui.com/material-ui/react-grid2/)) component instead.
+ */
+export type FlexGridProps<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = "div", P = {
+    component?: React.ElementType;
+}> = O extends "row" ? FlexGridRowProps<D, P> : O extends "column" ? FlexGridColumnProps<D, P> : GridOwnProps & {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+} & InferFlexProps;
 export interface FlexGridTypeMap<O extends FlexOrientation | undefined = undefined, P = {}, D extends React.ElementType = "div"> {
     props: P & GridOwnProps & {
         sx?: SxProps<MaterialTheme>;
     } & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
     defaultComponent: D;
 }
-export type FlexGridProps<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = FlexGridTypeMap<O>["defaultComponent"], P = {
+export interface FlexGrid2RowProps<D extends React.ElementType = "div", P = {
     component?: React.ElementType;
-}> = OverrideProps<FlexGridTypeMap<O, P, D>, D>;
-export type FlexGridRowProps<D extends React.ElementType = FlexGridTypeMap<"row">["defaultComponent"], P = {
+}> extends GridBaseProps, SystemProps<MaterialTheme> {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+    row?: true | StrictResponsiveStyleValue<boolean>;
+    column?: false | never | StrictResponsiveStyleValue<boolean>;
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
+    y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+}
+export interface FlexGrid2ColumnProps<D extends React.ElementType = "div", P = {
     component?: React.ElementType;
-}> = OnlyRow<FlexGridProps<"row", D, P>>;
-export type FlexGridColumnProps<D extends React.ElementType = FlexGridTypeMap<"column">["defaultComponent"], P = {
+}> extends GridBaseProps, SystemProps<MaterialTheme> {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+    column?: true | StrictResponsiveStyleValue<boolean>;
+    row?: false | never | StrictResponsiveStyleValue<boolean>;
+    reverse?: boolean;
+    nowrap?: boolean;
+    x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
+    y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
+}
+export type FlexGrid2Props<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = "div", P = {
     component?: React.ElementType;
-}> = OnlyColumn<FlexGridProps<"column", D, P>>;
+}> = O extends "row" ? FlexGrid2RowProps<D, P> : O extends "column" ? FlexGrid2ColumnProps<D, P> : GridBaseProps & SystemProps<MaterialTheme> & {
+    sx?: SxProps<MaterialTheme>;
+    component?: D;
+} & InferFlexProps;
 export interface FlexGrid2TypeMap<O extends FlexOrientation | undefined = undefined, P = {}, D extends React.ElementType = "div"> {
     props: P & GridBaseProps & {
         sx?: SxProps<MaterialTheme>;
     } & SystemProps<MaterialTheme> & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
     defaultComponent: D;
 }
-export type FlexGrid2Props<O extends FlexOrientation | undefined = undefined, D extends React.ElementType = FlexGrid2TypeMap<O>["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OverrideProps<FlexGrid2TypeMap<O, P, D>, D>;
-export type FlexGrid2RowProps<D extends React.ElementType = FlexGrid2TypeMap<"row">["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OnlyRow<FlexGrid2Props<"row", D, P>>;
-export type FlexGrid2ColumnProps<D extends React.ElementType = FlexGrid2TypeMap<"column">["defaultComponent"], P = {
-    component?: React.ElementType;
-}> = OnlyColumn<FlexGrid2Props<"column", D, P>>;
 export {};
