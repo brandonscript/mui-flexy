@@ -6,10 +6,14 @@ import { TS_TRANSFORM_PATTERN } from "ts-jest";
 
 /** @type {import('jest').Config} */
 export default {
-  // preset: "ts-jest",
+  // Root configuration for monorepo
+  projects: ["<rootDir>/packages/core", "<rootDir>/packages/v5", "<rootDir>/packages/v6", "<rootDir>/packages/v7"],
+
+  // Global settings
   testEnvironment: "jsdom",
   extensionsToTreatAsEsm: [".ts", ".tsx"],
-  // silent: true,
+
+  // Transform configuration
   transform: {
     [TS_TRANSFORM_PATTERN]: [
       "ts-jest",
@@ -18,20 +22,30 @@ export default {
         useESM: true,
       },
     ],
-    // "@mui/material/styled/.*\\.js$": "babel-jest",
-    // "@mui/system/createStyled/.*\\.js$": "babel-jest",
-    // "^.+\\.(js|jsx)$": "babel-jest",
   },
-  setupFilesAfterEnv: ["@testing-library/jest-dom", "<rootDir>/jest-setup.ts"],
-  // snapshotSerializers: [
-  //   '@emotion/jest/serializer'
-  // ]
-  // transformIgnorePatterns: [
-  //   "node_modules/@mui/material",
-  // ],
-  // moduleNameMapper: {
-  //   "^@emotion/styled": "@mui/material/styles/styled.js",
 
-  // },
-  // exclude: ["dist/**", "demo/**", ".rollup.cache/**"],
+  // Global setup
+  setupFilesAfterEnv: ["@testing-library/jest-dom", "<rootDir>/jest-setup.ts"],
+
+  // Module resolution for monorepo
+  moduleNameMapper: {
+    "^@mui-flexy/core$": "<rootDir>/packages/core/src",
+    "^@mui-flexy/core/(.*)$": "<rootDir>/packages/core/src/$1",
+  },
+
+  // Coverage collection
+  collectCoverageFrom: [
+    "packages/*/src/**/*.{ts,tsx}",
+    "!packages/*/src/**/*.d.ts",
+    "!packages/*/src/**/*.test.{ts,tsx}",
+  ],
+
+  // Test match patterns
+  testMatch: ["<rootDir>/packages/*/src/**/*.test.{ts,tsx}"],
+
+  // Ignore patterns
+  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/lib/", "/build/"],
+
+  // Transform ignore patterns
+  transformIgnorePatterns: ["node_modules/(?!(@mui|@emotion)/)"],
 };

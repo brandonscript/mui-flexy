@@ -19,25 +19,75 @@
       ]
     },
     {
-      "name": "Demo: webpack dev server",
+      "name": "Demo: Main (v6 compatible)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demo",
       "request": "launch",
-      "command": "yarn add '@mui/material@^5 || ^6' && yarn && yarn dev"
+      "command": "yarn install && yarn dev"
     },
     {
-      "name": "Demo: (force v5)",
+      "name": "Test: v5 Package (watch)",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demo",
+      "cwd": "${workspaceFolder}/packages/v5",
       "request": "launch",
-      "command": "yarn add @mui/material@^5 && yarn && yarn dev"
+      "command": "yarn test --watch"
     },
     {
-      "name": "Demo: (force v6)",
+      "name": "Test: v6 Package (watch)",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demo",
+      "cwd": "${workspaceFolder}/packages/v6",
       "request": "launch",
-      "command": "yarn add @mui/material@^6 && yarn && yarn dev"
+      "command": "yarn test --watch"
+    },
+    {
+      "name": "Test: v7 Package (watch)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/packages/v7",
+      "request": "launch",
+      "command": "yarn test --watch"
+    },
+    {
+      "name": "Test: Core Package (watch)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/packages/core",
+      "request": "launch",
+      "command": "yarn test --watch"
+    },
+    {
+      "name": "Demo: v5 Server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demos/v5",
+      "request": "launch",
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3005",
+        "uriFormat": "http://localhost:3005",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Demo: v6 Server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demos/v6",
+      "request": "launch",
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3006",
+        "uriFormat": "http://localhost:3006",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Demo: v7 Server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demos/v7",
+      "request": "launch",
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3007",
+        "uriFormat": "http://localhost:3007",
+        "action": "openExternally"
+      }
     },
     {
       "name": "Docs: http-server",
@@ -59,6 +109,27 @@
       "cwd": "${workspaceFolder}/docs",
       "request": "launch",
       "command": "yarn run build:docs && npx serve ./ -p 8036 -c serve.json"
+    },
+    {
+      "name": "Build: All Packages",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn build"
+    },
+    {
+      "name": "Test: All Packages",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn test"
+    },
+    {
+      "name": "Test: Watch Mode",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn test --watch"
     },
     {
       "type": "node",

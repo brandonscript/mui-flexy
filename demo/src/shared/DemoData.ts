@@ -1,0 +1,76 @@
+/**
+ * Shared demo data and constants
+ */
+
+export const rowEmoji = "🚣";
+export const columnEmoji = "🏛";
+
+export const rowCombinations: Array<[string, string]> = [
+  ["left", "top"],
+  ["left", "center"],
+  ["left", "bottom"],
+  ["left", "flex-start"],
+  ["left", "flex-end"],
+  ["left", "stretch"],
+  ["left", "baseline"],
+  ["right", "top"],
+  ["right", "center"],
+  ["right", "bottom"],
+  ["right", "flex-start"],
+  ["right", "flex-end"],
+  ["right", "stretch"],
+  ["right", "baseline"],
+  ["center", "top"],
+  ["center", "center"],
+  ["center", "bottom"],
+  ["center", "flex-start"],
+  ["center", "flex-end"],
+  ["center", "stretch"],
+  ["center", "baseline"],
+  ["space-between", "top"],
+  ["space-between", "center"],
+  ["space-between", "bottom"],
+  ["space-around", "top"],
+  ["space-around", "center"],
+  ["space-around", "bottom"],
+  ["space-evenly", "top"],
+  ["space-evenly", "center"],
+  ["space-evenly", "bottom"],
+];
+
+export const columnCombinations: Array<[string, string]> = [
+  ["top", "left"],
+  ["top", "center"],
+  ["top", "right"],
+  ["top", "flex-start"],
+  ["top", "flex-end"],
+  ["top", "stretch"],
+  ["top", "baseline"],
+  ["bottom", "left"],
+  ["bottom", "center"],
+  ["bottom", "right"],
+  ["bottom", "flex-start"],
+  ["bottom", "flex-end"],
+  ["bottom", "stretch"],
+  ["bottom", "baseline"],
+  ["center", "left"],
+  ["center", "center"],
+  ["center", "right"],
+  ["center", "flex-start"],
+  ["center", "flex-end"],
+  ["center", "stretch"],
+  ["center", "baseline"],
+  ["space-between", "left"],
+  ["space-between", "center"],
+  ["space-between", "right"],
+  ["space-around", "left"],
+  ["space-around", "center"],
+  ["space-around", "right"],
+  ["space-evenly", "left"],
+  ["space-evenly", "center"],
+  ["space-evenly", "right"],
+];
+
+// Arrow components are exported from DemoComponents.tsx instead
+
+export const reponsiveFontSizes = { "& pre": { fontSize: { xs: "0.85rem", md: "1.0vw", lg: "0.85rem" } } };

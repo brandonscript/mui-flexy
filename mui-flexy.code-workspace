@@ -2,7 +2,23 @@
   "folders": [
     {
       "path": ".",
-      "name": "🏗️ mui-flexy",
+      "name": "🐙 mui-flexy"
+    },
+    {
+      "path": "packages/core",
+      "name": "📦 @mui-flexy/core"
+    },
+    {
+      "path": "packages/v5",
+      "name": "📦 mui-flexy-v5"
+    },
+    {
+      "path": "packages/v6",
+      "name": "📦 mui-flexy-v6"
+    },
+    {
+      "path": "packages/v7",
+      "name": "📦 mui-flexy-v7"
     },
     {
       "path": "demo",
@@ -45,22 +61,33 @@
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
-    "typescript.tsdk": "🏗️ mui-flexy/node_modules/typescript/lib",
+    "typescript.tsdk": "🐙 mui-flexy/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
+      "source.fixAll.eslint": "explicit"
     },
     "files.exclude": {
       "dist": true,
       "demo": true,
       "docs": true,
+      "**/node_modules": true,
+      "**/.yarn": true,
+      "**/dist": true,
+      "**/lib": true,
+      "**/build": true,
+      "**/*.tsbuildinfo": true
     },
     "search.exclude": {
       "**/node_modules": true,
       "dist": true,
       "**/.yarn": true,
-    }
+      "**/dist": true,
+      "**/lib": true,
+      "**/build": true
+    },
+    "jest.jestCommandLine": "yarn test",
+    "jest.runMode": "on-save",
   }
 }

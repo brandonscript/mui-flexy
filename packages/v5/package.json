@@ -1,0 +1,52 @@
+{
+  "name": "mui-flexy-v5",
+  "version": "1.2.4",
+  "description": "A flexbox convenience component for Material UI v5 Box and Grid with handy shorthand props",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npx rollup -c rollup.config.mjs",
+    "typecheck": "npx tsc --noEmit",
+    "test": "npx jest --passWithNoTests"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@mui/material": "^5.0.0",
+    "@mui/system": "^5.0.0",
+    "react": "^17.0.0 || ^18.0.0"
+  },
+  "dependencies": {
+    "@mui-flexy/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.20",
+    "rollup": "^4.39.0",
+    "typescript": "^5.8.3"
+  },
+  "repository": "https://github.com/brandonscript/mui-flexy",
+  "author": "github.com/brandonscript",
+  "license": "MIT",
+  "keywords": [
+    "mui",
+    "material-ui",
+    "react",
+    "flexbox",
+    "flex",
+    "layout",
+    "grid",
+    "box",
+    "v5"
+  ]
+}

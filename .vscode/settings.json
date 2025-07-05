@@ -8,31 +8,61 @@
     "source.fixAll.eslint": "always"
   },
   "eslint.options": {
-    "overrideConfigFile": "eslint.config.js",
+    "overrideConfigFile": "eslint.config.js"
   },
-  // "eslint.workingDirectories": [
-  //   "./src",
-  //   "./tests"
-  // ],
   "prettier.printWidth": 100,
   "testing.defaultGutterClickAction": "contextMenu",
   "[json]": {
     "editor.formatOnSave": true
   },
-  "jest.runMode": "on-demand",
-  "jest.debugCodeLens.showWhenTestStateIn": [
-    "pass",
-    "fail",
-    "unknown"
-  ],
-  "jest.jestCommandLine": "NODE_OPTIONS=\"--experimental-vm-modules\" node_modules/.bin/jest",
-  "jest.rootPath": ".",
-  "jest.nodeEnv": {
-    "NODE_ENV": "test",
-    "NODE_OPTIONS": "--experimental-vm-modules"
-  },
-  "jest.useJest30": true,
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  // Jest configuration for monorepo - Jest v30 compatible
+  "jest.jestCommandLine": "yarn test",
+  "jest.rootPath": ".",
+  "jest.runMode": "on-save",
+  // Jest v30 compatibility - force modern CLI args
+  "jest.useDashedArgs": true,
+  "jest.shell": {
+    "path": "/bin/zsh",
+    "args": []
+  },
+  // Test discovery settings
+  "jest.disabledWorkspaceFolders": [],
+  "jest.enabledWorkspaceFolders": [
+    "packages/core",
+    "packages/v5",
+    "packages/v6",
+    "packages/v7"
+  ],
+  // Minimal Jest settings for v30 compatibility
+  "jest.pathToConfig": "jest.config.js",
+  "jest.restartJestOnSnapshotUpdate": true,
+  "jest.outputConfig": {
+    "revealOutput": "on-run",
+    "revealWithFocus": "test-results",
+    "clearOnRun": "terminal"
+  },
+  // Testing panel settings
+  "testing.openTesting": "neverOpen",
+  "testing.automaticallyOpenPeekView": "never",
+  "testing.followRunningTest": false,
+  // File exclusions for better performance
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/.yarn": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/build": true,
+    "**/*.tsbuildinfo": true
+  },
+  // Search exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.yarn": true,
+    "**/dist": true,
+    "**/lib": true,
+    "**/build": true
   }
 }

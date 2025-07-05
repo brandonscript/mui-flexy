@@ -1,0 +1,374 @@
+{
+  "config": {
+    "configFile": "/Users/brandon/Dev/mui-flexy/playwright.config.ts",
+    "rootDir": "/Users/brandon/Dev/mui-flexy/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": true,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 4
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/brandon/Dev/mui-flexy/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 4
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/brandon/Dev/mui-flexy/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.53.2",
+    "workers": 5,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "console-validation.spec.ts",
+      "file": "console-validation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Console Validation Tests",
+          "file": "console-validation.spec.ts",
+          "line": 15,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Demo v5 should have no console errors or warnings",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6303,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== Console Analysis for v5 ===\n"
+                        },
+                        {
+                          "text": "Total messages: 3\n"
+                        },
+                        {
+                          "text": "Errors: 0\n"
+                        },
+                        {
+                          "text": "Warnings: 0\n"
+                        },
+                        {
+                          "text": "\n📋 All Console Messages:\n"
+                        },
+                        {
+                          "text": "  1. [INFO] [webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.\n"
+                        },
+                        {
+                          "text": "  2. [LOG] [HMR] Waiting for update signal from WDS...\n"
+                        },
+                        {
+                          "text": "  3. [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Navigate to v5 demo",
+                          "duration": 1289
+                        },
+                        {
+                          "title": "Wait for React app to render",
+                          "duration": 3079
+                        },
+                        {
+                          "title": "Validate console messages",
+                          "duration": 3
+                        },
+                        {
+                          "title": "Validate page errors",
+                          "duration": 1
+                        },
+                        {
+                          "title": "Capture screenshot",
+                          "duration": 391
+                        }
+                      ],
+                      "startTime": "2025-07-05T05:08:59.836Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8f1d08fd09f41f010863-409ea6b405e328d9ea8d",
+              "file": "console-validation.spec.ts",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Demo v6 should have no console errors or warnings",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 6221,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== Console Analysis for v6 ===\n"
+                        },
+                        {
+                          "text": "Total messages: 3\n"
+                        },
+                        {
+                          "text": "Errors: 0\n"
+                        },
+                        {
+                          "text": "Warnings: 0\n"
+                        },
+                        {
+                          "text": "\n📋 All Console Messages:\n"
+                        },
+                        {
+                          "text": "  1. [INFO] [webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.\n"
+                        },
+                        {
+                          "text": "  2. [LOG] [HMR] Waiting for update signal from WDS...\n"
+                        },
+                        {
+                          "text": "  3. [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Navigate to v6 demo",
+                          "duration": 1142
+                        },
+                        {
+                          "title": "Wait for React app to render",
+                          "duration": 3077
+                        },
+                        {
+                          "title": "Validate console messages",
+                          "duration": 1
+                        },
+                        {
+                          "title": "Validate page errors",
+                          "duration": 1
+                        },
+                        {
+                          "title": "Capture screenshot",
+                          "duration": 732
+                        }
+                      ],
+                      "startTime": "2025-07-05T05:08:59.808Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8f1d08fd09f41f010863-3e062d1beaf979fca7c5",
+              "file": "console-validation.spec.ts",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "Demo v7 should have no console errors or warnings",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 8120,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n=== Console Analysis for v7 ===\n"
+                        },
+                        {
+                          "text": "Total messages: 3\n"
+                        },
+                        {
+                          "text": "Errors: 0\n"
+                        },
+                        {
+                          "text": "Warnings: 0\n"
+                        },
+                        {
+                          "text": "\n📋 All Console Messages:\n"
+                        },
+                        {
+                          "text": "  1. [INFO] [webpack-dev-server] Server started: Hot Module Replacement enabled, Live Reloading enabled, Progress disabled, Overlay enabled.\n"
+                        },
+                        {
+                          "text": "  2. [LOG] [HMR] Waiting for update signal from WDS...\n"
+                        },
+                        {
+                          "text": "  3. [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "steps": [
+                        {
+                          "title": "Navigate to v7 demo",
+                          "duration": 3054
+                        },
+                        {
+                          "title": "Wait for React app to render",
+                          "duration": 3086
+                        },
+                        {
+                          "title": "Validate console messages",
+                          "duration": 2
+                        },
+                        {
+                          "title": "Validate page errors",
+                          "duration": 1
+                        },
+                        {
+                          "title": "Capture screenshot",
+                          "duration": 587
+                        }
+                      ],
+                      "startTime": "2025-07-05T05:08:59.818Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8f1d08fd09f41f010863-f6213c76da0cad5e5a2a",
+              "file": "console-validation.spec.ts",
+              "line": 17,
+              "column": 5
+            },
+            {
+              "title": "All demos should be accessible simultaneously",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4848,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ All three demos are running simultaneously without conflicts\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-07-05T05:08:59.825Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "8f1d08fd09f41f010863-aaa7a64be83e5b2ba90d",
+              "file": "console-validation.spec.ts",
+              "line": 111,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-07-05T05:08:53.558Z",
+    "duration": 15393.107999999998,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

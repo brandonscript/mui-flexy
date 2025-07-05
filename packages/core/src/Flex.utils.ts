@@ -256,9 +256,22 @@ export const mapFlexProps = <P extends MappableFlexProps = MappableFlexProps>(
   const direction = resolveDirection(row, column, reverse, flexDirection as ResponsiveFlexDirection);
 
   const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
-  const flexProps = { display: rest.display || "flex", whiteSpace };
   const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`;
 
+  // Handle Grid2 differently - it uses CSS Grid, not flexbox
+  if (componentName === "Grid2") {
+    // For Grid2, we don't apply flex properties or alignments
+    // Grid2 handles its own layout through the container/item system
+    return {
+      ...rest,
+      whiteSpace,
+      className,
+      ref,
+    } as unknown as P;
+  }
+
+  // For Box and Grid components, apply flex properties
+  const flexProps = { display: rest.display || "flex", whiteSpace };
   const alignments = resolveAlignment(direction, x, y);
 
   return {
@@ -270,6 +283,9 @@ export const mapFlexProps = <P extends MappableFlexProps = MappableFlexProps>(
     ref,
   } as unknown as P;
 };
+
+// Export utility functions individually
+export { mapAlignment, mapDirection, resolveDirection };
 
 export const _test = {
   mapAlignment,

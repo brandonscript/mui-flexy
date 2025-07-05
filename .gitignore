@@ -8,5 +8,49 @@ mui-flexy*.tgz
 /.yarn
 /demo/.yarn
 /.npmrc
+
+# Build outputs
 demo/dist/*
 dist/_virtual/*
+/packages/*/dist/*
+/packages/*/lib/*
+/packages/*/build/*
+
+# Package tarballs
+/packages/*/*.tgz
+@mui-flexy*.tgz
+
+# TypeScript build info
+/packages/*/*.tsbuildinfo
+
+# Rollup cache
+/packages/*/.rollup.cache
+
+# Yarn cache and install state
+/packages/*/.yarn
+/packages/*/.pnp.*
+
+# Coverage reports
+/packages/*/coverage/*
+/coverage/*
+
+# Test outputs
+/packages/*/test-results/*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Demo build outputs
+/packages/demo-*/dist/*
+/packages/demo-*/build/*

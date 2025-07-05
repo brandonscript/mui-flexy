@@ -54,16 +54,30 @@ You can just do:
 
 ### Install
 
+Choose the package that matches your MUI version:
+
 ```shell
-yarn add mui-flexy
+# For @mui/material v5
+yarn add mui-flexy-v5
 # or
-npm install mui-flexy
+npm install mui-flexy-v5
+
+# For @mui/material v6
+yarn add mui-flexy-v6
+# or
+npm install mui-flexy-v6
+
+# For @mui/material v7
+yarn add mui-flexy-v7
+# or
+npm install mui-flexy-v7
 ```
 
 > Notes:
 >
 > - This lib was designed for TypeScript, so please file a bug or PR if you find any issues using it with untyped JS.
 > - As of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
+> - Each package is optimized for its specific MUI version, resulting in smaller bundle sizes and better performance.
 
 ### Dependencies
 
@@ -96,11 +110,19 @@ const App = () => (
 
 ### Basic usage
 
-Import the `FlexBox` or `FlexGrid` components from `mui-flexy` and use them in your app as you would with MUI's `Box` or `Grid` components:
+Import the `FlexBox` or `FlexGrid` components from the appropriate version package and use them in your app as you would with MUI's `Box` or `Grid` components:
 
 ```jsx
 import { Typography } from "@mui/material"; // or use a <p> if you don't like fun typography
-import { FlexBox, FlexGrid } from "mui-flex";
+
+// For MUI v5
+import { FlexBox, FlexGrid } from "mui-flexy-v5";
+
+// For MUI v6
+import { FlexBox, FlexGrid } from "mui-flexy-v6";
+
+// For MUI v7
+import { FlexBox, FlexGrid } from "mui-flexy-v7";
 
 <FlexBox x="top" y="center">
   <Typography>Hello, Bajor</Typography>
@@ -109,40 +131,34 @@ import { FlexBox, FlexGrid } from "mui-flex";
 
 ### FlexGrid2
 
-As of v1.2.0, you can also use `FlexGrid2` for MUI v6+, which is a drop-in replacement for `@mui/material/Grid2` (v6) or `@mui/material/Grid` (v7+). Because v5, v6, and v7 are supported simultaneously in this package, you should use `React.lazy()` to import `FlexGrid2`:
+`FlexGrid2` is available for MUI v6+ and is a drop-in replacement for `@mui/material/Grid2` (v6) or `@mui/material/Grid` (v7+). With the new package structure, you can import it directly:
 
 ```jsx
-// @mui/material v6+ (includes v7)
-const FlexGrid2 = React.lazy(() => import("mui-flexy/FlexGrid2"));
-// @mui/material v5
-const FlexGrid2 = React.lazy(() => import("mui-flexy/Unstable_FlexGrid2"));
+// For MUI v6 (uses Grid2)
+import { FlexBox, FlexGrid2 } from "mui-flexy-v6";
 
-// Then use it in a <Suspense> block:
-<Suspense fallback={<div>{/* Loading... */}</div>}>
-  <FlexGrid2 container x="center" y="center">
-    <FlexGrid2 item xs={12} sm={6} md={4} lg={3}>
-      <Typography>Grids are cool</Typography>
-    </FlexGrid2>
+// For MUI v7 (uses Grid)
+import { FlexBox, FlexGrid } from "mui-flexy-v7";
+
+// Usage is the same across versions:
+<FlexGrid2 container x="center" y="center">
+  <FlexGrid2 item xs={12} sm={6} md={4} lg={3}>
+    <Typography>Grids are cool</Typography>
   </FlexGrid2>
-</Suspense>;
+</FlexGrid2>;
 ```
 
-If your transpiler supports top-level `await`, you can also use `await import("mui-flexy/FlexGrid2")`:
+> **Note for MUI v5 users**: Grid2 is not available in MUI v5. Use the regular `FlexGrid` component instead:
 
 ```jsx
-const FlexGrid2 = muiVersion > 5 ? await import("../src/FlexGrid2") : await import("../src/Unstable_FlexGrid2");
-```
+// For MUI v5 (uses Grid)
+import { FlexBox, FlexGrid } from "mui-flexy-v5";
 
-Or import `createFlexGrid2` / `createUnstableFlexGrid2` from `mui-flexy` and export your own `FlexGrid2`:
-
-```jsx
-// for @mui/material v6+ (includes v7)
-import { createFlexGrid2 } from "mui-flexy/FlexGrid2";
-const FlexGrid2 = createFlexGrid2();
-
-// for @mui/material v5
-import { createUnstable_FlexGrid2 } from "mui-flexy/Unstable_FlexGrid2";
-const FlexGrid2 = createUnstable_FlexGrid2();
+<FlexGrid container x="center" y="center">
+  <FlexGrid item xs={12} sm={6} md={4} lg={3}>
+    <Typography>Grids are cool</Typography>
+  </FlexGrid>
+</FlexGrid>;
 ```
 
 ## More usage & features

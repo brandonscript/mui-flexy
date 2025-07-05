@@ -1,0 +1,37 @@
+{
+  "name": "mui-flexy-v6",
+  "version": "1.2.4",
+  "description": "A flexbox convenience component for Material UI v6 Box and Grid with handy shorthand props",
+  "type": "module",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "yarn clean && npx rollup -c rollup.config.mjs && npx tsc -p tsconfig.json",
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --config jest.config.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@mui/material": "^6.0.0",
+    "@mui/system": "^6.0.0",
+    "react": "^17 || ^18 || ^19",
+    "react-dom": "^17 || ^18 || ^19",
+    "typescript": ">=5.4 || >=5.9.0-dev"
+  },
+  "dependencies": {
+    "@mui-flexy/core": "workspace:*"
+  }
+}
