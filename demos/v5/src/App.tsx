@@ -1,50 +1,32 @@
-import { Link, Typography } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { createTheme, responsiveFontSizes, ThemeProvider } from "@mui/material/styles";
+import { useEffect, useRef } from "react";
 
-import {
-  columnCombinations,
-  columnEmoji,
-  DemoCode,
-  reponsiveFontSizes,
-  rowCombinations,
-  rowEmoji,
-} from "../../../packages/demo-shared/src";
 // @ts-ignore
 import packageJson from "../../../packages/v5/package.json";
 import { FlexBox, FlexGrid } from "../../../packages/v5/src";
+import {
+  BasicGridTitle,
+  ColumnBasicTitle,
+  columnCombinations,
+  columnEmoji,
+  ComplexPropsTitle,
+  createDemoInner,
+  DemoCode,
+  DemoDescription,
+  DemoTitle,
+  GridTemplatingTitle,
+  RefTestTitle,
+  reponsiveFontSizes,
+  RowBasicTitle,
+  rowCombinations,
+  rowEmoji,
+  useRenderer,
+} from "../../shared";
 
-const theme = createTheme();
+const theme = responsiveFontSizes(createTheme());
 
-const Inner = ({ children, ...props }: any) => (
-  <FlexBox
-    {...props}
-    sx={{
-      minHeight: props?.minHeight ?? 120,
-      border: "1.5px solid #e2ebf8",
-      borderRadius: "4px",
-      flexGrow: 1,
-      gap: "4px",
-      padding: "4px",
-      backgroundColor: "#fff",
-      "& > span": {
-        backgroundColor: "#f5f5f5",
-        paddingLeft: "4px",
-        paddingRight: "4px",
-        borderRadius: "4px",
-      },
-      ...props.sx,
-    }}
-  >
-    {children}
-  </FlexBox>
-);
-
-const useRenderer = () => {
-  const [, _render] = useState({});
-  return useCallback(() => _render({}), []);
-};
+const Inner = createDemoInner(FlexBox);
 
 const App = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -59,60 +41,15 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <FlexBox width="100vw" p={[2, 3, 4]} gap={[2, 3, 4]} x="center" component="main" sx={{ bgcolor: "#fff" }} column>
+      <FlexBox width="100vw" p={[2, 3, 4]} gap={[1, 2, 2]} x="center" component="main" sx={{ bgcolor: "#fff" }} column>
         <FlexBox x="left" y="center" column>
-          <FlexBox component={Typography} variant="h4" row x="left" y="center" gap={2}>
-            <FlexBox
-              width={100}
-              height={100}
-              mb={2}
-              ml={-1}
-              column
-              component="img"
-              src="/apple-touch-icon.png"
-              alt="mui-flexy logo"
-            />
-            mui-flexy v{packageJson.version} for
-            <Link target="_blank" href="https://mui.com/" sx={{ ml: -0.75 }}>
-              @mui/material^5
-            </Link>
-          </FlexBox>
-          <Typography variant="body1" component="div">
-            mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily align and distribute
-            flexy items in a space in a way that doesn't make you want to pull your hair out trying to remember whether
-            to use <DemoCode inline>justify-content</DemoCode>
-            {" or "}
-            <DemoCode inline>align-items</DemoCode>. Using a simple and consistent x, y coordinate system, you can stop
-            worrying about the CSS working group's choices and get on with your life of centering divs.
-            <br />
-            <br />
-            {"Flex components inherit from either "}
-            <Link target="_blank" href="https://mui.com/material-ui/react-box/">
-              Box
-            </Link>{" "}
-            or{" "}
-            <Link target="_blank" href="https://mui.com/material-ui/react-grid">
-              Grid
-            </Link>
-            {", depending on your needs. Simply use "}
-            <DemoCode inline>{"<FlexBox />"}</DemoCode>
-            {" or "}
-            <DemoCode inline>{"<FlexGrid />"}</DemoCode>
-            {" as you would Box or Grid. The default axis is "}
-            <DemoCode inline>row</DemoCode>
-            {", but for good hygiene, you might want to set "}
-            <DemoCode inline>row</DemoCode>
-            {" anyway. If you want a column, just pass a "}
-            <DemoCode inline>column</DemoCode>
-            {"prop, and Flexy will do the hard thinking and make CSS so you don't have to."}
-          </Typography>
+          <DemoTitle packageName={`mui-flexy v${packageJson.version}`} muiVersion="5" FlexBox={FlexBox} />
+          <DemoDescription />
         </FlexBox>
 
         <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
           <FlexGrid item xs={12}>
-            <Typography component="h2" variant="h5">
-              Row (basic) - Props are string values
-            </Typography>
+            <RowBasicTitle />
           </FlexGrid>
           {rowCombinations.map(([x, y], i) => (
             <FlexGrid item xs={12} md={4} lg={4} xl={4} key={i}>
@@ -133,9 +70,7 @@ const App = () => {
 
         <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
           <FlexGrid item xs={12}>
-            <Typography component="h2" variant="h5">
-              Column (basic) - Props are string values
-            </Typography>
+            <ColumnBasicTitle />
           </FlexGrid>
           {columnCombinations.map(([y, x], i) => (
             <FlexGrid item xs={12} md={4} lg={4} xl={4} key={i}>
@@ -156,9 +91,7 @@ const App = () => {
 
         <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
           <FlexGrid item xs={12}>
-            <Typography component="h2" variant="h5">
-              Basic CSS Grid (FlexGrid)
-            </Typography>
+            <BasicGridTitle gridComponentName="FlexGrid" />
           </FlexGrid>
           <FlexGrid item xs={12} x="center" y="center">
             <FlexGrid container spacing={2}>
@@ -173,58 +106,49 @@ const App = () => {
           </FlexGrid>
         </FlexGrid>
 
-        <FlexBox column sx={{ width: "100%", maxWidth: "100%", rowGap: [2, 3, 4] }}>
-          <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
-            <FlexGrid item xs={12}>
-              <Typography component="h2" variant="h5">
-                CSS Grid (FlexGrid) with grid templating
-              </Typography>
+        <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
+          <FlexGrid item xs={12}>
+            <GridTemplatingTitle gridComponentName="FlexGrid" />
+          </FlexGrid>
+          <FlexGrid item xs={12} x="center" y="center">
+            <FlexGrid
+              x="center"
+              y="center"
+              ml={1}
+              mr={1}
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gridGap: 2,
+                width: "100%",
+              }}
+            >
+              {[...Array(8).keys()].map((i) => (
+                <Inner key={i} x="center" y="center">
+                  <span>Template {i + 1}</span>
+                </Inner>
+              ))}
             </FlexGrid>
           </FlexGrid>
-          <FlexGrid
-            item
-            x="center"
-            y="center"
-            ml={1}
-            mr={1}
-            sx={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-              gridGap: 2,
-              width: "100%",
-            }}
-          >
-            {[...Array(8).keys()].map((i) => (
-              <Inner key={i} x="center" y="center">
-                <span>Template {i + 1}</span>
-              </Inner>
-            ))}
-          </FlexGrid>
-        </FlexBox>
+        </FlexGrid>
 
-        <FlexBox column sx={{ width: "100%", maxWidth: "100%", rowGap: [2, 3, 4] }}>
-          <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
-            <FlexGrid item xs={12} ref={ref}>
-              <Typography component="h2" variant="h5">
-                Ref test
-              </Typography>
-            </FlexGrid>
+        <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
+          <FlexGrid item xs={12} ref={ref}>
+            <RefTestTitle />
           </FlexGrid>
-          <Inner x="center" y="center" column mt={[0.5, 1, 2]}>
-            <span>{ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}</span>
-            <DemoCode code={ref?.current?.toString()} />
-          </Inner>
-        </FlexBox>
+          <FlexGrid item xs={12} x="center" y="center">
+            <Inner x="center" y="center" column>
+              <span>{ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}</span>
+              <DemoCode code={ref?.current?.toString()} />
+            </Inner>
+          </FlexGrid>
+        </FlexGrid>
 
-        <FlexBox column sx={{ width: "100%", maxWidth: "100%", rowGap: [2, 3, 4] }}>
-          <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
-            <FlexGrid item xs={12}>
-              <Typography component="h2" variant="h5">
-                Complex props test
-              </Typography>
-            </FlexGrid>
+        <FlexGrid container spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
+          <FlexGrid item xs={12}>
+            <ComplexPropsTitle />
           </FlexGrid>
-          <FlexBox column mt={[0.5, 1, 2]}>
+          <FlexGrid item xs={12} x="center" y="center">
             <Inner x="center" y="center" column>
               <span>Complex responsive props</span>
               <DemoCode
@@ -237,8 +161,8 @@ const App = () => {
 </FlexBox>`}
               />
             </Inner>
-          </FlexBox>
-        </FlexBox>
+          </FlexGrid>
+        </FlexGrid>
       </FlexBox>
     </ThemeProvider>
   );

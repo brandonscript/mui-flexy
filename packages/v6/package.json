@@ -18,9 +18,9 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "build": "yarn clean && npx rollup -c rollup.config.mjs && npx tsc -p tsconfig.json",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --config jest.config.js",
-    "typecheck": "tsc --noEmit"
+    "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
+    "typecheck": "yarn tsc --noEmit",
+    "test": "echo 'Tests are now run from the root directory using: yarn test:v6'"
   },
   "peerDependencies": {
     "@emotion/react": "^11",
@@ -33,5 +33,15 @@
   },
   "dependencies": {
     "@mui-flexy/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.0.0",
+    "@mui/system": "^6.0.0",
+    "@types/react": "^18.3.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.8.3"
   }
 }

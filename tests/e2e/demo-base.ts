@@ -115,7 +115,7 @@ export class DemoBasePage {
         if (computedStyle.display === "flex") {
           flexCount++;
         }
-      } catch (e) {
+      } catch {
         // Skip elements that can't be evaluated
         continue;
       }
@@ -126,6 +126,26 @@ export class DemoBasePage {
     }
 
     return flexCount;
+  }
+
+  async checkAllRequiredHeaders() {
+    // Check for all the expected headers in the demo
+    const headers: Record<string, number> = {
+      mainTitle: await this.page.locator('h4:has-text("mui-flexy v")').count(),
+      rowBasic: await this.page.locator('h2:has-text("Row (basic)")').count(),
+      columnBasic: await this.page.locator('h2:has-text("Column (basic)")').count(),
+      basicGrid: await this.page.locator('h2:has-text("Basic CSS Grid")').count(),
+      gridTemplating: await this.page.locator('h2:has-text("with grid templating")').count(),
+      refTest: await this.page.locator('h2:has-text("Ref test")').count(),
+      complexProps: await this.page.locator('h2:has-text("Complex props test")').count(),
+    };
+
+    // Check for version-specific headers
+    if (this.version === "6" || this.version === "7") {
+      headers.grid2 = await this.page.locator(`h2:has-text("Grid2 (@mui v${this.version}+")`).count();
+    }
+
+    return headers;
   }
 }
 
@@ -174,6 +194,24 @@ export function createDemoTests(version: string, port: number) {
       await demoPage.takeScreenshot("full-page");
       // If we get here without throwing, screenshot was taken successfully
       expect(true).toBe(true);
+    });
+
+    test(`should display all required headers for v${version}`, async () => {
+      const headers = await demoPage.checkAllRequiredHeaders();
+
+      // Check that all required headers are present
+      expect(headers.mainTitle).toBe(1);
+      expect(headers.rowBasic).toBe(1);
+      expect(headers.columnBasic).toBe(1);
+      expect(headers.basicGrid).toBe(1);
+      expect(headers.gridTemplating).toBe(1);
+      expect(headers.refTest).toBe(1);
+      expect(headers.complexProps).toBe(1);
+
+      // Check version-specific headers
+      if (version === "6" || version === "7") {
+        expect(headers.grid2).toBe(1);
+      }
     });
   });
 }

@@ -12,7 +12,7 @@ const DEMO_CONFIGS = [
   { name: "v7", port: 3007, url: "http://localhost:3007" },
 ];
 
-test.describe("Console Validation Tests", () => {
+test.describe("Console validation tests", () => {
   for (const demo of DEMO_CONFIGS) {
     test(`Demo ${demo.name} should have no console errors or warnings`, async ({ page }) => {
       const consoleMessages: ConsoleMessage[] = [];

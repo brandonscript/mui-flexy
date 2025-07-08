@@ -1,107 +1,70 @@
-import { babel } from "@rollup/plugin-babel";
+import alias from "@rollup/plugin-alias";
+import babel from "@rollup/plugin-babel";
+import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
-import { swc } from "@rollup/plugin-swc";
-import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
-const extensions = [".ts", ".tsx"];
-
-export default [
-  // ES Module build
-  {
-    input: "src/index.ts",
-    output: {
-      file: "dist/index.js",
+export default {
+  input: ["src/index.ts"],
+  output: [
+    {
+      dir: "dist",
       format: "es",
+      exports: "named",
       sourcemap: true,
+      strict: false,
+      preserveModules: true,
+      entryFileNames: "[name].js",
     },
-    plugins: [
-      peerDepsExternal(),
-      resolve({ extensions }),
-      replace({
-        "process.env.NODE_ENV": JSON.stringify("production"),
-        preventAssignment: true,
-      }),
-      swc({
-        jsc: {
-          parser: {
-            syntax: "typescript",
-            tsx: true,
-          },
-          target: "es2020",
-        },
-        module: {
-          type: "es6",
-        },
-      }),
-      babel({
-        extensions,
-        babelHelpers: "bundled",
-        presets: [
-          ["@babel/preset-env", { targets: { node: "18" } }],
-          ["@babel/preset-react", { runtime: "automatic" }],
-          "@babel/preset-typescript",
-        ],
-        plugins: ["@emotion/babel-plugin"],
-      }),
-      terser(),
-    ],
-    external: (id) => {
-      return (
-        id.startsWith("@mui/") ||
-        id.startsWith("@emotion/") ||
-        id.startsWith("react") ||
-        id.startsWith("@mui-flexy/")
-      );
-    },
-  },
-  // CommonJS build
-  {
-    input: "src/index.ts",
-    output: {
-      file: "dist/cjs/index.js",
+    {
+      dir: "dist/cjs",
       format: "cjs",
+      exports: "named",
       sourcemap: true,
+      strict: false,
+      preserveModules: true,
+      preserveModulesRoot: "src",
+      entryFileNames: "[name].cjs",
     },
-    plugins: [
-      peerDepsExternal(),
-      resolve({ extensions }),
-      replace({
-        "process.env.NODE_ENV": JSON.stringify("production"),
-        preventAssignment: true,
-      }),
-      swc({
-        jsc: {
-          parser: {
-            syntax: "typescript",
-            tsx: true,
+  ],
+  plugins: [
+    json(),
+    peerDepsExternal(),
+    resolve({
+      extensions: [".ts", ".tsx"],
+      dedupe: ["react", "react-dom", "@mui/material", "@mui/system", "@emotion/*"],
+    }),
+    alias({
+      entries: [
+        {
+          find: "@mui-flexy/core",
+          replacement: "../core/src",
+        },
+      ],
+    }),
+    babel({
+      extensions: [".ts", ".tsx"],
+      babelHelpers: "bundled",
+      exclude: ["node_modules/**", "dist/**"],
+      include: ["src/**"],
+      presets: [
+        "@babel/preset-env",
+        [
+          "@babel/preset-react",
+          {
+            runtime: "automatic",
           },
-          target: "es2020",
-        },
-        module: {
-          type: "commonjs",
-        },
-      }),
-      babel({
-        extensions,
-        babelHelpers: "bundled",
-        presets: [
-          ["@babel/preset-env", { targets: { node: "18" } }],
-          ["@babel/preset-react", { runtime: "automatic" }],
-          "@babel/preset-typescript",
         ],
-        plugins: ["@emotion/babel-plugin"],
-      }),
-      terser(),
-    ],
-    external: (id) => {
-      return (
-        id.startsWith("@mui/") ||
-        id.startsWith("@emotion/") ||
-        id.startsWith("react") ||
-        id.startsWith("@mui-flexy/")
-      );
-    },
-  },
-]; 
+        "@babel/preset-typescript",
+      ],
+    }),
+    replace({
+      preventAssignment: true,
+      delimiters: ["", ""],
+      include: ["src/**/*.ts", "src/**/*.tsx"],
+      "process.env.NODE_ENV": JSON.stringify("production"),
+    }),
+  ],
+  external: ["react", "react-dom", /^@mui\/.*$/],
+}; 

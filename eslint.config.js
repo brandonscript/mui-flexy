@@ -33,8 +33,13 @@ export default tseslint.config(
       "**/dist/**",
       "**/build/**",
       "**/docs/static/*.js",
+      "**/demos/*/dist/**",
       "*.json",
       "*.code-workspace",
+      // Additional generated files
+      "**/bundle.js",
+      "**/bundle.js.map",
+      "**/*.d.ts.map",
     ],
     plugins: {
       "import-x": importPlugin,
@@ -73,12 +78,20 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          fixStyle: "separate-type-imports",
+        },
+      ],
+
       "import-x/first": "error",
       "import-x/newline-after-import": "error",
       "import-x/no-duplicates": "error",
       "simple-import-sort/imports": "warn",
       "simple-import-sort/exports": "warn",
-      "unused-imports/no-unused-imports": "off",
+      "unused-imports/no-unused-imports": "error",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "no-unused-vars": "off",
@@ -97,6 +110,146 @@ export default tseslint.config(
           project: "tsconfig.json",
         }),
       ],
+    },
+  },
+  // Special configuration for package source files - enable import sorting
+  {
+    files: ["packages/**/*.{js,jsx,ts,tsx}"],
+    ignores: ["packages/*/dist/**", "packages/*/build/**"],
+    plugins: {
+      "import-x": importPlugin,
+      "simple-import-sort": sisPlugin,
+      "unused-imports": unusedImportsPlugin,
+    },
+    rules: {
+      // Enable automatic import sorting and cleanup
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_",
+        },
+      ],
+      // Enforce import type usage
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          disallowTypeAnnotations: false,
+          fixStyle: "separate-type-imports",
+        },
+      ],
+      // Additional import rules for better organization
+      "import-x/first": "error",
+      "import-x/newline-after-import": "error",
+      "import-x/no-duplicates": "error",
+    },
+  },
+  // Special configuration for demo apps - allow explicit any and enable import sorting
+  {
+    files: ["demos/**/*.{js,jsx,ts,tsx}"],
+    ignores: ["demos/*/dist/**"],
+    plugins: {
+      "import-x": importPlugin,
+      "simple-import-sort": sisPlugin,
+      "unused-imports": unusedImportsPlugin,
+    },
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      // Enable automatic import sorting and cleanup
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "unused-imports/no-unused-imports": "error",
+      "unused-imports/no-unused-vars": [
+        "warn",
+        {
+          vars: "all",
+          varsIgnorePattern: "^_",
+          args: "after-used",
+          argsIgnorePattern: "^_",
+        },
+      ],
+      // Enforce import type usage
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+          disallowTypeAnnotations: false,
+          fixStyle: "separate-type-imports",
+        },
+      ],
+      // Additional import rules for better organization
+      "import-x/first": "error",
+      "import-x/newline-after-import": "error",
+      "import-x/no-duplicates": "error",
+    },
+  },
+  // Special configuration for webpack config files
+  {
+    files: ["**/webpack.config.js", "**/webpack.*.js"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        __dirname: "readonly",
+        __filename: "readonly",
+        module: "writable",
+        require: "readonly",
+        process: "readonly",
+        Buffer: "readonly",
+        global: "readonly",
+        console: "readonly",
+      },
+    },
+    rules: {
+      "import-x/no-commonjs": "off",
+      "@typescript-eslint/no-var-requires": "off",
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  // Special configuration for babel config files
+  {
+    files: ["**/babel.config.js", "**/babel.*.js"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        module: "writable",
+      },
+    },
+    rules: {
+      "import-x/no-commonjs": "off",
+      "@typescript-eslint/no-var-requires": "off",
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
+  // Special configuration for generated/built files
+  {
+    files: ["**/dist/**", "**/build/**", "**/docs/static/**", "**/bundle.js"],
+    rules: {
+      // Disable most rules for generated files
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-this-alias": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "no-undef": "off",
+      "no-empty": "off",
+      "no-fallthrough": "off",
+      "no-cond-assign": "off",
+      "no-func-assign": "off",
+      "no-useless-escape": "off",
+      "no-prototype-builtins": "off",
+      "no-unsafe-finally": "off",
+      "no-control-regex": "off",
+      "no-misleading-character-class": "off",
+      "getter-return": "off",
+      "valid-typeof": "off",
+      "console": "off",
     },
   }
 );

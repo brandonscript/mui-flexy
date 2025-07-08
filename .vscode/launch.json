@@ -147,12 +147,23 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "program": "node_modules/.bin/jest",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
       "sourceMaps": true,
       "env": {
         "NODE_ENV": "test",
         "NODE_OPTIONS": "--experimental-vm-modules"
       }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Demo: All",
+      "configurations": [
+        "Demo: v5 Server",
+        "Demo: v6 Server",
+        "Demo: v7 Server"
+      ],
+      "stopAll": true
     }
   ]
 }

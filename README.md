@@ -351,6 +351,8 @@ produces {
 
 Like FlexBox, FlexGrid is a drop-in replacement for MUI's Grid component. Note that with @mui/material v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated. In v7, `Grid2` has been moved to the main `Grid` component.
 
+As of v1.3, with separate modules for each MUI version, `Unstable_FlexGrid2` has been removed from v5. To use the new `Grid2` component, you will need to upgrade to MUI v6 or higher.
+
 ```jsx
 // Grid (v5), based on @mui/material/Grid
 <FlexGrid container x="center" y="center">

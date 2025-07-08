@@ -18,19 +18,28 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && mkdir dist",
-    "build": "yarn clean && npx rollup -c rollup.config.mjs && npx tsc -p tsconfig.json",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --config jest.config.js",
-    "typecheck": "tsc --noEmit"
+    "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
+    "build:watch": "yarn nodemon --watch src --ext ts --exec 'yarn build'",
+    "test": "cd ../.. && yarn test:core",
+    "typecheck": "yarn tsc --noEmit"
   },
   "peerDependencies": {
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@mui/material": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "@mui/system": "^5.0.0 || ^6.0.0 || ^7.0.0",
     "react": "^17 || ^18 || ^19",
     "react-dom": "^17 || ^18 || ^19",
     "typescript": ">=5.4 || >=5.9.0-dev"
   },
   "devDependencies": {
-    "@mui/material": "^6.0.0",
-    "@mui/system": "^6.0.0"
+    "@mui/material": "^7.0.0",
+    "@mui/system": "^7.0.0",
+    "@types/react": "^18.3.20",
+    "chokidar-cli": "^3.0.0",
+    "nodemon": "^3.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": ">=5.9.0-dev"
   }
 }

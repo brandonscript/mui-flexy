@@ -25,7 +25,7 @@ export default defineConfig({
     // baseURL: 'http://127.0.0.1:3000',
 
     /* Run in headed mode using Playwright's self-contained Chromium */
-    headless: false,
+    headless: true,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -45,6 +45,8 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         // Explicitly use self-contained Chromium (this is the default)
         // No 'channel' property means it uses Playwright's bundled Chromium
+        // Ensure we don't accidentally use system browser
+        channel: undefined,
       },
     },
 

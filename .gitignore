@@ -36,6 +36,8 @@ dist/_virtual/*
 
 # Test outputs
 /packages/*/test-results/*
+/test-results/*
+/playwright-report/*
 
 # IDE files
 .vscode/

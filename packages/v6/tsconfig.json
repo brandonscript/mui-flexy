@@ -1,13 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "noEmit": false,
+    "noEmit": true,
     "skipLibCheck": true,
-    "declaration": true,
-    "declarationDir": "./dist",
-    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
-    "outDir": "./dist",
+    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "@mui-flexy/core": [

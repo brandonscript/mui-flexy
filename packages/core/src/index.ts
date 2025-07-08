@@ -1,2 +1,3 @@
-export * from "./Flex.types";
-export * from "./Flex.utils";
+// Core exports for mui-flexy
+export * from "./Flex.core";
+export * from "./Flex.core.types";

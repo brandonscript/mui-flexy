@@ -11,58 +11,52 @@
     "overrideConfigFile": "eslint.config.js"
   },
   "prettier.printWidth": 100,
-  "testing.defaultGutterClickAction": "contextMenu",
   "[json]": {
     "editor.formatOnSave": true
   },
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   },
-  // Jest configuration for monorepo - Jest v30 compatible
-  "jest.jestCommandLine": "yarn test",
-  "jest.rootPath": ".",
-  "jest.runMode": "on-save",
-  // Jest v30 compatibility - force modern CLI args
-  "jest.useDashedArgs": true,
-  "jest.shell": {
-    "path": "/bin/zsh",
-    "args": []
-  },
-  // Test discovery settings
-  "jest.disabledWorkspaceFolders": [],
-  "jest.enabledWorkspaceFolders": [
-    "packages/core",
-    "packages/v5",
-    "packages/v6",
-    "packages/v7"
-  ],
-  // Minimal Jest settings for v30 compatibility
-  "jest.pathToConfig": "jest.config.js",
-  "jest.restartJestOnSnapshotUpdate": true,
-  "jest.outputConfig": {
-    "revealOutput": "on-run",
-    "revealWithFocus": "test-results",
-    "clearOnRun": "terminal"
-  },
-  // Testing panel settings
-  "testing.openTesting": "neverOpen",
-  "testing.automaticallyOpenPeekView": "never",
-  "testing.followRunningTest": false,
   // File exclusions for better performance
   "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
     "**/node_modules": true,
     "**/.yarn": true,
-    "**/dist": true,
-    "**/lib": true,
-    "**/build": true,
-    "**/*.tsbuildinfo": true
+    "**/yarn-error.log": true,
+    "**/test-results": true,
+    "**/playwright-report": true
   },
   // Search exclusions
   "search.exclude": {
     "**/node_modules": true,
-    "**/.yarn": true,
     "**/dist": true,
-    "**/lib": true,
-    "**/build": true
-  }
+    "**/.yarn": true,
+    "**/yarn-error.log": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  },
+  // Jest extension settings for multi-project support
+  "jest.jestCommandLine": "yarn jest",
+  "jest.pathToConfig": ".vscode/jest.config.cjs",
+  "jest.rootPath": ".",
+  "jest.runMode": "watch",
+  "jest.useDashedArgs": true,
+  // Disable workspace folder filtering for multi-root workspace
+  "jest.disabledWorkspaceFolders": [],
+  "jest.enabledWorkspaceFolders": [],
+  // Override for better discovery
+  "jest.testMatch": [
+    "**/tests/**/*.test.{ts,tsx}",
+  ],
+  // Allow automatic task execution
+  "task.allowAutomaticTasks": "on",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.workspaceSymbols.scope": "allOpenProjects"
 }

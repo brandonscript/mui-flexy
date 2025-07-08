@@ -1,5 +1,5 @@
 {
-  "name": "mui-flexy-v5",
+  "name": "@mui-flexy/v5",
   "version": "1.2.4",
   "description": "A flexbox convenience component for Material UI v5 Box and Grid with handy shorthand props",
   "type": "module",
@@ -16,9 +16,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "npx rollup -c rollup.config.mjs",
-    "typecheck": "npx tsc --noEmit",
-    "test": "npx jest --passWithNoTests"
+    "clean": "rm -rf dist && mkdir dist",
+    "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
+    "typecheck": "yarn tsc --noEmit",
+    "test": "echo 'Tests are now run from the root directory using: yarn test:v5'"
   },
   "peerDependencies": {
     "@emotion/react": "^11.0.0",
@@ -31,7 +32,13 @@
     "@mui-flexy/core": "workspace:*"
   },
   "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^5.0.0",
+    "@mui/system": "^5.0.0",
     "@types/react": "^18.3.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rollup": "^4.39.0",
     "typescript": "^5.8.3"
   },

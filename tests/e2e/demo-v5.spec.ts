@@ -6,7 +6,7 @@ import { createDemoTests, DemoBasePage } from "./demo-base";
 createDemoTests("5", 3005);
 
 // Additional v5-specific tests
-test.describe("Demo v5 - MUI v5 Specific Features", () => {
+test.describe("Demo v5 - MUI v5 specific features", () => {
   let demoPage: DemoBasePage;
 
   test.beforeEach(async ({ page }) => {

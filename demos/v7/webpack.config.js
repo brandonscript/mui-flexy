@@ -34,6 +34,6 @@ module.exports = {
     },
     port: 3007,
     hot: true,
-    open: true,
+    open: false, // Disable auto-opening browser (especially for Playwright tests)
   },
 };

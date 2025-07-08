@@ -1,17 +1,3 @@
-export { FlexBox, FlexColumn, FlexGrid, FlexGridColumn, FlexGridRow, FlexRow } from "./Flex";
-export type {
-  FlexBoxColumnProps,
-  FlexBoxProps,
-  FlexBoxRowProps,
-  FlexColumnProps,
-  FlexGridColumnProps,
-  FlexGridProps,
-  FlexGridRowProps,
-  FlexOrientation,
-  FlexRowProps,
-  HorizontalAlign,
-  ResponsiveFlexBoolean,
-  ResponsiveFlexDirection,
-  ResponsiveFlexPosition,
-  VerticalAlign,
-} from "@mui-flexy/core";
+export * from "./FlexBox.v5";
+export * from "./FlexGrid.v5";
+export type { FlexOrientation, HorizontalAlign, VerticalAlign } from "@mui-flexy/core";

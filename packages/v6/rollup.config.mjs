@@ -30,6 +30,7 @@ export default {
   ],
   plugins: [
     json(),
+    peerDepsExternal(),
     resolve({
       extensions: [".ts", ".tsx"],
       dedupe: ["react", "react-dom", "@mui/material", "@mui/system", "@emotion/*"],
@@ -65,12 +66,5 @@ export default {
       "process.env.NODE_ENV": JSON.stringify("production"),
     }),
   ],
-  external: (id) => {
-    return (
-      id.startsWith("@mui/") ||
-      id.startsWith("@emotion/") ||
-      id.startsWith("react") ||
-      id.startsWith("@mui-flexy/")
-    );
-  },
+  external: ["react", "react-dom", /^@mui\/.*$/],
 };

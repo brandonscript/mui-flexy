@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../../",
+    "rootDir": "../../",
+    "paths": {
+      "@/*": [
+        "./*"
+      ]
+    }
+  },
+  "include": [
+    "../../packages/v5/src/**/*.ts",
+    "../../packages/v5/src/**/*.tsx",
+    "../../packages/v6/src/**/*.ts",
+    "../../packages/v6/src/**/*.tsx",
+    "../../packages/v7/src/**/*.ts",
+    "../../packages/v7/src/**/*.tsx"
+  ]
+}

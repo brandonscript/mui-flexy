@@ -16,7 +16,6 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js", ".json"],
     alias: {
       "@mui-flexy/core": path.resolve(__dirname, "../../packages/core/src"),
-      "@mui-flexy/demo-shared": path.resolve(__dirname, "../../packages/demo-shared/src"),
     },
   },
   output: {
@@ -35,6 +34,6 @@ module.exports = {
     },
     port: 3006,
     hot: true,
-    open: true,
+    open: false, // Disable auto-opening browser (especially for Playwright tests)
   },
 };

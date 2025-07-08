@@ -8,7 +8,12 @@ module.exports = {
         },
       },
     ],
-    "@babel/preset-react", // Adds support for JSX
+    [
+      "@babel/preset-react",
+      {
+        runtime: "automatic", // Use automatic JSX runtime
+      },
+    ],
     "@babel/preset-typescript", // Adds support for TypeScript
   ],
   plugins: [],
