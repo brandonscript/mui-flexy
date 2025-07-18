@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if any command fails
+set -e
+
 # Run Jest tests (all unit tests)
 echo "Running Jest tests..."
 yarn test
