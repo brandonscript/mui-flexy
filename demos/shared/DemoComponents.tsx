@@ -1,10 +1,12 @@
-import { Link, styled, Typography, TypographyOwnProps, TypographyProps } from "@mui/material";
-import React, { PropsWithChildren } from "react";
+import type { TypographyOwnProps, TypographyProps } from "@mui/material";
+import { Link, styled, Typography } from "@mui/material";
+import type { PropsWithChildren } from "react";
+import * as React from "react";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atelierCaveLight } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 import { demoBgColor, reponsiveFontSizes } from "./DemoTheme";
-import { DemoInnerProps, FlexBoxLike } from "./types";
+import type { DemoInnerProps, FlexBoxLike } from "./types";
 
 export const DemoCode = ({
   inline = false,
@@ -139,7 +141,7 @@ export const DemoDescription = ({ gridComponentName = "FlexGrid" }: { gridCompon
     <DemoCode inline>row</DemoCode>
     {" anyway. If you want a column, just pass a "}
     <DemoCode inline>column</DemoCode>
-    {"prop, and Flexy will do the hard thinking and make CSS so you don't have to."}
+    {"prop, and mui-flexy will do the hard thinking and make CSS so you don't have to."}
   </Typography>
 );
 

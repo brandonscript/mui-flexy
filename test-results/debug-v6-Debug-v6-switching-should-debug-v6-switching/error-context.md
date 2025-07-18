@@ -1,0 +1,45 @@
+# Page snapshot
+
+```yaml
+- banner:
+    - heading "mui-flexy documentation" [level=2]
+    - button "MUI v5"
+    - button "MUI v6"
+    - button "MUI v7"
+- img "mui-flexy logo"
+- heading "MUI v6 + mui-flexy" [level=1]
+- heading "Compatible with @mui/material v6" [level=6]
+- text: mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily align and distribute flexy items in a space in a way that doesn't make you want to pull your hair out trying to remember whether to use
+- code: justify-content
+- text: or
+- code: align-items
+- text: . Using a simple and consistent x, y coordinate system, you can stop worrying about the CSS working group's choices and get on with your life of centering divs. Simply use
+- code: <FlexBox />
+- text: or
+- code: <,FlexGrid2, />
+- text: as you would Box or Grid. The default axis is
+- code: row
+- text: ", but for good hygiene, you might want to set"
+- code: row
+- text: anyway. If you want a column, just pass a
+- code: column
+- text: prop.
+- tablist:
+    - tablist:
+        - tab "FlexBox" [selected]
+        - tab "FlexGrid2"
+- heading "Interactive FlexBox sandbox" [level=2]
+- text: X alignment
+- combobox: Center
+- text: Y Alignment
+- combobox: Center
+- text: Direction
+- radio "row" [checked]
+- text: row
+- radio "column"
+- text: column
+- checkbox "nowrap"
+- text: nowrap
+- checkbox "reverse"
+- text: reverse <FlexBox row> <span>🚣</span> <span>🚣</span> <span>🚣</span> </FlexBox> 🚣 🚣 🚣
+```

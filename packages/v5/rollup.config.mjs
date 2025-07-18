@@ -1,4 +1,3 @@
-import alias from "@rollup/plugin-alias";
 import babel from "@rollup/plugin-babel";
 import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
@@ -35,14 +34,7 @@ export default {
       extensions: [".ts", ".tsx"],
       dedupe: ["react", "react-dom", "@mui/material", "@mui/system", "@emotion/*"],
     }),
-    alias({
-      entries: [
-        {
-          find: "@mui-flexy/core",
-          replacement: "../core/src",
-        },
-      ],
-    }),
+
     babel({
       extensions: [".ts", ".tsx"],
       babelHelpers: "bundled",
@@ -66,5 +58,5 @@ export default {
       "process.env.NODE_ENV": JSON.stringify("production"),
     }),
   ],
-  external: ["react", "react-dom", /^@mui\/.*$/],
+  external: ["react", "react-dom", /^@mui\/.*$/, "@mui-flexy/core"],
 }; 

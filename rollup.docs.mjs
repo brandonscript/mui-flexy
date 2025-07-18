@@ -2,16 +2,22 @@ import json from "@rollup/plugin-json";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import swc from "@rollup/plugin-swc";
-import terser from "@rollup/plugin-terser";
+// import terser from "@rollup/plugin-terser";
+import fs from "fs";
 import copy from "rollup-plugin-copy";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
+// Detect if we're running from docs directory or root directory
+const isRunningFromDocs = fs.existsSync("./Docs.tsx");
+const inputPath = isRunningFromDocs ? "Docs.tsx" : "docs/Docs.tsx";
+const outputPath = isRunningFromDocs ? "static/docs.js" : "docs/static/docs.js";
+
 export default {
-  input: "docs/Docs.tsx",
+  input: inputPath,
   output: {
-    file: "docs/static/docs.js",
+    file: outputPath,
     format: "es",
-    name: "MuiFlexy",
+    name: "mui-flexy",
     sourcemap: true,
     inlineDynamicImports: true,
     globals: {
@@ -52,17 +58,25 @@ export default {
         },
       },
       exclude: ["node_modules/**", "dist/**"],
-      include: ["src/**", "demo/src/**", "docs/**/*.tsx"],
+      include: isRunningFromDocs ? ["*.tsx", "../packages/**/*.tsx"] : ["src/**", "docs/**/*.tsx"],
       sourceMaps: true,
     }),
     copy({
-      targets: [{ src: "demo/public/**/*", dest: "docs" }],
+      targets: isRunningFromDocs ? [
+        { src: "../demos/v7/public/**/*", dest: "." },
+        { src: "../flex-logo.svg", dest: "." },
+        { src: "../flex-logo.png", dest: "." },
+      ] : [
+        { src: "demos/v7/public/**/*", dest: "docs" },
+        { src: "flex-logo.svg", dest: "docs" },
+        { src: "flex-logo.png", dest: "docs" },
+      ],
     }),
-    terser({
-      compress: {
-        drop_debugger: true,
-      },
-    }),
+    // terser({
+    //   compress: {
+    //     drop_debugger: true,
+    //   },
+    // }),
   ],
-  external: ["react", "react-dom", /@mui\/.*$/, /react-syntax-highlighter\/?.*$/],
+  external: ["react", "react-dom", "react/jsx-runtime", /@mui\/.*$/, /react-syntax-highlighter\/?.*$/],
 };

@@ -282,25 +282,32 @@ export const verifyGridSizeProps = <P extends BaseFlexProps>(props: P, gridVersi
   const { xs, sm, md, lg, xl, size, ...rest } = props as P & V5GridSizeProps & V6GridSizeProps & V7GridSizeProps;
   const hasLegacyProps = [xs, sm, md, lg, xl].some((v) => v !== undefined);
   const legacyObject = stripUndefined({ xs, sm, md, lg, xl });
+  const sizeIsObject = size !== undefined && typeof size === "object" && !Array.isArray(size);
 
-  // MUI v5 - only supports root xs, sm, md, lg, xl props
   if (gridVersion === "legacy") {
+    // Convert size object to legacy props, or size primitive to xs
+    if (sizeIsObject) return { ...rest, ...legacyObject, ...size } as P;
+    // If size is defined, and not an object, set xs to the value of size
+    if (size !== undefined) return { ...rest, ...legacyObject, xs: size } as P;
     return { ...rest, ...legacyObject } as P;
   }
 
-  // MUI v6/v7 - supports size=true|"grow" or size={{ xs, sm, etc. }}
-  if (gridVersion === "new") {
-    if (size === true || size === "grow") {
-      return stripUndefined({ ...rest, size }) as P;
-    }
-    // If there are no grid size props, just return props as-is
-    if (!size && !hasLegacyProps) {
-      return rest as P;
-    }
-    return { ...rest, size: stripUndefined({ ...legacyObject, ...size }) } as P;
-  }
+  // If there are no legacy props, or size is a primitive, return without legacy props
+  const sizeIsPrimitive = size !== undefined && typeof size !== "object" && !Array.isArray(size);
+  if (!hasLegacyProps || sizeIsPrimitive) return { ...rest, size } as P;
 
-  // Otherwise, just return props as-is
+  // If size is an object, merge legacy with size object
+  if (sizeIsObject) return { ...rest, size: { ...legacyObject, ...size } } as P;
+
+  // If size is undefined, and legacy is a primitive, set size to the value of xs
+  const legacyIsPrimitive = Object.keys(legacyObject).length === 1 && Object.keys(legacyObject)[0] === "xs";
+  if (legacyIsPrimitive) return { ...rest, size: xs } as P;
+
+  // if size is undefined, and legacy is an object, set size to legacy
+  const legacyIsObject = Object.keys(legacyObject).length > 1;
+  if (legacyIsObject) return { ...rest, size: legacyObject } as P;
+
+  // Otherwise, we have no way of knowing what to do with the size prop
   return props as P;
 };
 

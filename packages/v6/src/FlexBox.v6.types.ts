@@ -10,7 +10,6 @@ import type {
   OnlyColumn,
   OnlyRow,
 } from "@mui-flexy/core";
-import type * as React from "react";
 
 export interface FlexBoxTypeMap<
   O extends FlexOrientation | undefined = undefined,

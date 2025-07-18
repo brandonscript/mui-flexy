@@ -14,7 +14,7 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 
 ### The problem
 
-If you have never been confused whether to use `justify-content` or `align-items`, then Flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
+If you have never been confused whether to use `justify-content` or `align-items`, then mui-flexy is not for you. If you have, then get started with `yarn add mui-flexy` or `npm install mui-flexy`.
 
 Vanilla CSS requires a lot of mental gymnastics to remember which alignment property to use depending on the axis of your flexbox:
 

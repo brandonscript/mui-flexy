@@ -2,7 +2,10 @@ import { expect, test } from "@playwright/test";
 
 import { DemoBasePage } from "./demo-base";
 
-test.describe("Demo common tests", () => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type _Any = any;
+
+test.describe("Demo cross-version tests", () => {
   const versions = [
     { version: "5", port: 3005 },
     { version: "6", port: 3006 },
@@ -10,7 +13,7 @@ test.describe("Demo common tests", () => {
   ];
 
   test("should load all demo versions successfully", async ({ browser }) => {
-    const results = [];
+    const results: Array<{ version: string; isLoaded: boolean; title?: string; error?: string }> = [];
 
     for (const { version, port } of versions) {
       const context = await browser.newContext();
@@ -32,77 +35,12 @@ test.describe("Demo common tests", () => {
       }
     }
 
-    // All versions should load successfully
     results.forEach((result) => {
       expect(result.isLoaded).toBe(true);
     });
   });
 
-  test("should display consistent FlexBox functionality across versions", async ({ browser }) => {
-    const flexCounts = [];
-
-    for (const { version, port } of versions) {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      const demoPage = new DemoBasePage(page, version, port);
-
-      try {
-        await demoPage.goto();
-        await demoPage.waitForLoad();
-
-        const flexCount = await demoPage.checkFlexboxAlignment();
-        flexCounts.push({ version, flexCount });
-      } finally {
-        await context.close();
-      }
-    }
-
-    // All versions should have flex elements
-    flexCounts.forEach(({ flexCount }) => {
-      expect(flexCount).toBeGreaterThan(0);
-    });
-
-    // Log the counts for comparison
-    console.log("Flex element counts by version:", flexCounts);
-  });
-
-  test("should maintain consistent responsive behavior across versions", async ({ browser }) => {
-    const viewports = [
-      { width: 375, height: 667 }, // Mobile
-      { width: 768, height: 1024 }, // Tablet
-      { width: 1440, height: 900 }, // Desktop
-    ];
-
-    for (const viewport of viewports) {
-      const results = [];
-
-      for (const { version, port } of versions) {
-        const context = await browser.newContext();
-        const page = await context.newPage();
-        const demoPage = new DemoBasePage(page, version, port);
-
-        try {
-          await page.setViewportSize(viewport);
-          await demoPage.goto();
-          await demoPage.waitForLoad();
-
-          const flexElements = await page.locator('[style*="display: flex"]').count();
-          const hasResponsiveElements = flexElements > 0;
-
-          results.push({ version, viewport, hasResponsiveElements, flexElements });
-        } finally {
-          await context.close();
-        }
-      }
-
-      // All versions should handle this viewport properly
-      results.forEach(({ hasResponsiveElements }) => {
-        expect(hasResponsiveElements).toBe(true);
-      });
-    }
-  });
-
-  test("should show correct MUI version integration for each demo", async ({ browser }) => {
+  test("should display correct MUI version integration", async ({ browser }) => {
     const expectedMuiVersions: Record<string, string> = {
       "5": "@mui/material^5",
       "6": "@mui/material^6",
@@ -126,35 +64,30 @@ test.describe("Demo common tests", () => {
     }
   });
 
-  test("should demonstrate consistent accessibility across versions", async ({ browser }) => {
-    for (const { version, port } of versions) {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-      const demoPage = new DemoBasePage(page, version, port);
-
-      try {
-        await demoPage.goto();
-        await demoPage.waitForLoad();
-
-        const accessibility = await demoPage.checkAccessibility();
-
-        // All versions should meet basic accessibility requirements
-        expect(accessibility.hasMainLandmark).toBe(true);
-        expect(accessibility.hasHeadings).toBe(true);
-        expect(accessibility.allImagesHaveAlt).toBe(true);
-      } finally {
-        await context.close();
-      }
-    }
-  });
-
-  test("should capture visual comparison screenshots", async ({ browser }) => {
+  test("should render consistent FlexBox functionality across viewports", async ({ browser }) => {
     const viewports = [
       { name: "mobile", width: 375, height: 667 },
+      { name: "tablet", width: 768, height: 1024 },
       { name: "desktop", width: 1440, height: 900 },
+      { name: "large-screen", width: 2560, height: 1440 },
     ];
 
+    // Expected flex element counts per version (based on actual measurements)
+    // v5 has fewer elements because it doesn't include Grid2 components
+    const expectedCounts = {
+      "5": 235,
+      "6": 263,
+      "7": 263,
+    };
+
     for (const viewport of viewports) {
+      const results: Array<{
+        version: string;
+        viewport: { name: string; width: number; height: number };
+        hasFlexElements: boolean;
+        flexElementCount: number;
+      }> = [];
+
       for (const { version, port } of versions) {
         const context = await browser.newContext();
         const page = await context.newPage();
@@ -165,85 +98,65 @@ test.describe("Demo common tests", () => {
           await demoPage.goto();
           await demoPage.waitForLoad();
 
-          // Take screenshot for visual comparison
-          await page.screenshot({
-            path: `test-results/screenshots/comparison-v${version}-${viewport.name}.png`,
-            fullPage: true,
+          const flexElementCount = await page.evaluate(() => {
+            const main = document.querySelector("main");
+            if (!main) return 0;
+
+            const computedFlexElements = Array.from(main.querySelectorAll("*")).filter((el) => {
+              const style = window.getComputedStyle(el);
+              return style.display === "flex" || style.display === "inline-flex";
+            });
+
+            return computedFlexElements.length;
           });
+
+          const hasFlexElements = flexElementCount > 0;
+          results.push({ version, viewport, hasFlexElements, flexElementCount });
         } finally {
           await context.close();
         }
       }
-    }
 
-    // If we reach here, all screenshots were taken successfully
-    expect(true).toBe(true);
-  });
+      // Verify each version has the expected number of flex elements
+      results.forEach(({ version, hasFlexElements, flexElementCount }) => {
+        expect(hasFlexElements).toBe(true);
+        expect(flexElementCount).toBe(expectedCounts[version as keyof typeof expectedCounts]);
+      });
 
-  test("should verify performance consistency across versions", async ({ browser }) => {
-    const performanceResults = [];
-
-    for (const { version, port } of versions) {
-      const context = await browser.newContext();
-      const page = await context.newPage();
-
-      try {
-        const startTime = Date.now();
-
-        await page.goto(`http://localhost:${port}`);
-        await page.waitForSelector("main", { timeout: 10000 });
-        await page.waitForFunction(() => {
-          const main = document.querySelector("main");
-          return main && main.children.length > 0;
-        });
-
-        const loadTime = Date.now() - startTime;
-
-        // Get performance metrics
-        const metrics = await page.evaluate(() => {
-          const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
-          return {
-            domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
-            loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
-            firstPaint: performance.getEntriesByName("first-paint")[0]?.startTime || 0,
-            firstContentfulPaint: performance.getEntriesByName("first-contentful-paint")[0]?.startTime || 0,
-          };
-        });
-
-        performanceResults.push({
-          version,
-          loadTime,
-          ...metrics,
-        });
-      } finally {
-        await context.close();
+      // Verify versions 6 and 7 have identical counts (both use Grid2)
+      const v6Result = results.find((r) => r.version === "6");
+      const v7Result = results.find((r) => r.version === "7");
+      if (v6Result && v7Result) {
+        expect(v7Result.flexElementCount).toBe(v6Result.flexElementCount);
       }
+
+      // Log for debugging
+      console.log(
+        `${viewport.name} (${viewport.width}x${viewport.height}) flex counts:`,
+        results
+          .map(
+            (r) =>
+              `v${r.version}: ${r.flexElementCount} (expected: ${expectedCounts[r.version as keyof typeof expectedCounts]})`,
+          )
+          .join(", "),
+      );
     }
-
-    // Log performance results for comparison
-    console.log("Performance comparison:", performanceResults);
-
-    // All versions should load within reasonable time (10 seconds)
-    performanceResults.forEach(({ version, loadTime }) => {
-      expect(loadTime).toBeLessThan(10000);
-    });
   });
 
-  test("should have identical layout across all versions", async ({ browser }) => {
+  test("should maintain consistent detailed layout across all versions", async ({ browser }) => {
     const viewports = [
-      { name: "large-screen", width: 2560, height: 1440 },
-      { name: "desktop", width: 1440, height: 900 },
-      { name: "tablet", width: 768, height: 1024 },
       { name: "mobile", width: 375, height: 667 },
+      { name: "tablet", width: 768, height: 1024 },
+      { name: "desktop", width: 1440, height: 900 },
+      { name: "large-screen", width: 2560, height: 1440 },
     ];
 
     for (const viewport of viewports) {
       console.log(`\n=== Layout Comparison for ${viewport.name} (${viewport.width}x${viewport.height}) ===`);
 
-      const layoutData = [];
-      const screenshots = [];
+      const layoutData: Array<{ version: string; layout: _Any }> = [];
 
-      // Capture layout data and screenshots for all versions
+      // Capture layout data for all versions
       for (const { version, port } of versions) {
         const context = await browser.newContext();
         const page = await context.newPage();
@@ -257,7 +170,7 @@ test.describe("Demo common tests", () => {
           // Wait for layout to stabilize
           await page.waitForTimeout(1000);
 
-          // Capture layout metrics
+          // Capture comprehensive layout metrics
           const layout = await page.evaluate(() => {
             const main = document.querySelector("main");
             if (!main) return null;
@@ -314,13 +227,6 @@ test.describe("Demo common tests", () => {
           });
 
           layoutData.push({ version, layout });
-
-          // Take screenshot for visual comparison
-          const screenshot = await page.screenshot({
-            fullPage: true,
-            path: `test-results/screenshots/layout-comparison-v${version}-${viewport.name}.png`,
-          });
-          screenshots.push({ version, screenshot });
         } finally {
           await context.close();
         }
@@ -330,7 +236,7 @@ test.describe("Demo common tests", () => {
       const baseLayout = layoutData[0]; // Use v5 as base
 
       // Ensure all layouts were captured successfully
-      for (const { version, layout } of layoutData) {
+      for (const { layout } of layoutData) {
         expect(layout).not.toBeNull();
       }
 
@@ -495,14 +401,113 @@ test.describe("Demo common tests", () => {
     }
   });
 
-  test("should analyze Basic CSS Grid width differences", async ({ browser }) => {
-    const viewport = { width: 2560, height: 1440 }; // Large screen where difference is most visible
+  // ========================================
+  // PERFORMANCE TESTS
+  // ========================================
 
-    console.log(`\n=== Basic CSS Grid Width Analysis (${viewport.width}x${viewport.height}) ===`);
+  test("should maintain consistent performance across versions", async ({ browser }) => {
+    const performanceResults: Array<{
+      version: string;
+      loadTime: number;
+      domContentLoaded: number;
+      loadComplete: number;
+      firstPaint: number;
+      firstContentfulPaint: number;
+    }> = [];
 
-    const gridData = [];
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
 
-    // Capture grid measurements for all versions
+      try {
+        const startTime = Date.now();
+
+        await page.goto(`http://localhost:${port}`);
+        await page.waitForSelector("main", { timeout: 10000 });
+        await page.waitForFunction(() => {
+          const main = document.querySelector("main");
+          return main && main.children.length > 0;
+        });
+
+        const loadTime = Date.now() - startTime;
+
+        // Get performance metrics
+        const metrics = await page.evaluate(() => {
+          const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming;
+          return {
+            domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+            loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
+            firstPaint: performance.getEntriesByName("first-paint")[0]?.startTime || 0,
+            firstContentfulPaint: performance.getEntriesByName("first-contentful-paint")[0]?.startTime || 0,
+          };
+        });
+
+        performanceResults.push({
+          version,
+          loadTime,
+          ...metrics,
+        });
+      } finally {
+        await context.close();
+      }
+    }
+
+    // Log performance results for comparison
+    console.log("Performance comparison:", performanceResults);
+
+    // All versions should load within reasonable time (10 seconds)
+    performanceResults.forEach(({ loadTime }) => {
+      expect(loadTime).toBeLessThan(10000);
+    });
+  });
+  test("should capture visual regression screenshots", async ({ browser }) => {
+    const viewports = [
+      { name: "mobile", width: 375, height: 667 },
+      { name: "tablet", width: 768, height: 1024 },
+      { name: "desktop", width: 1440, height: 900 },
+      { name: "large-screen", width: 2560, height: 1440 },
+    ];
+
+    for (const viewport of viewports) {
+      for (const { version, port } of versions) {
+        const context = await browser.newContext();
+        const page = await context.newPage();
+        const demoPage = new DemoBasePage(page, version, port);
+
+        try {
+          await page.setViewportSize({ width: viewport.width, height: viewport.height });
+          await demoPage.goto();
+          await demoPage.waitForLoad();
+
+          // Take screenshot for visual comparison
+          await page.screenshot({
+            path: `tests/e2e/test-results/screenshots/visual-regression-v${version}-${viewport.name}.png`,
+            fullPage: true,
+          });
+        } finally {
+          await context.close();
+        }
+      }
+    }
+
+    // If we reach here, all screenshots were taken successfully
+    expect(true).toBe(true);
+  });
+
+  test("should maintain consistent CSS Grid section functionality across versions", async ({ browser }) => {
+    const viewport = { width: 1440, height: 900 }; // Standard desktop viewport
+
+    const gridData: Array<{
+      version: string;
+      gridItemsCount: number;
+      hasGridHeader: boolean;
+      gridItemTexts: string[];
+      containerWidth: number;
+      responsiveBreaks: boolean;
+      sampleClassNames: string;
+    }> = [];
+
+    // Capture grid data for all versions
     for (const { version, port } of versions) {
       const context = await browser.newContext();
       const page = await context.newPage();
@@ -514,11 +519,10 @@ test.describe("Demo common tests", () => {
         await demoPage.waitForLoad();
         await page.waitForTimeout(1000);
 
-        // Find the Basic CSS Grid section
-        const basicGridSection = await page.locator('h2:has-text("Basic CSS Grid")').first();
-        await expect(basicGridSection).toBeVisible();
+        // Verify Basic CSS Grid section exists
+        const basicGridHeader = await page.locator('h2:has-text("Basic CSS Grid")').first();
+        await expect(basicGridHeader).toBeVisible();
 
-        // Get the grid container and its measurements
         const gridAnalysis = await page.evaluate(() => {
           const main = document.querySelector("main");
           if (!main) return null;
@@ -530,138 +534,469 @@ test.describe("Demo common tests", () => {
 
           if (!basicGridHeader) return null;
 
-          // Find the parent container of the Basic CSS Grid section
-          const gridContainer = basicGridHeader.closest('[class*="Grid"], [class*="MuiGrid"]');
+          // Find the grid container - look for the next sibling or parent
+          let gridContainer = basicGridHeader.parentElement;
+          while (gridContainer && !gridContainer.querySelector('[class*="Grid"], [class*="MuiGrid"], div')) {
+            gridContainer = gridContainer.parentElement;
+          }
+
           if (!gridContainer) return null;
 
-          // Find the nested grid container with the actual grid items
-          const nestedGridContainer = gridContainer.querySelector('[class*="Grid"][class*="container"]');
+          // Get all potential grid items in this section
+          const allPotentialItems = Array.from(
+            gridContainer.querySelectorAll('[class*="Grid"], [class*="MuiGrid"], [class*="Mui"], div'),
+          );
 
-          const containerRect = gridContainer.getBoundingClientRect();
-          const nestedRect = nestedGridContainer?.getBoundingClientRect();
-          const mainRect = main.getBoundingClientRect();
-
-          // Get all grid items in the Basic CSS Grid section
-          const gridItems = Array.from(
-            gridContainer.querySelectorAll('[class*="Grid"][class*="item"], [class*="Grid2"]'),
-          ).filter((item) => {
+          // Filter for items that have "Grid" text content
+          const gridItems = allPotentialItems.filter((item) => {
             const text = item.textContent;
             return text && text.includes("Grid ") && /Grid \d+/.test(text);
           });
 
+          // Check if grid has responsive grid items
+          const hasResponsiveClasses = gridItems.length > 0;
+
           return {
-            containerWidth: Math.round(containerRect.width),
-            containerLeft: Math.round(containerRect.left),
-            containerRight: Math.round(containerRect.right),
-            nestedContainerWidth: nestedRect ? Math.round(nestedRect.width) : null,
-            nestedContainerLeft: nestedRect ? Math.round(nestedRect.left) : null,
-            nestedContainerRight: nestedRect ? Math.round(nestedRect.right) : null,
-            mainWidth: Math.round(mainRect.width),
-            mainLeft: Math.round(mainRect.left),
-            mainRight: Math.round(mainRect.right),
             gridItemsCount: gridItems.length,
-            containerClasses: gridContainer.className,
-            nestedContainerClasses: nestedGridContainer?.className || null,
-            containerStyles: {
-              maxWidth: window.getComputedStyle(gridContainer).maxWidth,
-              width: window.getComputedStyle(gridContainer).width,
-              marginLeft: window.getComputedStyle(gridContainer).marginLeft,
-              marginRight: window.getComputedStyle(gridContainer).marginRight,
-              paddingLeft: window.getComputedStyle(gridContainer).paddingLeft,
-              paddingRight: window.getComputedStyle(gridContainer).paddingRight,
-            },
-            nestedContainerStyles: nestedGridContainer
-              ? {
-                  maxWidth: window.getComputedStyle(nestedGridContainer).maxWidth,
-                  width: window.getComputedStyle(nestedGridContainer).width,
-                  marginLeft: window.getComputedStyle(nestedGridContainer).marginLeft,
-                  marginRight: window.getComputedStyle(nestedGridContainer).marginRight,
-                  paddingLeft: window.getComputedStyle(nestedGridContainer).paddingLeft,
-                  paddingRight: window.getComputedStyle(nestedGridContainer).paddingRight,
-                }
-              : null,
+            hasGridHeader: !!basicGridHeader,
+            gridItemTexts: gridItems.map((item) => item.textContent?.trim() || "").sort(),
+            containerWidth: Math.round(gridContainer.getBoundingClientRect().width),
+            responsiveBreaks: hasResponsiveClasses,
+            sampleClassNames: gridItems
+              .slice(0, 3)
+              .map((item) => item.className)
+              .join(", "),
           };
         });
 
-        gridData.push({ version, analysis: gridAnalysis });
-
-        // Take a focused screenshot of the Basic CSS Grid section
-        await page.screenshot({
-          path: `test-results/screenshots/basic-grid-analysis-v${version}-large-screen.png`,
-          fullPage: true,
-        });
+        if (gridAnalysis) {
+          gridData.push({ version, ...gridAnalysis });
+        }
       } finally {
         await context.close();
       }
     }
 
-    // Analyze the differences
-    console.log("\n=== Grid Width Analysis Results ===");
+    // Verify all versions have the grid section
+    expect(gridData).toHaveLength(3);
 
-    for (const { version, analysis } of gridData) {
-      console.log(`\nv${version} Basic CSS Grid:`);
-      console.log(
-        `  Container: ${analysis?.containerWidth}px (${analysis?.containerLeft} to ${analysis?.containerRight})`,
-      );
-      console.log(
-        `  Nested: ${analysis?.nestedContainerWidth}px (${analysis?.nestedContainerLeft} to ${analysis?.nestedContainerRight})`,
-      );
-      console.log(`  Main: ${analysis?.mainWidth}px (${analysis?.mainLeft} to ${analysis?.mainRight})`);
-      console.log(`  Container classes: ${analysis?.containerClasses}`);
-      console.log(`  Nested classes: ${analysis?.nestedContainerClasses}`);
-      console.log(`  Container styles:`, analysis?.containerStyles);
-      console.log(`  Nested styles:`, analysis?.nestedContainerStyles);
-    }
-
-    // Compare v5 vs v6/v7
-    const v5Data = gridData.find((d) => d.version === "5");
+    const baseVersion = gridData.find((d) => d.version === "5");
     const v6Data = gridData.find((d) => d.version === "6");
     const v7Data = gridData.find((d) => d.version === "7");
 
-    if (v5Data && v6Data && v7Data) {
-      console.log("\n=== Width Comparison ===");
+    expect(baseVersion).toBeDefined();
+    expect(v6Data).toBeDefined();
+    expect(v7Data).toBeDefined();
 
-      const v5Width = v5Data.analysis?.containerWidth || 0;
-      const v6Width = v6Data.analysis?.containerWidth || 0;
-      const v7Width = v7Data.analysis?.containerWidth || 0;
+    // Test 1: All versions should have the Basic CSS Grid header
+    expect(baseVersion!.hasGridHeader).toBe(true);
+    expect(v6Data!.hasGridHeader).toBe(true);
+    expect(v7Data!.hasGridHeader).toBe(true);
 
-      console.log(`v5 container width: ${v5Width}px`);
-      console.log(`v6 container width: ${v6Width}px (diff: ${v6Width - v5Width}px)`);
-      console.log(`v7 container width: ${v7Width}px (diff: ${v7Width - v5Width}px)`);
+    // Test 2: All versions should have the same number of grid items
+    expect(v6Data!.gridItemsCount).toBe(baseVersion!.gridItemsCount);
+    expect(v7Data!.gridItemsCount).toBe(baseVersion!.gridItemsCount);
 
-      const v5NestedWidth = v5Data.analysis?.nestedContainerWidth || 0;
-      const v6NestedWidth = v6Data.analysis?.nestedContainerWidth || 0;
-      const v7NestedWidth = v7Data.analysis?.nestedContainerWidth || 0;
+    // Test 3: All versions should have the same grid item content
+    expect(v6Data!.gridItemTexts).toEqual(baseVersion!.gridItemTexts);
+    expect(v7Data!.gridItemTexts).toEqual(baseVersion!.gridItemTexts);
 
-      console.log(`v5 nested width: ${v5NestedWidth}px`);
-      console.log(`v6 nested width: ${v6NestedWidth}px (diff: ${v6NestedWidth - v5NestedWidth}px)`);
-      console.log(`v7 nested width: ${v7NestedWidth}px (diff: ${v7NestedWidth - v5NestedWidth}px)`);
+    // Test 4: All versions should have responsive behavior
+    expect(baseVersion!.responsiveBreaks).toBe(true);
+    expect(v6Data!.responsiveBreaks).toBe(true);
+    expect(v7Data!.responsiveBreaks).toBe(true);
 
-      // Check if the difference is significant
-      const containerWidthDiff = Math.abs(v6Width - v5Width);
-      const nestedWidthDiff = Math.abs(v6NestedWidth - v5NestedWidth);
+    // Test 5: Container widths - allow for expected differences between Grid vs Grid2
+    // but verify they're within reasonable bounds (Grid2 may be narrower due to different defaults)
+    const v5Width = baseVersion!.containerWidth;
+    const v6Width = v6Data!.containerWidth;
+    const v7Width = v7Data!.containerWidth;
 
-      console.log(`\n=== FINDINGS ===`);
-      console.log(`🔍 Root Cause: MUI Grid vs Grid2 Default Width Behavior`);
-      console.log(`   - v5 uses legacy Grid component with maxWidth: '100%'`);
-      console.log(`   - v6/v7 use Grid2 component with maxWidth: 'none'`);
-      console.log(`   - Grid2 doesn't grow to full container width by default`);
-      console.log(`   - This is documented MUI behavior change in Grid2`);
+    // v6 and v7 might be narrower due to Grid2 behavior, but should be within 30% of v5
+    const maxWidthDiffPercent = 30;
+    const maxAllowedDiff = (v5Width * maxWidthDiffPercent) / 100;
 
-      console.log(`\n📊 Impact:`);
-      console.log(
-        `   - Container width difference: ${containerWidthDiff}px (~${Math.round((containerWidthDiff / v5Width) * 100)}% narrower)`,
-      );
-      console.log(`   - Nested width difference: ${nestedWidthDiff}px`);
-      console.log(`   - Visual impact: Grid items appear more centered/constrained in v6/v7`);
+    expect(Math.abs(v6Width - v5Width)).toBeLessThanOrEqual(maxAllowedDiff);
+    expect(Math.abs(v7Width - v5Width)).toBeLessThanOrEqual(maxAllowedDiff);
 
-      console.log(`\n🎯 Recommendations:`);
-      console.log(`   1. EXPECTED BEHAVIOR: This is correct Grid2 behavior per MUI docs`);
-      console.log(`   2. TO MATCH V5: Add sx={{ width: '100%' }} to FlexGrid2 containers`);
-      console.log(`   3. TO MAINTAIN: Keep current behavior - Grid2 provides better responsive design`);
-      console.log(`   4. DECISION: Choose based on design requirements`);
+    // v6 and v7 should have very similar widths to each other (both use Grid2)
+    expect(Math.abs(v7Width - v6Width)).toBeLessThanOrEqual(50); // Allow 50px difference
 
-      console.log(`\n✅ Analysis complete - Grid2 behavior is working as designed`);
+    // Log summary for debugging
+    console.log(`Grid section summary:
+      - v5: ${baseVersion!.gridItemsCount} items, ${v5Width}px width, responsive: ${baseVersion!.responsiveBreaks}
+      - v6: ${v6Data!.gridItemsCount} items, ${v6Width}px width, responsive: ${v6Data!.responsiveBreaks}
+      - v7: ${v7Data!.gridItemsCount} items, ${v7Width}px width, responsive: ${v7Data!.responsiveBreaks}
+      - Width diff v5→v6: ${v6Width - v5Width}px
+      - Width diff v5→v7: ${v7Width - v5Width}px
+      - Sample classes v5: ${baseVersion!.sampleClassNames}
+      - Sample classes v6: ${v6Data!.sampleClassNames}
+      - Sample classes v7: ${v7Data!.sampleClassNames}`);
+  });
+
+  test("should display all required section headers consistently across versions", async ({ browser }) => {
+    const headerResults: Array<{
+      version: string;
+      headers: Record<string, number>;
+      isValid: boolean;
+    }> = [];
+
+    // Capture header data for all versions
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        const headers = await demoPage.checkAllRequiredHeaders();
+
+        // Validate that all required headers are present
+        const expectedHeaders = [
+          "mainTitle",
+          "rowBasic",
+          "columnBasic",
+          "basicGrid",
+          "gridTemplating",
+          "refTest",
+          "complexProps",
+        ];
+
+        // Check version-specific headers
+        if (version === "6" || version === "7") {
+          expectedHeaders.push("grid2");
+        }
+
+        const isValid = expectedHeaders.every((headerKey) => headers[headerKey] === 1);
+
+        headerResults.push({ version, headers, isValid });
+      } finally {
+        await context.close();
+      }
+    }
+
+    // Verify all versions have valid headers
+    headerResults.forEach(({ version, headers, isValid }) => {
+      expect(isValid).toBe(true);
+
+      // Verify specific header counts
+      expect(headers.mainTitle).toBe(1);
+      expect(headers.rowBasic).toBe(1);
+      expect(headers.columnBasic).toBe(1);
+      expect(headers.basicGrid).toBe(1);
+      expect(headers.gridTemplating).toBe(1);
+      expect(headers.refTest).toBe(1);
+      expect(headers.complexProps).toBe(1);
+
+      // Check version-specific headers
+      if (version === "6" || version === "7") {
+        expect(headers.grid2).toBe(1);
+      } else {
+        expect(headers.grid2).toBeUndefined();
+      }
+    });
+
+    // Verify v6 and v7 have identical header structure (both should include Grid2)
+    const v5Headers = headerResults.find((r) => r.version === "5")!.headers;
+    const v6Headers = headerResults.find((r) => r.version === "6")!.headers;
+    const v7Headers = headerResults.find((r) => r.version === "7")!.headers;
+
+    // v5 should have one less header than v6/v7 (no Grid2)
+    const v5HeaderCount = Object.keys(v5Headers).length;
+    const v6HeaderCount = Object.keys(v6Headers).length;
+    const v7HeaderCount = Object.keys(v7Headers).length;
+
+    expect(v6HeaderCount).toBe(v5HeaderCount + 1); // v6 has Grid2 header
+    expect(v7HeaderCount).toBe(v5HeaderCount + 1); // v7 has Grid2 header
+    expect(v6HeaderCount).toBe(v7HeaderCount); // v6 and v7 should be identical
+
+    // Verify v6 and v7 have exactly the same headers
+    Object.keys(v6Headers).forEach((headerKey) => {
+      expect(v7Headers[headerKey]).toBe(v6Headers[headerKey]);
+    });
+
+    // Log header summary for debugging
+    console.log("Header verification summary:");
+    headerResults.forEach(({ version, headers }) => {
+      const headerList = Object.entries(headers)
+        .map(([key, count]) => `${key}: ${count}`)
+        .join(", ");
+      console.log(`  v${version}: ${headerList}`);
+    });
+  });
+
+  test("should display correct ref test results consistently across versions", async ({ browser }) => {
+    // Check ref functionality for all versions
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        // Find the ref test section
+        const refHeader = await page.locator('h2:has-text("Ref test")').first();
+        await expect(refHeader).toBeVisible();
+
+        // Get the ref test output content
+        const refTestText = await page.evaluate(() => {
+          // Search for containers with both "Ref test successful" and HTML element object
+          const refContainers = Array.from(
+            document.querySelectorAll("div.MuiFlex-root, div.MuiFlexBox-root, div.MuiBox-root"),
+          );
+
+          for (const container of refContainers) {
+            const containerText = container.textContent || "";
+            if (containerText.includes("Ref test successful") && /\[object HTML(Div)?Element\]/.test(containerText)) {
+              return containerText.trim();
+            }
+          }
+
+          // Fallback: search for span and traverse up to find parent with both parts
+          const successSpan = Array.from(document.querySelectorAll("span")).find((span) =>
+            span.textContent?.includes("Ref test successful"),
+          );
+
+          if (successSpan) {
+            let parent = successSpan.parentElement;
+            while (parent) {
+              const parentText = parent.textContent || "";
+              if (parentText.includes("Ref test successful") && /\[object HTML(Div)?Element\]/.test(parentText)) {
+                return parentText.trim();
+              }
+              parent = parent.parentElement;
+            }
+
+            // Try to construct from separate elements
+            const objectElement = Array.from(document.querySelectorAll("code, pre")).find((el) =>
+              /\[object HTML(Div)?Element\]/.test(el.textContent || ""),
+            );
+            if (objectElement) {
+              return `${successSpan.textContent?.trim()}\n${objectElement.textContent?.trim()}`;
+            }
+          }
+
+          return "";
+        });
+
+        // Verify ref test output for this version
+        expect(refTestText).not.toBe("");
+        expect(refTestText).toContain("Ref test successful");
+        expect(refTestText).toMatch(/\[object HTML(Div)?Element\]/);
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should display MUI version-specific styling consistently across versions", async ({ browser }) => {
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        // Check for MUI-specific classes or styling
+        const muiElements = await page.locator('[class*="MuiBox-root"], [class*="css-"]').count();
+        expect(muiElements).toBeGreaterThan(0);
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should work with MUI theme provider across all versions", async ({ browser }) => {
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        // Check that theme is applied correctly
+        const bodyStyles = await page.evaluate(() => {
+          const body = document.body;
+          const computed = window.getComputedStyle(body);
+          return {
+            fontFamily: computed.fontFamily,
+            margin: computed.margin,
+            colorScheme: computed.colorScheme || undefined, // v7 specific but gracefully handle older versions
+          };
+        });
+
+        // MUI should apply theme styles
+        expect(bodyStyles.fontFamily).toBeTruthy();
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should render FlexBox with proper MUI integration across versions", async ({ browser }) => {
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        // Test FlexBox functionality by checking computed styles
+        const allElements = await page.locator("div, section, main");
+        const elementCount = await allElements.count();
+
+        let flexCount = 0;
+        let firstFlexElement: {
+          display: string;
+          gap: string;
+          flexDirection?: string;
+          alignItems?: string;
+          justifyContent?: string;
+          padding?: string;
+        } | null = null;
+
+        // Check computed styles for flex display
+        for (let i = 0; i < Math.min(20, elementCount); i++) {
+          const element = allElements.nth(i);
+          try {
+            const styles = await element.evaluate((el) => {
+              const computed = window.getComputedStyle(el);
+              return {
+                display: computed.display,
+                gap: computed.gap,
+                flexDirection: computed.flexDirection,
+                alignItems: computed.alignItems,
+                justifyContent: computed.justifyContent,
+                padding: computed.padding,
+              };
+            });
+
+            if (styles.display === "flex") {
+              flexCount++;
+              if (!firstFlexElement) {
+                firstFlexElement = styles;
+              }
+            }
+          } catch (_e) {
+            continue;
+          }
+        }
+
+        expect(flexCount).toBeGreaterThan(0);
+        expect(firstFlexElement).toBeTruthy();
+        expect(firstFlexElement?.display).toBe("flex");
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should support responsive features across all versions", async ({ browser }) => {
+    const viewports = [
+      { width: 320, height: 568 }, // Small mobile
+      { width: 768, height: 1024 }, // Tablet
+      { width: 1440, height: 900 }, // Desktop
+      { width: 1920, height: 1080 }, // Large desktop
+    ];
+
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        for (const viewport of viewports) {
+          await page.setViewportSize(viewport);
+          await page.waitForTimeout(300);
+
+          // Check that layout adapts properly by checking computed styles
+          const allElements = await page.locator("div, section, main");
+          const elementCount = await allElements.count();
+
+          let flexCount = 0;
+          for (let i = 0; i < Math.min(10, elementCount); i++) {
+            const element = allElements.nth(i);
+            try {
+              const isFlexDisplay = await element.evaluate((el) => {
+                return window.getComputedStyle(el).display === "flex";
+              });
+              if (isFlexDisplay) flexCount++;
+            } catch (_e) {
+              continue;
+            }
+          }
+          expect(flexCount).toBeGreaterThan(0);
+
+          // Check for proper responsive behavior
+          const mainElement = await page.locator("main").first();
+          const mainStyles = await mainElement.evaluate((el) => {
+            const computed = window.getComputedStyle(el);
+            return {
+              padding: computed.padding,
+              gap: computed.gap,
+            };
+          });
+
+          expect(mainStyles.padding).toBeTruthy();
+        }
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should meet basic accessibility requirements across all versions", async ({ browser }) => {
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        const accessibility = await demoPage.checkAccessibility();
+
+        expect(accessibility.hasMainLandmark).toBe(true);
+        expect(accessibility.hasHeadings).toBe(true);
+        expect(accessibility.allImagesHaveAlt).toBe(true);
+      } finally {
+        await context.close();
+      }
+    }
+  });
+
+  test("should take responsive screenshots across all versions", async ({ browser }) => {
+    for (const { version, port } of versions) {
+      const context = await browser.newContext();
+      const page = await context.newPage();
+      const demoPage = new DemoBasePage(page, version, port);
+
+      try {
+        await demoPage.goto();
+        await demoPage.waitForLoad();
+
+        // Take screenshots at different viewports for visual regression testing
+        await demoPage.checkResponsiveness();
+
+        // If we get here without throwing, all screenshots were taken successfully
+        expect(true).toBe(true);
+      } finally {
+        await context.close();
+      }
     }
   });
 });

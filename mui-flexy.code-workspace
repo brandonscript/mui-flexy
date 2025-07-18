@@ -105,6 +105,6 @@
       "📘 docs"
     ],
     "jest.jestCommandLine": "yarn jest",
-    "jest.runMode": "watch",
+    "jest.runMode": "on-demand",
   }
 }

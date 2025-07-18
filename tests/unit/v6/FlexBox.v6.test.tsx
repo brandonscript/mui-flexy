@@ -1,7 +1,7 @@
-import { Box, styled, type SxProps, type Theme, Typography } from "../../../packages/v6/node_modules/@mui/material";
-import { major as muiVersion } from "../../../packages/v6/node_modules/@mui/material/version";
-import { FlexBox } from "../../../packages/v6/src/FlexBox.v6";
-import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps } from "../../../packages/v6/src/FlexBox.v6.types";
+import { Box, styled, type SxProps, type Theme, Typography } from "@mui/material";
+import { major as muiVersion } from "@mui/material/version";
+import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps } from "@mui-flexy/v6";
+import { FlexBox } from "@mui-flexy/v6";
 
 console.log("Tests running with MUI version:", muiVersion);
 

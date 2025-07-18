@@ -1,6 +1,6 @@
 {
-  "name": "mui-flexy-v7",
-  "version": "1.2.4",
+  "name": "@mui-flexy/v7",
+  "version": "1.3.0",
   "description": "A flexbox convenience component for Material UI v7 Box and Grid with handy shorthand props",
   "type": "module",
   "main": "dist/cjs/index.cjs",
@@ -17,10 +17,9 @@
     "dist"
   ],
   "scripts": {
-    "clean": "rm -rf dist && mkdir dist",
     "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
-    "typecheck": "yarn tsc --noEmit",
-    "test": "echo 'Tests are now run from the root directory using: yarn test:v7'"
+    "clean": "rm -rf dist && mkdir dist",
+    "typecheck": "yarn tsc --noEmit"
   },
   "peerDependencies": {
     "@emotion/react": "^11",
@@ -43,5 +42,19 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": "^5.8.3"
-  }
+  },
+  "repository": "https://github.com/brandonscript/mui-flexy",
+  "author": "github.com/brandonscript",
+  "license": "MIT",
+  "keywords": [
+    "mui",
+    "material-ui",
+    "react",
+    "flexbox",
+    "flex",
+    "layout",
+    "grid",
+    "box",
+    "v7"
+  ]
 }

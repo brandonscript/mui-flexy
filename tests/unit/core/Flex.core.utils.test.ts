@@ -720,6 +720,82 @@ describe("mapFlexProps", () => {
 });
 
 describe("verifyGridSizeProps", () => {
+  for (const [mode, inProp] of [
+    ["legacy", "xs"],
+    ["legacy", "size"],
+    ["new", "xs"],
+    ["new", "size"],
+  ] as const) {
+    it(`should handle ${inProp}=true in ${mode} mode`, () => {
+      const result = verifyGridSizeProps(
+        {
+          [inProp]: true,
+        } as _Any,
+        mode,
+      );
+      expect(result).toEqual({
+        [`${mode === "legacy" ? "xs" : "size"}`]: true,
+      });
+    });
+  }
+
+  for (const [mode, inProp] of [
+    ["legacy", "xs"],
+    ["legacy", "size"],
+    ["new", "xs"],
+    ["new", "size"],
+  ] as const) {
+    it(`should handle ${inProp}=false in ${mode} mode`, () => {
+      const result = verifyGridSizeProps(
+        {
+          [inProp]: false,
+        } as _Any,
+        mode,
+      );
+      expect(result).toEqual({
+        [`${mode === "legacy" ? "xs" : "size"}`]: false,
+      });
+    });
+  }
+
+  for (const [mode, inProp] of [
+    ["legacy", "xs"],
+    ["legacy", "size"],
+    ["new", "xs"],
+    ["new", "size"],
+  ] as const) {
+    it(`should handle ${inProp}=grow in ${mode} mode`, () => {
+      const result = verifyGridSizeProps(
+        {
+          [inProp]: "grow",
+        } as _Any,
+        mode,
+      );
+      expect(result).toEqual({
+        [`${mode === "legacy" ? "xs" : "size"}`]: "grow",
+      });
+    });
+  }
+
+  for (const [mode, inProp] of [
+    ["legacy", "xs"],
+    ["legacy", "size"],
+    ["new", "xs"],
+    ["new", "size"],
+  ] as const) {
+    it(`should handle ${inProp}=<int> in ${mode} mode`, () => {
+      const result = verifyGridSizeProps(
+        {
+          [inProp]: 12,
+        } as _Any,
+        mode,
+      );
+      expect(result).toEqual({
+        [`${mode === "legacy" ? "xs" : "size"}`]: 12,
+      });
+    });
+  }
+
   it("should handle legacy props with explicit 'legacy' structure", () => {
     const props = {
       xs: 12,
@@ -845,7 +921,7 @@ describe("verifyGridSizeProps", () => {
     });
   });
 
-  it("should preserve other props when using legacy structure", () => {
+  it("should prefer size over legacy props even in legacy mode", () => {
     const props = {
       xs: 12,
       sm: 6,
@@ -853,12 +929,12 @@ describe("verifyGridSizeProps", () => {
       display: "flex",
       flexDirection: "row",
       whiteSpace: "nowrap",
-      size: { xs: 8, sm: 4 }, // should be ignored when using legacy
+      size: { xs: 8, sm: 4 },
     };
     const result = verifyGridSizeProps(props as _Any, "legacy");
     expect(result).toEqual({
-      xs: 12,
-      sm: 6,
+      xs: 8,
+      sm: 4,
       className: "test-class",
       display: "flex",
       flexDirection: "row",

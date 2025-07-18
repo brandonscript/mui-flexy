@@ -1,10 +1,10 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, responsiveFontSizes, ThemeProvider } from "@mui/material/styles";
+import { FlexBox, FlexGrid } from "@mui-flexy/v5";
 import { useEffect, useRef } from "react";
 
 // @ts-ignore
 import packageJson from "../../../packages/v5/package.json";
-import { FlexBox, FlexGrid } from "../../../packages/v5/src";
 import {
   BasicGridTitle,
   ColumnBasicTitle,

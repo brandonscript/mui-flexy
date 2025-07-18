@@ -1,6 +1,6 @@
-import { Grid, Typography } from "../../../packages/v6/node_modules/@mui/material";
-import { major as muiVersion } from "../../../packages/v6/node_modules/@mui/material/version";
-import { FlexGrid2 } from "../../../packages/v6/src/FlexGrid2.v6";
+import { Grid, Typography } from "@mui/material";
+import { major as muiVersion } from "@mui/material/version";
+import { FlexGrid2 } from "@mui-flexy/v6";
 
 console.log("Tests running with MUI version:", muiVersion);
 

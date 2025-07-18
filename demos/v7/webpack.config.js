@@ -9,6 +9,11 @@ module.exports = {
         test: /\.(ts|tsx)$/,
         use: "babel-loader",
         exclude: /node_modules/,
+        include: [
+          path.resolve(__dirname, "src"),
+          path.resolve(__dirname, "../shared"),
+          path.resolve(__dirname, "../../packages"),
+        ],
       },
     ],
   },
@@ -16,7 +21,9 @@ module.exports = {
     extensions: [".tsx", ".ts", ".js", ".json"],
     alias: {
       "@mui-flexy/core": path.resolve(__dirname, "../../packages/core/src"),
+      "@mui-flexy/v7": path.resolve(__dirname, "../../packages/v7/src"),
     },
+    modules: [path.resolve(__dirname, "node_modules"), path.resolve(__dirname, "../../node_modules"), "node_modules"],
   },
   output: {
     filename: "bundle.js",
@@ -32,8 +39,10 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "public"),
     },
+    host: "127.0.0.1", // Force IPv4 only, disable IPv6
     port: 3007,
     hot: true,
     open: false, // Disable auto-opening browser (especially for Playwright tests)
+    allowedHosts: "all", // Allow Playwright to access the server
   },
 };

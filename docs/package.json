@@ -1,0 +1,43 @@
+{
+  "name": "mui-flexy-docs",
+  "version": "1.0.0",
+  "description": "Documentation for mui-flexy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "yarn install && yarn clean && npx rollup -c ../rollup.docs.mjs",
+    "dev": "yarn serve:killall > /dev/null 2>&1 && node dev-server.js",
+    "serve:killall": "npx kill-port 3003",
+    "serve": "yarn serve:killall > /dev/null 2>&1 && npx serve -s . -p 3003 --no-clipboard",
+    "clean": "rm -rf static && mkdir -p static"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui-flexy/v5": "workspace:*",
+    "@mui-flexy/v6": "workspace:*",
+    "@mui-flexy/v7": "workspace:*",
+    "@mui/material": "^7.0.0",
+    "@mui/system": "^7.0.0",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-syntax-highlighter": "^15.6.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.10",
+    "@babel/preset-env": "^7.26.9",
+    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-typescript": "^7.27.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "babel-loader": "^9.2.1",
+    "chokidar": "^3.5.3",
+    "html-webpack-plugin": "^5.6.3",
+    "serve": "^14.2.3",
+    "typescript": "^5.6.3",
+    "webpack": "^5.99.5",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
+  }
+}

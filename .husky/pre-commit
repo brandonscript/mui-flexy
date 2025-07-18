@@ -1,7 +1,23 @@
 #!/bin/bash
-yarn test:all
+
+# Run Jest tests (all unit tests)
+echo "Running Jest tests..."
+yarn test
+
+# Run Playwright tests (all e2e tests)
+echo "Running Playwright tests..."
+yarn test:e2e
+
+# Run type checking
+echo "Running type checking..."
 yarn run typecheck
+
+# Run linting
+echo "Running linting..."
 yarn run lint
+
+# Build all packages
+echo "Building all packages..."
 yarn run build:all
 
 # Auto-add dist folder to git index

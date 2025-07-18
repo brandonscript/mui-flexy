@@ -25,6 +25,9 @@
     "paths": {
       "@mui-flexy/core": [
         "../../packages/core/src"
+      ],
+      "@mui-flexy/v5": [
+        "../../packages/v5/src"
       ]
     }
   },

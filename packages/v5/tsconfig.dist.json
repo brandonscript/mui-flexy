@@ -10,8 +10,10 @@
     "outDir": "./dist"
   },
   "files": [
-    "src/Flex.tsx",
-    "src/Flex.types.ts",
+    "src/FlexBox.tsx",
+    "src/FlexBox.types.ts",
+    "src/FlexGrid.tsx",
+    "src/FlexGrid.types.ts",
     "src/index.ts"
   ],
   "exclude": [

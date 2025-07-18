@@ -1,10 +1,10 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { createTheme, responsiveFontSizes, ThemeProvider } from "@mui/material/styles";
+import { FlexBox, FlexGrid } from "@mui-flexy/v7";
 import { useEffect, useRef } from "react";
 
 // @ts-ignore
 import packageJson from "../../../packages/v7/package.json";
-import { FlexBox, FlexGrid2 } from "../../../packages/v7/src";
 import {
   BasicGridTitle,
   ColumnBasicTitle,
@@ -45,15 +45,15 @@ const App = () => {
       <FlexBox width="100vw" p={[2, 3, 4]} gap={[1, 2, 2]} x="center" component="main" sx={{ bgcolor: "#fff" }} column>
         <FlexBox x="left" y="center" column>
           <DemoTitle packageName={`mui-flexy v${packageJson.version}`} muiVersion="7" FlexBox={FlexBox} />
-          <DemoDescription gridComponentName="FlexGrid2" />
+          <DemoDescription gridComponentName="FlexGrid" />
         </FlexBox>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
-          <FlexGrid2 size={12} component="header">
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
+          <FlexGrid size={12} component="header">
             <RowBasicTitle />
-          </FlexGrid2>
+          </FlexGrid>
           {rowCombinations.map(([x, y], i) => (
-            <FlexGrid2 size={{ xs: 12, md: 4 }} key={i} component="div">
+            <FlexGrid size={{ xs: 12, md: 4 }} key={i} component="div">
               <FlexBox column sx={{ width: "100%" }}>
                 <DemoCode
                   margin="0px 16px"
@@ -65,16 +65,16 @@ const App = () => {
                   <span>{rowEmoji}</span>
                 </Inner>
               </FlexBox>
-            </FlexGrid2>
+            </FlexGrid>
           ))}
-        </FlexGrid2>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
-          <FlexGrid2 size={12} component="header">
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ maxWidth: "100%" }}>
+          <FlexGrid size={12} component="header">
             <ColumnBasicTitle />
-          </FlexGrid2>
+          </FlexGrid>
           {columnCombinations.map(([y, x], i) => (
-            <FlexGrid2 size={{ xs: 12, md: 4 }} key={i}>
+            <FlexGrid size={{ xs: 12, md: 4 }} key={i}>
               <FlexBox column sx={{ width: "100%" }}>
                 <DemoCode
                   margin="0px 16px"
@@ -86,33 +86,33 @@ const App = () => {
                   <span>{columnEmoji}</span>
                 </Inner>
               </FlexBox>
-            </FlexGrid2>
+            </FlexGrid>
           ))}
-        </FlexGrid2>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
-          <FlexGrid2 size={12} component="header">
-            <BasicGridTitle gridComponentName="FlexGrid2" />
-          </FlexGrid2>
-          <FlexGrid2 size={12} x="center" y="center">
-            <FlexGrid2 container spacing={2}>
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
+          <FlexGrid size={12} component="header">
+            <BasicGridTitle gridComponentName="FlexGrid" />
+          </FlexGrid>
+          <FlexGrid size={12} x="center" y="center">
+            <FlexGrid container spacing={2}>
               {[...Array(12).keys()].map((i) => (
-                <FlexGrid2 size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={i}>
+                <FlexGrid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={i}>
                   <Inner x="center" y="center">
                     <span>Grid {i + 1}</span>
                   </Inner>
-                </FlexGrid2>
+                </FlexGrid>
               ))}
-            </FlexGrid2>
-          </FlexGrid2>
-        </FlexGrid2>
+            </FlexGrid>
+          </FlexGrid>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
-          <FlexGrid2 size={12} component="header">
-            <GridTemplatingTitle gridComponentName="FlexGrid2" />
-          </FlexGrid2>
-          <FlexGrid2 size={12} x="center" y="center">
-            <FlexGrid2
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
+          <FlexGrid size={12} component="header">
+            <GridTemplatingTitle gridComponentName="FlexGrid" />
+          </FlexGrid>
+          <FlexGrid size={12} x="center" y="center">
+            <FlexGrid
               x="center"
               y="center"
               ml={1}
@@ -129,44 +129,44 @@ const App = () => {
                   <span>Template {i + 1}</span>
                 </Inner>
               ))}
-            </FlexGrid2>
-          </FlexGrid2>
-        </FlexGrid2>
+            </FlexGrid>
+          </FlexGrid>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
-          <FlexGrid2 size={12} component="header">
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
+          <FlexGrid size={12} component="header">
             <Grid2VersionTitle version="7" />
-          </FlexGrid2>
-          <FlexGrid2 size={12} x="center" y="center">
-            <FlexGrid2 container spacing={2}>
+          </FlexGrid>
+          <FlexGrid size={12} x="center" y="center">
+            <FlexGrid container spacing={2}>
               {[...Array(12).keys()].map((i) => (
-                <FlexGrid2 size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={i}>
+                <FlexGrid x="center" size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={i}>
                   <Inner x="center" y="center">
-                    <span>Grid2 {i + 1}</span>
+                    <span>Grid {i + 1}</span>
                   </Inner>
-                </FlexGrid2>
+                </FlexGrid>
               ))}
-            </FlexGrid2>
-          </FlexGrid2>
-        </FlexGrid2>
+            </FlexGrid>
+          </FlexGrid>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
-          <FlexGrid2 size={12} component="header" ref={ref}>
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
+          <FlexGrid size={12} component="header" ref={ref}>
             <RefTestTitle />
-          </FlexGrid2>
-          <FlexGrid2 size={12} x="center" y="center">
+          </FlexGrid>
+          <FlexGrid size={12} x="center" y="center">
             <Inner x="center" y="center" column>
               <span>{ref?.current?.innerText ? `${ref?.current?.innerText} successful` : "Failed"}</span>
               <DemoCode code={ref?.current?.toString()} />
             </Inner>
-          </FlexGrid2>
-        </FlexGrid2>
+          </FlexGrid>
+        </FlexGrid>
 
-        <FlexGrid2 container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
-          <FlexGrid2 size={12} component="header">
+        <FlexGrid container component="section" spacing={[0.5, 1, 2]} sx={{ width: "100%" }}>
+          <FlexGrid size={12} component="header">
             <ComplexPropsTitle />
-          </FlexGrid2>
-          <FlexGrid2 size={12} x="center" y="center">
+          </FlexGrid>
+          <FlexGrid size={12} x="center" y="center">
             <Inner x="center" y="center" column>
               <span>Complex responsive props</span>
               <DemoCode
@@ -179,8 +179,8 @@ const App = () => {
 </FlexBox>`}
               />
             </Inner>
-          </FlexGrid2>
-        </FlexGrid2>
+          </FlexGrid>
+        </FlexGrid>
       </FlexBox>
     </ThemeProvider>
   );

@@ -11,18 +11,62 @@
   <script type="importmap">
     {
       "imports": {
-        "react": "https://esm.sh/react@18?dev",
-        "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime?dev",
-        "react-dom": "https://esm.sh/react-dom@18?dev",
-        "react-dom/client": "https://esm.sh/react-dom@18/client?dev"
+        "clsx": "https://cdn.jsdelivr.net/npm/clsx@1.2.1/+esm",
+        "prop-types": "https://cdn.jsdelivr.net/npm/prop-types@15.8.1/+esm",
+        "react-syntax-highlighter": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/+esm",
+        "react-syntax-highlighter/dist/esm/styles/hljs": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/styles/hljs/+esm",
+        "react-syntax-highlighter/dist/esm/prism": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/prism/+esm",
+        "react-syntax-highlighter/dist/esm/prism-light": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/prism-light/+esm",
+        "lowlight": "https://cdn.jsdelivr.net/npm/lowlight@2.9.0/+esm",
+        "react": "https://esm.sh/react@18",
+        "react/jsx-runtime": "https://esm.sh/react@18/jsx-runtime",
+        "react-dom": "https://esm.sh/react-dom@18",
+        "react-dom/client": "https://esm.sh/react-dom@18/client",
+                "@emotion/react": "https://esm.sh/@emotion/react@11?external=react",
+        "@emotion/styled": "https://esm.sh/@emotion/styled@11?external=react",
+        "@mui/material": "https://esm.sh/@mui/material@7?external=react",
+        "@mui/system": "https://esm.sh/@mui/system@7?external=react",
+        "@mui/styles": "https://esm.sh/@mui/system@7?external=react",
+        "@mui/material/Box": "https://esm.sh/@mui/material@7/Box?external=react",
+        "@mui/material/Grid": "https://esm.sh/@mui/material@7/Grid?external=react",
+        "@mui/material/Grid2": "https://esm.sh/@mui/material@7/Grid2?external=react",
+        "@mui/material_v5": "https://esm.sh/@mui/material@5?external=react",
+        "@mui/material/Box_v5": "https://esm.sh/@mui/material@5/Box?external=react",
+        "@mui/material/Grid_v5": "https://esm.sh/@mui/material@5/Grid?external=react",
+        "@mui/material/styles_v5": "https://esm.sh/@mui/material@5/styles?external=react",
+        "@mui/material/version_v5": "https://esm.sh/@mui/material@5/version?external=react",
+        "@mui/styles_v5": "https://esm.sh/@mui/styles@5?external=react",
+        "@mui/version_v5": "https://esm.sh/@mui/material@5/version?external=react",
+        "@mui/material_v6": "https://esm.sh/@mui/material@6?external=react",
+        "@mui/material/Box_v6": "https://esm.sh/@mui/material@6/Box?external=react",
+        "@mui/material/Grid_v6": "https://esm.sh/@mui/material@6/Grid?external=react",
+        "@mui/material/Grid2_v6": "https://esm.sh/@mui/material@6/Grid2?external=react",
+        "@mui/material/styles_v6": "https://esm.sh/@mui/material@6/styles?external=react",
+        "@mui/material/version_v6": "https://esm.sh/@mui/material@6/version?external=react",
+        "@mui/version_v6": "https://esm.sh/@mui/material@6/version?external=react",
+        "@mui/material_v7": "https://esm.sh/@mui/material@7?external=react",
+        "@mui/material/Box_v7": "https://esm.sh/@mui/material@7/Box?external=react",
+        "@mui/material/Grid_v7": "https://esm.sh/@mui/material@7/Grid?external=react",
+        "@mui/material/Grid2_v7": "https://esm.sh/@mui/material@7/Grid2?external=react",
+        "@mui/material/styles_v7": "https://esm.sh/@mui/material@7/styles?external=react",
+        "@mui/material/version_v7": "https://esm.sh/@mui/material@7/version?external=react",
+        "@mui/version_v7": "https://esm.sh/@mui/material@7/version?external=react",
+        "@mui/system_v5": "https://esm.sh/@mui/system@5?external=react",
+        "@mui/system_v6": "https://esm.sh/@mui/system@6?external=react",
+        "@mui/system_v7": "https://esm.sh/@mui/system@7?external=react",
+        "@mui-flexy/core": "/packages/core/dist/index.js",
+        "@mui-flexy/v5": "/packages/v5/dist/index.js",
+        "@mui-flexy/v6": "/packages/v6/dist/index.js",
+        "@mui-flexy/v7": "/packages/v7/dist/index.js"
+
       }
     }
   </script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script type="module">
     import * as React from "react";
     import * as ReactDOM from "react-dom";
     import { createRoot } from "react-dom/client";
-
 
     /**
      * ! Without window reassignment the imported modules are
@@ -44,36 +88,24 @@
 
     window.ReactDOM = ReactDOM;
     window.createRoot = createRoot;
-    // window.ReactSyntaxHighlighter = React.lazy(() => import("react-syntax-highlighter"));
-
   </script>
-  <script type="importmap">
-    {
-      "imports": {
-        "clsx": "https://cdn.jsdelivr.net/npm/clsx@1.2.1/+esm",
-        "prop-types": "https://cdn.jsdelivr.net/npm/prop-types@15.8.1/+esm",
-        "react-syntax-highlighter": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/+esm",
-        "react-syntax-highlighter/dist/esm/styles/hljs": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/styles/hljs/+esm",
-        "react-syntax-highlighter/dist/esm/prism": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/prism/+esm",
-        "react-syntax-highlighter/dist/esm/prism-light": "https://cdn.jsdelivr.net/npm/react-syntax-highlighter@15.6.1/dist/esm/prism-light/+esm",
-        "lowlight": "https://cdn.jsdelivr.net/npm/lowlight@3.3.0/+esm",
-        "@mui/material": "https://esm.sh/@mui/material@^6?external=react",
-        "@mui/material/Box": "https://esm.sh/@mui/material@^6/Box?external=react",
-        "@mui/material/Grid": "https://esm.sh/@mui/material@^6/Grid?external=react",
-        "@mui/material/Grid2": "https://esm.sh/@mui/material@^6/Grid2?external=react",
-        "@mui/material/version": "https://esm.sh/@mui/material@^6/version?external=react"
-      }
-    }
-  </script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 
 <body>
   <div id="root"></div>
+  <script type="module">
+    console.log('Page loaded, checking for basic objects');
+    console.log('React available:', typeof window.React);
+    console.log('ReactDOM available:', typeof window.ReactDOM);
+    console.log('createRoot available:', typeof window.createRoot);
+
+    try {
+      const { default: App } = await import('./static/docs.js');
+      window.createRoot(document.querySelector("#root")).render(window.React.createElement(App));
+    } catch (error) {
+      console.error('Error loading app:', error);
+    }
+  </script>
 </body>
-<script type="text/babel" defer="defer" data-type="module" data-presets="react,typescript">
-  import App from './static/docs.js'
-  createRoot(document.querySelector("#root")).render(<App />);
-</script>
 
 </html>

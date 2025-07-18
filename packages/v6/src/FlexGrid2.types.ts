@@ -3,18 +3,17 @@ import type { Theme as MaterialTheme } from "@mui/material/styles";
 import type { SystemProps } from "@mui/system/Box";
 import type { GridBaseProps } from "@mui/system/Grid";
 import type { SxProps } from "@mui/system/styleFunctionSx/styleFunctionSx";
-import {
-  type FlexColumnProps,
-  type FlexOrientation,
-  type FlexRowProps,
-  type InferFlexProps,
-  type OnlyColumn,
-  type OnlyRow,
-  type StrictGrid2Props,
+import type {
+  FlexColumnProps,
+  FlexOrientation,
+  FlexRowProps,
+  InferFlexProps,
+  OnlyColumn,
+  OnlyRow,
+  StrictGrid2Props,
 } from "@mui-flexy/core";
-import type * as React from "react";
 
-export interface FlexGridTypeMap<
+export interface FlexGrid2TypeMap<
   O extends FlexOrientation | undefined = undefined,
   P = {},
   D extends React.ElementType = "div",
@@ -27,24 +26,24 @@ export interface FlexGridTypeMap<
   defaultComponent: D;
 }
 
-export type FlexGridProps<
+export type FlexGrid2Props<
   O extends FlexOrientation | undefined = undefined,
-  D extends React.ElementType = FlexGridTypeMap<O>["defaultComponent"],
+  D extends React.ElementType = FlexGrid2TypeMap<O>["defaultComponent"],
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OverrideProps<FlexGridTypeMap<O, P, D>, D>>;
+> = StrictGrid2Props<OverrideProps<FlexGrid2TypeMap<O, P, D>, D>>;
 
-export type FlexGridRowProps<
-  D extends React.ElementType = FlexGridTypeMap<"row">["defaultComponent"],
+export type FlexGrid2RowProps<
+  D extends React.ElementType = FlexGrid2TypeMap<"row">["defaultComponent"],
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OnlyRow<FlexGridProps<"row", D, P>>>;
+> = StrictGrid2Props<OnlyRow<FlexGrid2Props<"row", D, P>>>;
 
-export type FlexGridColumnProps<
-  D extends React.ElementType = FlexGridTypeMap<"column">["defaultComponent"],
+export type FlexGrid2ColumnProps<
+  D extends React.ElementType = FlexGrid2TypeMap<"column">["defaultComponent"],
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OnlyColumn<FlexGridProps<"column", D, P>>>;
+> = StrictGrid2Props<OnlyColumn<FlexGrid2Props<"column", D, P>>>;

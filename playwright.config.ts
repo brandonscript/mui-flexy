@@ -5,6 +5,10 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests/e2e",
+  /* Exclude docs tests - they have their own config */
+  testIgnore: "**/docs.spec.ts",
+  /* Consolidated output directory for all test results */
+  outputDir: "./tests/e2e/test-results",
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -15,8 +19,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ["html", { open: "never" }], // Don't auto-open HTML report server
-    ["json", { outputFile: "test-results/results.json" }],
+    ["html", { open: "never", outputFolder: "tests/e2e/html-report" }], // Separate HTML report directory
+    ["json", { outputFile: "tests/e2e/test-results/results.json" }], // JSON results in test-results
     ["list"],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -101,22 +105,38 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: "cd demos/v5 && yarn dev",
-      port: 3005,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      cwd: "demos/v5",
+      command: "yarn dev",
+      url: "http://127.0.0.1:3005",
+      reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
+      timeout: 60000, // Reduced timeout for faster feedback
+      // Ensure clean shutdown
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0", // Disable color codes that might interfere
+      },
     },
     {
-      command: "cd demos/v6 && yarn dev",
-      port: 3006,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      cwd: "demos/v6",
+      command: "yarn dev",
+      url: "http://127.0.0.1:3006",
+      reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
+      timeout: 60000,
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+      },
     },
     {
-      command: "cd demos/v7 && yarn dev",
-      port: 3007,
-      reuseExistingServer: !process.env.CI,
-      timeout: 120000,
+      cwd: "demos/v7",
+      command: "yarn dev",
+      url: "http://127.0.0.1:3007",
+      reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
+      timeout: 60000,
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+      },
     },
   ],
 });

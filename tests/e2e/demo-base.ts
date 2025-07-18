@@ -1,4 +1,4 @@
-import { expect, Page, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
 
 export class DemoBasePage {
   constructor(
@@ -26,7 +26,7 @@ export class DemoBasePage {
   }
 
   async getVersionText() {
-    const versionElement = await this.page.locator('h4:has-text("mui-flexy v")');
+    const versionElement = await this.page.locator('h1:has-text("mui-flexy v")');
     return await versionElement.textContent();
   }
 
@@ -52,7 +52,7 @@ export class DemoBasePage {
 
   async takeScreenshot(name: string) {
     await this.page.screenshot({
-      path: `test-results/screenshots/${this.version}-${name}.png`,
+      path: `tests/e2e/test-results/screenshots/${this.version}-${name}.png`,
       fullPage: true,
     });
   }
@@ -131,7 +131,7 @@ export class DemoBasePage {
   async checkAllRequiredHeaders() {
     // Check for all the expected headers in the demo
     const headers: Record<string, number> = {
-      mainTitle: await this.page.locator('h4:has-text("mui-flexy v")').count(),
+      mainTitle: await this.page.locator('h1:has-text("mui-flexy v")').count(),
       rowBasic: await this.page.locator('h2:has-text("Row (basic)")').count(),
       columnBasic: await this.page.locator('h2:has-text("Column (basic)")').count(),
       basicGrid: await this.page.locator('h2:has-text("Basic CSS Grid")').count(),
@@ -147,71 +147,4 @@ export class DemoBasePage {
 
     return headers;
   }
-}
-
-export function createDemoTests(version: string, port: number) {
-  test.describe(`Demo v${version}`, () => {
-    let demoPage: DemoBasePage;
-
-    test.beforeEach(async ({ page }) => {
-      demoPage = new DemoBasePage(page, version, port);
-      await demoPage.goto();
-      await demoPage.waitForLoad();
-    });
-
-    test(`should load and display correct title for v${version}`, async () => {
-      const title = await demoPage.getTitle();
-      expect(title).toContain(`mui-flexy v${version} Demo`);
-    });
-
-    test(`should display correct version information for v${version}`, async () => {
-      const versionText = await demoPage.getVersionText();
-      expect(versionText).toContain("mui-flexy v");
-
-      const muiVersionText = await demoPage.getMuiVersionText();
-      expect(muiVersionText).toContain(`@mui/material^${version}`);
-    });
-
-    test(`should render FlexBox components for v${version}`, async () => {
-      const flexBoxCount = await demoPage.checkFlexboxAlignment();
-      expect(flexBoxCount).toBeGreaterThan(0);
-    });
-
-    test(`should be responsive for v${version}`, async () => {
-      await demoPage.checkResponsiveness();
-      // If we get here without throwing, responsiveness test passed
-      expect(true).toBe(true);
-    });
-
-    test(`should meet basic accessibility requirements for v${version}`, async () => {
-      const accessibility = await demoPage.checkAccessibility();
-      expect(accessibility.hasMainLandmark).toBe(true);
-      expect(accessibility.hasHeadings).toBe(true);
-      expect(accessibility.allImagesHaveAlt).toBe(true);
-    });
-
-    test(`should take full page screenshot for v${version}`, async () => {
-      await demoPage.takeScreenshot("full-page");
-      // If we get here without throwing, screenshot was taken successfully
-      expect(true).toBe(true);
-    });
-
-    test(`should display all required headers for v${version}`, async () => {
-      const headers = await demoPage.checkAllRequiredHeaders();
-
-      // Check that all required headers are present
-      expect(headers.mainTitle).toBe(1);
-      expect(headers.rowBasic).toBe(1);
-      expect(headers.columnBasic).toBe(1);
-      expect(headers.basicGrid).toBe(1);
-      expect(headers.gridTemplating).toBe(1);
-      expect(headers.refTest).toBe(1);
-      expect(headers.complexProps).toBe(1);
-
-      // Check version-specific headers
-      if (version === "6" || version === "7") {
-        expect(headers.grid2).toBe(1);
-      }
-    });
-  });
 }

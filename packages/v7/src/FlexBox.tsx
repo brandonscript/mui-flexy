@@ -6,7 +6,7 @@ import type { FlexOrientation } from "@mui-flexy/core";
 import { mapFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
-import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexBoxTypeMap } from "./FlexBox.v7.types";
+import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexBoxTypeMap } from "./FlexBox.types";
 
 export type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps };
 

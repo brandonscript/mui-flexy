@@ -226,6 +226,21 @@ export default tseslint.config(
       "@typescript-eslint/no-require-imports": "off",
     },
   },
+  // Special configuration for Node.js server files
+  {
+    files: ["**/dev-server.js", "**/server.js"],
+    languageOptions: {
+      sourceType: "module",
+      globals: {
+        process: "readonly",
+        console: "readonly",
+        Buffer: "readonly",
+        global: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+      },
+    },
+  },
   // Special configuration for generated/built files
   {
     files: ["**/dist/**", "**/build/**", "**/docs/static/**", "**/bundle.js"],

@@ -34,10 +34,8 @@ dist/_virtual/*
 /packages/*/coverage/*
 /coverage/*
 
-# Test outputs
-/packages/*/test-results/*
-/test-results/*
-/playwright-report/*
+# Test outputs - consolidated to single location
+/tests/e2e/test-results/*
 
 # IDE files
 .vscode/

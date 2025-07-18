@@ -1,12 +1,15 @@
-import type { BoxProps } from "@mui/material/Box";
-import _MuiBox from "@mui/material/Box";
+// @ts-ignore
+import type { BoxProps } from "@mui/material/Box_v6";
+// @ts-ignore
+import _MuiBox from "@mui/material/Box_v6";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
-import type { Theme as MaterialTheme } from "@mui/material/styles";
+// @ts-ignore
+import type { Theme as MaterialTheme } from "@mui/material/styles_v6";
 import type { FlexOrientation } from "@mui-flexy/core";
 import { mapFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
-import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexBoxTypeMap } from "./FlexBox.v5.types";
+import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexBoxTypeMap } from "./FlexBox.types";
 
 export type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps };
 
