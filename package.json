@@ -20,7 +20,7 @@
     "build:docs": "yarn install && yarn clean:docs && yarn rollup -c rollup.docs.mjs",
     "docs": "cd docs && npx http-server -o ./",
     "build:packages": "yarn workspaces foreach -A --exclude 'mui-flexy-demo-*' run build",
-    "clean": "rm -rf packages/*/dist && find packages -name dist -type d -exec mkdir -p {} \\;",
+    "clean": "rm -rf packages/core/dist packages/v5/dist packages/v6/dist packages/v7/dist && mkdir -p packages/core/dist packages/v5/dist packages/v6/dist packages/v7/dist",
     "clean:all": "yarn clean && yarn workspaces foreach -A run clean",
     "clean:docs": "cd docs && yarn clean",
     "demo:all": "concurrently \"yarn demo:v5\" \"yarn demo:v6\" \"yarn demo:v7\"",
