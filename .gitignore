@@ -5,7 +5,8 @@
 mui-flexy*.tgz
 *.tsbuildinfo
 /.rollup.cache
-/.yarn
+/.yarn/*
+!/.yarn/releases
 /demo/.yarn
 /.npmrc
 
