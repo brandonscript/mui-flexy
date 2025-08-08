@@ -1,7 +1,5 @@
-// @ts-ignore
-import type { Grid2Props } from "@mui/material/Grid2_v6";
-// @ts-ignore
-import Grid2 from "@mui/material/Grid2_v6";
+import type { Grid2Props } from "@mui/material/Grid2";
+import Grid2 from "@mui/material/Grid2";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import { type FlexOrientation, mapFlexProps, verifyGridSizeProps } from "@mui-flexy/core";
 import { forwardRef } from "react";

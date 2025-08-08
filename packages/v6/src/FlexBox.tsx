@@ -1,10 +1,7 @@
-// @ts-ignore
-import type { BoxProps } from "@mui/material/Box_v6";
-// @ts-ignore
-import _MuiBox from "@mui/material/Box_v6";
+import type { BoxProps } from "@mui/material/Box";
+import _MuiBox from "@mui/material/Box";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
-// @ts-ignore
-import type { Theme as MaterialTheme } from "@mui/material/styles_v6";
+import type { Theme as MaterialTheme } from "@mui/material/styles";
 import type { FlexOrientation } from "@mui-flexy/core";
 import { mapFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";

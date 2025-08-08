@@ -36,6 +36,9 @@ dist/_virtual/*
 
 # Test outputs - consolidated to single location
 /tests/e2e/test-results/*
+/tests/e2e/html-report/*
+/tests/e2e/docs-test-results/*
+/tests/e2e/docs-html-report/*
 
 # IDE files
 .vscode/

@@ -23,18 +23,18 @@ yarn run lint
 echo "Building all packages..."
 yarn run build:all
 
-# Auto-add dist folder to git index
-git add "$(git rev-parse --show-toplevel)/dist/*"
-git stage "$(git rev-parse --show-toplevel)/dist/*"
+# Auto-add package dist folders to git index
+git add packages/core/dist/ || true
+git add packages/v5/dist/ || true  
+git add packages/v6/dist/ || true
+git add packages/v7/dist/ || true
+git add docs/static/ || true
 
-echo "Checking for unstaged changes in dist folder..."
+echo "Checking for unstaged changes in built files..."
 
-# Check for unstaged changes after build:all
-if ! git ls-files ./dist --exclude-standard --others -m; then
-  # If there are changes, stage them, but then don't commit
-  git add "$(git rev-parse --show-toplevel)/dist/*"
-  git stage "$(git rev-parse --show-toplevel)/dist/*"
-  echo "Changes detected in dist folder. Please review and commit the changes." >&2
+# Check for unstaged changes after build:all in package dist directories
+if git status --porcelain | grep -E "(packages/.*/dist/|docs/static/)" > /dev/null; then
+  echo "Changes detected in built files. Please review and commit the changes." >&2
   git update-index --again
   exit 1
 fi

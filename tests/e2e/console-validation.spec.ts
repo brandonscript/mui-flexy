@@ -101,7 +101,7 @@ test.describe("Console validation tests", () => {
       // Take a screenshot for visual verification
       await test.step("Capture screenshot", async () => {
         await page.screenshot({
-          path: `test-results/console-validation-${demo.name}.png`,
+          path: `tests/e2e/test-results/screenshots/console-validation-${demo.name}.png`,
           fullPage: true,
         });
       });
