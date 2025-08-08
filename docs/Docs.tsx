@@ -154,45 +154,45 @@ const LoadingComponent = ({ message }: { message: string }) => (
 
 // Complete alignment options based on the core types
 const xRowOptions = [
-  { value: "left", label: "Left" },
-  { value: "center", label: "Center" },
-  { value: "right", label: "Right" },
-  { value: "space-between", label: "Space Between" },
-  { value: "space-around", label: "Space Around" },
-  { value: "space-evenly", label: "Space Evenly" },
-  { value: "flex-start", label: "Flex Start" },
-  { value: "flex-end", label: "Flex End" },
+  { value: "left", label: "left" },
+  { value: "center", label: "center" },
+  { value: "right", label: "right" },
+  { value: "space-between", label: "space-between" },
+  { value: "space-around", label: "space-around" },
+  { value: "space-evenly", label: "space-evenly" },
+  { value: "flex-start", label: "flex-start" },
+  { value: "flex-end", label: "flex-end" },
 ];
 
 const yRowOptions = [
-  { value: "top", label: "Top" },
-  { value: "center", label: "Center" },
-  { value: "bottom", label: "Bottom" },
-  { value: "stretch", label: "Stretch" },
-  { value: "baseline", label: "Baseline" },
-  { value: "flex-start", label: "Flex Start" },
-  { value: "flex-end", label: "Flex End" },
+  { value: "top", label: "top" },
+  { value: "center", label: "center" },
+  { value: "bottom", label: "bottom" },
+  { value: "stretch", label: "stretch" },
+  { value: "baseline", label: "baseline" },
+  { value: "flex-start", label: "flex-start" },
+  { value: "flex-end", label: "flex-end" },
 ];
 
 const xColumnOptions = [
-  { value: "left", label: "Left" },
-  { value: "center", label: "Center" },
-  { value: "right", label: "Right" },
-  { value: "stretch", label: "Stretch" },
-  { value: "baseline", label: "Baseline" },
-  { value: "flex-start", label: "Flex Start" },
-  { value: "flex-end", label: "Flex End" },
+  { value: "left", label: "left" },
+  { value: "center", label: "center" },
+  { value: "right", label: "right" },
+  { value: "stretch", label: "stretch" },
+  { value: "baseline", label: "baseline" },
+  { value: "flex-start", label: "flex-start" },
+  { value: "flex-end", label: "flex-end" },
 ];
 
 const yColumnOptions = [
-  { value: "top", label: "Top" },
-  { value: "center", label: "Center" },
-  { value: "bottom", label: "Bottom" },
-  { value: "space-between", label: "Space Between" },
-  { value: "space-around", label: "Space Around" },
-  { value: "space-evenly", label: "Space Evenly" },
-  { value: "flex-start", label: "Flex Start" },
-  { value: "flex-end", label: "Flex End" },
+  { value: "top", label: "top" },
+  { value: "center", label: "center" },
+  { value: "bottom", label: "bottom" },
+  { value: "space-between", label: "space-between" },
+  { value: "space-around", label: "space-around" },
+  { value: "space-evenly", label: "space-evenly" },
+  { value: "flex-start", label: "flex-start" },
+  { value: "flex-end", label: "flex-end" },
 ];
 
 // Emojis
@@ -447,6 +447,11 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
     useTemplate: false,
   });
 
+  const [flexGridItemProps, setFlexGridItemProps] = useState<BaseFlexProps>({
+    x: "left",
+    y: "stretch",
+  });
+
   // Update flexBoxProps when direction changes
   useEffect(() => {
     setFlexBoxProps((prev) => ({
@@ -504,7 +509,13 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       ? `sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gridGap: ${flexGridProps.spacing} }}`
       : `container spacing={${flexGridProps.spacing}}`;
 
-    const itemProps = selectedTab === 2 || (selectedTab === 1 && version === "v7") ? `size={4}` : `item xs={4}`;
+    const baseItemProps = selectedTab === 2 || (selectedTab === 1 && version === "v7") ? `size={4}` : `item xs={4}`;
+
+    // Add x and y props to the item props
+    const itemPropsArray = [baseItemProps];
+    if (flexGridItemProps.x !== "left") itemPropsArray.push(`x="${flexGridItemProps.x}"`);
+    if (flexGridItemProps.y !== "stretch") itemPropsArray.push(`y="${flexGridItemProps.y}"`);
+    const itemProps = itemPropsArray.join(" ");
 
     return `<${gridComponent} ${containerProps}>
   <${gridComponent} ${itemProps}>
@@ -527,7 +538,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       // For v6 and FlexGrid2 tab (index 2)
       if (version === "v6" && selectedTab === 2 && FlexGrid2Demo) {
         return (
-          <FlexGrid2Demo key={i} size={itemSize}>
+          <FlexGrid2Demo key={i} size={itemSize} x={flexGridItemProps.x} y={flexGridItemProps.y}>
             <div className="grid-item">Grid {i + 1}</div>
           </FlexGrid2Demo>
         );
@@ -535,7 +546,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       // For v7 and FlexGrid tab (index 1) - uses new Grid2 API with size prop
       else if (version === "v7" && selectedTab === 1) {
         return (
-          <FlexGridDemo key={i} size={itemSize}>
+          <FlexGridDemo key={i} size={itemSize} x={flexGridItemProps.x} y={flexGridItemProps.y}>
             <div className="grid-item">Grid {i + 1}</div>
           </FlexGridDemo>
         );
@@ -543,7 +554,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       // For v5 and FlexGrid tab (index 1) - uses legacy Grid API with item and xs props
       else if (version === "v5" && selectedTab === 1) {
         return (
-          <FlexGridDemo key={i} item xs={itemSize}>
+          <FlexGridDemo key={i} item xs={itemSize} x={flexGridItemProps.x} y={flexGridItemProps.y}>
             <div className="grid-item">Grid {i + 1}</div>
           </FlexGridDemo>
         );
@@ -551,7 +562,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       // Fallback - use v5 style for backwards compatibility
       else {
         return (
-          <FlexGridDemo key={i} item xs={itemSize}>
+          <FlexGridDemo key={i} item xs={itemSize} x={flexGridItemProps.x} y={flexGridItemProps.y}>
             <div className="grid-item">Grid {i + 1}</div>
           </FlexGridDemo>
         );
@@ -635,7 +646,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                     <Material.InputLabel sx={{ fontSize: "0.875rem" }}>X alignment</Material.InputLabel>
                     <Material.Select
                       value={flexBoxProps.x}
-                      label="X Alignment"
+                      label="X alignment"
                       sx={{
                         height: 32,
                         "& .MuiSelect-select": {
@@ -678,7 +689,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
 
                 <Material.Box sx={{ minWidth: 140 }}>
                   <Material.FormControl fullWidth size="small" margin="none">
-                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Y Alignment</Material.InputLabel>
+                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Y alignment</Material.InputLabel>
                     <Material.Select
                       value={flexBoxProps.y}
                       label="Y alignment"
@@ -850,7 +861,8 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
               </Material.Typography>
 
               {/* FlexGrid Controls */}
-              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={3} alignItems="flex-end">
+              {/* First row: Basic grid controls */}
+              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={2} alignItems="flex-end">
                 <Material.Box sx={{ minWidth: 110 }}>
                   <Material.FormControl fullWidth size="small" margin="none">
                     <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Rows</Material.InputLabel>
@@ -959,7 +971,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                         onChange={(e: any) => setFlexGridProps((prev) => ({ ...prev, useTemplate: e.target.checked }))}
                       />
                     }
-                    label="Use Grid Template"
+                    label="Use grid template"
                     sx={{
                       "& .MuiFormControlLabel-label": {
                         fontSize: "0.875rem",
@@ -969,6 +981,101 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                       alignItems: "center",
                     }}
                   />
+                </Material.Box>
+              </Material.Box>
+
+              {/* Second row: Item alignment controls */}
+              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={3} alignItems="flex-end">
+                <Material.Box sx={{ minWidth: 140 }}>
+                  <Material.FormControl fullWidth size="small" margin="none">
+                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>X alignment</Material.InputLabel>
+                    <Material.Select
+                      value={flexGridItemProps.x}
+                      label="X alignment"
+                      sx={{
+                        height: 32,
+                        "& .MuiSelect-select": {
+                          padding: "6px 12px",
+                          fontSize: "0.875rem",
+                        },
+                      }}
+                      onChange={(e: any) =>
+                        setFlexGridItemProps((prev) => ({
+                          ...prev,
+                          x: e.target.value as
+                            | "left"
+                            | "right"
+                            | "center"
+                            | "flex-start"
+                            | "flex-end"
+                            | "space-between"
+                            | "space-around"
+                            | "space-evenly",
+                        }))
+                      }
+                    >
+                      {xRowOptions.map((option) => (
+                        <Material.MenuItem
+                          key={option.value}
+                          value={option.value}
+                          dense
+                          sx={{
+                            fontSize: "0.875rem",
+                            minHeight: 32,
+                            padding: "4px 12px",
+                          }}
+                        >
+                          {option.label}
+                        </Material.MenuItem>
+                      ))}
+                    </Material.Select>
+                  </Material.FormControl>
+                </Material.Box>
+
+                <Material.Box sx={{ minWidth: 140 }}>
+                  <Material.FormControl fullWidth size="small" margin="none">
+                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Y alignment</Material.InputLabel>
+                    <Material.Select
+                      value={flexGridItemProps.y}
+                      label="Y alignment"
+                      sx={{
+                        height: 32,
+                        "& .MuiSelect-select": {
+                          padding: "6px 12px",
+                          fontSize: "0.875rem",
+                        },
+                      }}
+                      onChange={(e: any) =>
+                        setFlexGridItemProps((prev) => ({
+                          ...prev,
+                          y: e.target.value as
+                            | "top"
+                            | "bottom"
+                            | "center"
+                            | "flex-start"
+                            | "flex-end"
+                            | "space-between"
+                            | "space-around"
+                            | "space-evenly",
+                        }))
+                      }
+                    >
+                      {yRowOptions.map((option) => (
+                        <Material.MenuItem
+                          key={option.value}
+                          value={option.value}
+                          dense
+                          sx={{
+                            fontSize: "0.875rem",
+                            minHeight: 32,
+                            padding: "4px 12px",
+                          }}
+                        >
+                          {option.label}
+                        </Material.MenuItem>
+                      ))}
+                    </Material.Select>
+                  </Material.FormControl>
                 </Material.Box>
               </Material.Box>
 
@@ -1000,7 +1107,8 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
               </Material.Typography>
 
               {/* FlexGrid2 Controls */}
-              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={3} alignItems="flex-end">
+              {/* First row: Basic grid controls */}
+              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={2} alignItems="flex-end">
                 <Material.Box sx={{ minWidth: 110 }}>
                   <Material.FormControl fullWidth size="small" margin="none">
                     <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Rows</Material.InputLabel>
@@ -1109,7 +1217,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                         onChange={(e: any) => setFlexGridProps((prev) => ({ ...prev, useTemplate: e.target.checked }))}
                       />
                     }
-                    label="Use Grid Template"
+                    label="Use grid template"
                     sx={{
                       "& .MuiFormControlLabel-label": {
                         fontSize: "0.875rem",
@@ -1119,6 +1227,101 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                       alignItems: "center",
                     }}
                   />
+                </Material.Box>
+              </Material.Box>
+
+              {/* Second row: Item alignment controls */}
+              <Material.Box display="flex" flexWrap="wrap" gap={2} mb={3} alignItems="flex-end">
+                <Material.Box sx={{ minWidth: 140 }}>
+                  <Material.FormControl fullWidth size="small" margin="none">
+                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>X alignment</Material.InputLabel>
+                    <Material.Select
+                      value={flexGridItemProps.x}
+                      label="X alignment"
+                      sx={{
+                        height: 32,
+                        "& .MuiSelect-select": {
+                          padding: "6px 12px",
+                          fontSize: "0.875rem",
+                        },
+                      }}
+                      onChange={(e: any) =>
+                        setFlexGridItemProps((prev) => ({
+                          ...prev,
+                          x: e.target.value as
+                            | "left"
+                            | "right"
+                            | "center"
+                            | "flex-start"
+                            | "flex-end"
+                            | "space-between"
+                            | "space-around"
+                            | "space-evenly",
+                        }))
+                      }
+                    >
+                      {xRowOptions.map((option) => (
+                        <Material.MenuItem
+                          key={option.value}
+                          value={option.value}
+                          dense
+                          sx={{
+                            fontSize: "0.875rem",
+                            minHeight: 32,
+                            padding: "4px 12px",
+                          }}
+                        >
+                          {option.label}
+                        </Material.MenuItem>
+                      ))}
+                    </Material.Select>
+                  </Material.FormControl>
+                </Material.Box>
+
+                <Material.Box sx={{ minWidth: 140 }}>
+                  <Material.FormControl fullWidth size="small" margin="none">
+                    <Material.InputLabel sx={{ fontSize: "0.875rem" }}>Y alignment</Material.InputLabel>
+                    <Material.Select
+                      value={flexGridItemProps.y}
+                      label="Y alignment"
+                      sx={{
+                        height: 32,
+                        "& .MuiSelect-select": {
+                          padding: "6px 12px",
+                          fontSize: "0.875rem",
+                        },
+                      }}
+                      onChange={(e: any) =>
+                        setFlexGridItemProps((prev) => ({
+                          ...prev,
+                          y: e.target.value as
+                            | "top"
+                            | "bottom"
+                            | "center"
+                            | "flex-start"
+                            | "flex-end"
+                            | "space-between"
+                            | "space-around"
+                            | "space-evenly",
+                        }))
+                      }
+                    >
+                      {yRowOptions.map((option) => (
+                        <Material.MenuItem
+                          key={option.value}
+                          value={option.value}
+                          dense
+                          sx={{
+                            fontSize: "0.875rem",
+                            minHeight: 32,
+                            padding: "4px 12px",
+                          }}
+                        >
+                          {option.label}
+                        </Material.MenuItem>
+                      ))}
+                    </Material.Select>
+                  </Material.FormControl>
                 </Material.Box>
               </Material.Box>
 
