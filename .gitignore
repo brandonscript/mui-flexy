@@ -5,8 +5,56 @@
 mui-flexy*.tgz
 *.tsbuildinfo
 /.rollup.cache
-/.yarn
+/.yarn/*
+!/.yarn/releases
 /demo/.yarn
 /.npmrc
+
+# Build outputs
 demo/dist/*
 dist/_virtual/*
+/packages/*/dist/*
+/packages/*/lib/*
+/packages/*/build/*
+
+# Package tarballs
+/packages/*/*.tgz
+@mui-flexy*.tgz
+
+# TypeScript build info
+/packages/*/*.tsbuildinfo
+
+# Rollup cache
+/packages/*/.rollup.cache
+
+# Yarn cache and install state
+/packages/*/.yarn
+/packages/*/.pnp.*
+
+# Coverage reports
+/packages/*/coverage/*
+/coverage/*
+
+# Test outputs - consolidated to single location
+/tests/e2e/test-results/*
+/tests/e2e/html-report/*
+/tests/e2e/docs-test-results/*
+/tests/e2e/docs-html-report/*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Demo build outputs
+/packages/demo-*/dist/*
+/packages/demo-*/build/*

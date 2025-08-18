@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "skipLibCheck": true,
+    "declaration": true,
+    "declarationDir": "./dist",
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx",
+    "outDir": "./dist"
+  },
+  "files": [
+    "src/FlexBox.tsx",
+    "src/FlexBox.types.ts",
+    "src/FlexGrid.tsx",
+    "src/FlexGrid.types.ts",
+    "src/index.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.*",
+    "**/*.spec.*"
+  ]
+}

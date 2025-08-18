@@ -8,31 +8,55 @@
     "source.fixAll.eslint": "always"
   },
   "eslint.options": {
-    "overrideConfigFile": "eslint.config.js",
+    "overrideConfigFile": "eslint.config.js"
   },
-  // "eslint.workingDirectories": [
-  //   "./src",
-  //   "./tests"
-  // ],
   "prettier.printWidth": 100,
-  "testing.defaultGutterClickAction": "contextMenu",
   "[json]": {
     "editor.formatOnSave": true
   },
-  "jest.runMode": "on-demand",
-  "jest.debugCodeLens.showWhenTestStateIn": [
-    "pass",
-    "fail",
-    "unknown"
-  ],
-  "jest.jestCommandLine": "NODE_OPTIONS=\"--experimental-vm-modules\" node_modules/.bin/jest",
-  "jest.rootPath": ".",
-  "jest.nodeEnv": {
-    "NODE_ENV": "test",
-    "NODE_OPTIONS": "--experimental-vm-modules"
-  },
-  "jest.useJest30": true,
   "[properties]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
-  }
+  },
+  // File exclusions for better performance
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/node_modules": true,
+    "**/.yarn": true,
+    "**/yarn-error.log": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  },
+  // Search exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.yarn": true,
+    "**/yarn-error.log": true,
+    "**/test-results": true,
+    "**/playwright-report": true
+  },
+  // Jest extension settings for multi-project support
+  "jest.jestCommandLine": "yarn jest",
+  "jest.pathToConfig": ".vscode/jest.config.cjs",
+  "jest.rootPath": ".",
+  "jest.runMode": "watch",
+  "jest.useDashedArgs": true,
+  // Disable workspace folder filtering for multi-root workspace
+  "jest.disabledWorkspaceFolders": [],
+  "jest.enabledWorkspaceFolders": [],
+  // Override for better discovery
+  "jest.testMatch": [
+    "**/tests/**/*.test.{ts,tsx}",
+  ],
+  // Allow automatic task execution
+  "task.allowAutomaticTasks": "on",
+  "typescript.preferences.includePackageJsonAutoImports": "on",
+  "typescript.suggest.autoImports": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.workspaceSymbols.scope": "allOpenProjects"
 }

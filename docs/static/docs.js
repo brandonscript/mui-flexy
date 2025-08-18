@@ -1,2 +1,1532 @@
-import*as e from"react";import t,{forwardRef as r,useRef as n,useEffect as l,useState as a,useCallback as o,Suspense as i}from"react";import{styled as c,Typography as s,Link as m,createTheme as d,ThemeProvider as u,CssBaseline as p}from"@mui/material";import{version as x,major as f}from"@mui/material/version";import g from"react-syntax-highlighter";import{atelierCaveLight as h}from"react-syntax-highlighter/dist/esm/styles/hljs";import y from"@mui/material/Box";import E from"@mui/material/Grid";var b="mui-flexy",w="1.2.4";const v=e=>{if(e){if("string"==typeof e)switch(e){case"top":case"left":return"flex-start";case"bottom":case"right":return"flex-end";default:return e}if(Array.isArray(e))return e.map(v);if("object"==typeof e){const t={};for(const[r,n]of Object.entries(e))t[r]=v(n);return t}return e}},F=(e,t=!1)=>{if(!e)return"row";if("string"==typeof e)switch(["row","row-reverse","column","column-reverse"].includes(e)||console.warn(`Using { flex-direction: ${e} } with mui-flexy shorthand is not recommended because it can cause unexpected alignment and orientation anomalies.`),e){case"row":case"column":return`${e}${t?"-reverse":""}`;default:return e}else{if(Array.isArray(e))return e.map(e=>e?F(e,t):"row");if("object"==typeof e){const r={};for(const[n,l]of Object.entries(e))r[n]=F(l,t);return r}}},G=(e,t)=>"string"==typeof e?e:Array.isArray(e)?e?.[t]:void 0,j=(e,t,r)=>Object.fromEntries(Object.entries(e??[]).map(([e,n])=>{if("string"!=typeof n)throw new Error("Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }");return n.startsWith("column")?[e,"string"==typeof r?r:v(r)?.[e]]:[e,"string"==typeof t?t:v(t)?.[e]]})),R=(e,t,r=!1,n="row")=>{const l=null==e,a=null==t;if(l&&a)return F(n,r);const o=!1===e,i=!1===t;let c=[!0,"row"].includes(e)||i||a,s=[!0,"column"].includes(t)||o||l;o&&!i?(c=!1,s=!0):i&&!o?(s=!1,c=!0):c&&s&&(s=!1);const m=Array.isArray(e),d=Array.isArray(t),u="object"==typeof e&&!m&&!l,p="object"==typeof t&&!d&&!a;if([!u,!p,!m,!d].every(Boolean))return F(s?"column":c?"row":n,r);const x=!e||m&&!e.length||u&&!Object.keys(e).length,f=!t||d&&!t.length||p&&!Object.keys(t).length;if(m&&f)return e.map(e=>R(e,t,r,n));if(d&&x)return t.map(t=>R(e,t,r,n));if(m&&d){const l=[];if(e.length!==t.length){console.warn(`When using Array type ResponsiveFlexDirection for both 'row' and 'column', they should be the same length (have the same number of breakpoints) - got row=${JSON.stringify(e)} and column=${JSON.stringify(t)}. You probably want to use just one or the other.`);const a=Math.max(e.length,t.length);for(let o=0;o<a;o++){const a=e[o]??("column"===t[o]?"row":"column"),i=t[o]??("row"===e[o]?"column":"row");l.push(R(a,i,r,n))}return l}return e.map((l,a)=>{let o=t[a];return l&&o&&(console.warn(`When using Array type ResponsiveFlexDirection for both 'row' and 'column', they cannot not both be true for the same breakpoint index - got row=${JSON.stringify(e)} and column=${JSON.stringify(t)}. Defaulting to 'row' for conflicting indices.`),o=!1),R(l,o,r,n)})}if(u&&f)return Object.fromEntries(Object.entries(e).filter(([,e])=>![null,void 0].includes(e)).map(([e,t])=>[e,R(t,void 0,r,n)]));if(p&&x)return Object.fromEntries(Object.entries(t).filter(([,e])=>![null,void 0].includes(e)).map(([e,t])=>[e,R(void 0,t,r,n)]));if(u&&p){const l={},a=new Set([...Object.keys(e),...Object.keys(t)]);for(const o of a){const a=e[o],i=t[o];[null,void 0].includes(a)&&[null,void 0].includes(i)||(l[o]=R(a,i,r,n))}return l}},S=(e,t,r="Box")=>{const{x:n,y:l,row:a,column:o,flexDirection:i,reverse:c,nowrap:s,...m}=e,d=R(a,o,c,i),u=s?"nowrap":e.whiteSpace,p={display:m.display||"flex",whiteSpace:u},x=`${e.className||""} MuiFlex-root${r?` MuiFlex${r}-root`:""}`,f=((e,t,r)=>{if("string"==typeof e){const n=e.startsWith("column");return{justifyContent:v(n?r:t),alignItems:v(n?t:r)}}return Array.isArray(e)?{justifyContent:e.map((e,n)=>G(v(e?.startsWith("column")?r:t),n)),alignItems:e.map((e,n)=>G(v(e?.startsWith("column")?t:r),n))}:"object"==typeof e?{justifyContent:j(e,t,r),alignItems:j(e,r,t)}:{justifyContent:t,alignItems:r}})(d,n,l);return{...m,...p,...f,flexDirection:d,className:x,ref:t}},k=y?.default??y,_=E?.default??E,N=((e={})=>r((t,r)=>React.createElement(k,{...e,...S(t,r,"Box")})))(),A=((e={})=>r((t,r)=>React.createElement(_,{...e,...S(t,r,"Grid")})))();let C;C=f<6?e.lazy(()=>Promise.resolve().then(function(){return ie})):6===f?e.lazy(()=>Promise.resolve().then(function(){return pe})):e.lazy(()=>Promise.resolve().then(function(){return Ee})),console.log(b,w,"@mui/material",x),console.log("FlexBox:",N),console.log("FlexGrid:",A),console.log("FlexGrid2:",C);const O="🚣",z="🏛",B=[["left","top"],["left","center"],["left","bottom"],["left","flex-start"],["left","flex-end"],["left","stretch"],["left","baseline"],["right","top"],["right","center"],["right","bottom"],["right","flex-start"],["right","flex-end"],["right","stretch"],["right","baseline"],["center","top"],["center","center"],["center","bottom"],["center","flex-start"],["center","flex-end"],["center","stretch"],["center","baseline"],["space-between","top"],["space-between","center"],["space-between","bottom"],["space-around","top"],["space-around","center"],["space-around","bottom"],["space-evenly","top"],["space-evenly","center"],["space-evenly","bottom"]],$=[["top","left"],["top","center"],["top","right"],["top","flex-start"],["top","flex-end"],["top","stretch"],["top","baseline"],["bottom","left"],["bottom","center"],["bottom","right"],["bottom","flex-start"],["bottom","flex-end"],["bottom","stretch"],["bottom","baseline"],["center","left"],["center","center"],["center","right"],["center","flex-start"],["center","flex-end"],["center","stretch"],["center","baseline"],["space-between","left"],["space-between","center"],["space-between","right"],["space-around","left"],["space-around","center"],["space-around","right"],["space-evenly","left"],["space-evenly","center"],["space-evenly","right"]],H="#f6f5f6",M=c(N)(e=>({minHeight:e?.minHeight??e?.sx?.minHeight??120,border:"1.5px solid #e2ebf8",borderRadius:"4px",flexGrow:1,gap:"4px",padding:"4px",backgroundColor:"#fff","& > span":{backgroundColor:H,paddingLeft:"4px",paddingRight:"4px",borderRadius:"4px"},"& > pre":{margin:0,borderRadius:"4px"},"& pre, & code":{whiteSpace:"break-spaces"}})),U=e.createElement("span",{style:{writingMode:"vertical-rl",textOrientation:"sideways"},"aria-label":"left-right arrow"},"⇅"),P=e.createElement("span",{style:{writingMode:"vertical-rl",textOrientation:"upright"},"aria-label":"up-down arrow"},"⇅"),W=e=>f>=7?{size:e}:e,I=W({xs:12,md:4,lg:4,xl:4}),T={"& pre":{fontSize:{xs:"0.85rem",md:"1.0vw",lg:"0.85rem"}}},D=r(({text:t,subtitle:r},n)=>e.createElement(A,{item:!0,...W({xs:12}),component:"header",ref:n,column:!0,gap:0},e.createElement(s,{component:"h2",variant:"h5",sx:{display:"flex",alignItems:"center"}},t,t.toLowerCase().includes("row")?U:t.toLowerCase().includes("column")?P:""),e.createElement(s,{component:"h4",variant:"subtitle1"},r)));D.displayName="Header";const J=({inline:t=!1,width:r,code:n,children:l,margin:a=""})=>e.createElement(g,{language:"javascript",customStyle:t?{display:"inline",padding:"2px 4px",width:r,background:H,borderRadius:4,margin:a}:{background:H,borderRadius:4,margin:a},style:h},l?.toString()||n||""),L=()=>e.createElement(e.Fragment,null,e.createElement(N,{component:t=>e.createElement(s,{...t,component:"h1"}),variant:"h4",row:!0,x:"left",y:"center",gap:2},e.createElement(N,{width:100,height:100,mb:2,ml:-1,column:!0,component:"img",src:"apple-touch-icon.png",alt:"mui-flexy logo"}),"mui-flexy for",e.createElement(m,{target:"_blank",href:"https://mui.com/",sx:{ml:-.75}},"@mui/material^",f)),e.createElement(s,{variant:"body1",component:"div"},"mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily             align and distribute flexy items in a space in a way that doesn't make you want             to pull your hair out trying to remember whether to use ",e.createElement(J,{inline:!0},"justify-content")," or ",e.createElement(J,{inline:!0},"align-items"),". Using a simple and consistent x, y coordinate system, you can stop worrying about           the CSS working group's choices and get on with your life of centering divs.",e.createElement("br",null),e.createElement("br",null),"Flex components inherit from either ",e.createElement(m,{target:"_blank",href:"https://mui.com/material-ui/react-box/"},"Box")," ","or"," ",e.createElement(m,{target:"_blank",href:"https://mui.com/material-ui/react-grid"},"Grid"),", depending on your needs. Simply use ",e.createElement(J,{inline:!0},"<FlexBox />")," or ",e.createElement(J,{inline:!0},"<FlexGrid />")," as you would Box or Grid. The default axis is ",e.createElement(J,{inline:!0},"row"),", but for good hygiene, you might want to set ",e.createElement(J,{inline:!0},"row")," anyway. If you want a column, just pass a ",e.createElement(J,{inline:!0},"column"),"prop, and Flexy will do the hard thinking and make CSS so you don't have to.")),q=c((t={})=>e.createElement(A,{...t,container:!0,component:"section",spacing:[.5,1,2]}))(({theme:e})=>e.unstable_sx({"&.MuiGrid-root, &.MuiGrid2-root":{maxWidth:"100%"}})),V=c((t={})=>e.createElement(A,{...t,item:!0,component:"div"}))({width:"100%"}),Y=c(N)(({theme:e})=>e.unstable_sx({width:"100%",maxWidth:"100%",rowGap:[2,3,4]})).withComponent("section"),K=()=>{const t=n(null),r=(()=>{const[,e]=a({});return o(()=>e({}),[])})();return l(()=>{t.current&&r()},[t,r]),e.createElement(N,{width:"100vw",p:[2,3,4],gap:[2,3,4],x:"center",component:"main",sx:{bgcolor:"#fff"},column:!0},e.createElement(N,{x:"left",y:"center",column:!0},e.createElement(L,null)),e.createElement(q,{className:"row-basic"},e.createElement(D,{text:"Row (basic)",subtitle:"Props are string values"}),B.map(([t,r],n)=>e.createElement(V,{...I,key:n,component:"div",column:!0},e.createElement(J,{margin:"0px 16px",code:`<FlexBox x="${t}" y="${r}">\n  ...\n</FlexBox>`}),e.createElement(M,{x:t,y:r,sx:T},e.createElement("span",null,O))))),e.createElement(q,{className:"row-responsive"},e.createElement(D,{text:"Row (responsive)",subtitle:"Responsive array or object values (resize the window to see different breakpoints)"}),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  x={[ "center", "left", "center", "right" ]}\n  y={[ "center", "top", "center", "bottom" ]}\n/>\n\n// (interpreted as [ xs, sm, md, >= lg ])'}),e.createElement(M,{x:["center","left","center","right"],y:["center","top","center","bottom"],sx:{minHeight:240}},e.createElement("span",null,O))),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  x={{ sm: "left", md: "center", lg: "right" }}\n  y={{ sm: "top", md: "center", lg: "bottom" }}\n/>'}),e.createElement(M,{x:{sm:"left",md:"center",lg:"right"},y:{sm:"top",md:"center",lg:"bottom"},sx:{minHeight:240,...T}},e.createElement("span",null,O))),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  row={[ false, false, true, true, false ]}\n  // column={[ true, true, false, false, true ]} <- this is implied\n  x={[ "center", "center", "space-between", "space-around" ]}\n  y="center"\n  gap={[2, 3, 4]}\n/>\n'}),e.createElement(M,{row:[!1,!1,!0,!0,!1],x:["center","center","space-between","space-around"],y:"center",gap:[2,3,4],sx:{minHeight:240,...T}},e.createElement("span",null,O),e.createElement("span",null,O),e.createElement("span",null,O))),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  row={{ xs: false, md: true, xl: false }}\n  // column={{ xs: true, md: false, xl: true }} <- this is implied\n  x={{ xs: "center", md: "space-between", lg: "space-around" }}\n/>'}),e.createElement(M,{row:{xs:!1,md:!0,xl:!1},x:{xs:"center",md:"space-between",lg:"space-around"},gap:[2,3,4],sx:{minHeight:240,...T}},e.createElement("span",null,O),e.createElement("span",null,O),e.createElement("span",null,O)))),e.createElement(q,{className:"column-basic"},e.createElement(D,{text:"Column (basic)",subtitle:"Props are string values"}),$.map(([t,r],n)=>e.createElement(V,{item:!0,...I,key:n,column:!0},e.createElement(J,{margin:"0px 16px",code:`<FlexBox x="${r}" y="${t}" column>\n  ...\n</FlexBox>`}),e.createElement(M,{x:r,y:t,column:!0,sx:T},e.createElement("span",null,z))))),e.createElement(q,{className:"column-responsive"},e.createElement(D,{text:"Column (responsive)",subtitle:"Props are array or object values (resize the window to see different breakpoints)"}),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  x={[ "center", "left", "center", "right" ]}\n  y={[ "center", "top", "center", "bottom" ]}\n  column\n/>\n\n// (interpreted as [ xs, sm, md, lg ])'}),e.createElement(M,{x:["center","left","center","right"],y:["center","top","center","bottom"],column:!0,sx:{minHeight:[240,240,480]}},e.createElement("span",null,z))),e.createElement(V,W({xs:12,lg:6}),e.createElement(J,{margin:"0px 16px",code:'<FlexBox\n  x={{ sm: "left", md: "center", lg: "right" }}\n  y={{ sm: "top", md: "center", lg: "bottom" }}\n  column\n/>\n\n// (interpreted as { sm: _, md: _, lg: _ })'}),e.createElement(M,{x:{sm:"left",md:"center",lg:"right"},y:{sm:"top",md:"center",lg:"bottom"},column:!0,sx:{minHeight:[240,240,480]}},e.createElement("span",null,z)))),e.createElement(q,{className:"css-grid-basic"},e.createElement(D,{text:"Basic CSS Grid (FlexGrid)"}),e.createElement(A,{item:!0,x:"center",y:"center"},e.createElement(A,{container:!0,spacing:2},[...Array(12).keys()].map(t=>e.createElement(A,{item:!0,key:t,...W({xs:12,sm:6,md:4,lg:3,xl:2})},e.createElement(M,{x:"center",y:"center"},e.createElement(J,{code:`<FlexGrid item>\n  ${t+1}\n</FlexGrid>`}))))))),e.createElement(Y,{className:"css-grid-templating",column:!0},e.createElement(D,{text:"CSS Grid (FlexGrid) with grid templating"}),e.createElement(A,{item:!0,x:"center",y:"center",ml:1,mr:-1,width:"100%",sx:{display:{xs:"flex",md:"none"},opacity:.5}},"(This demo is not formatted for smaller screens)"),e.createElement(A,{item:!0,x:"center",y:"center",width:"100%",sx:{display:{xs:"none",md:"flex"}}},e.createElement(A,{container:!0,spacing:[2,3,4],display:"grid",sx:{width:"100%",bgcolor:"background.default",gridTemplateColumns:"auto 1fr auto",gridTemplateRows:"auto 1fr auto",gridAutoRows:"minmax(150px, 1fr)",gridTemplateAreas:'\n              "header header header"\n              "left center right"\n              "footer footer footer"',gridAutoFlow:"row","& .header":{gridArea:"header"},"& .left":{gridArea:"left"},"& .center":{gridArea:"center"},"& .right":{gridArea:"right"},"& .footer":{gridArea:"footer"}}},e.createElement(A,{item:!0,className:"header"},e.createElement(M,{x:"center",y:"center",minHeight:"auto"},e.createElement(J,{code:'<FlexGrid item className="header">Header</FlexGrid>'}))),e.createElement(A,{item:!0,className:"left"},e.createElement(M,{x:"center",y:"center",minHeight:"auto"},e.createElement(J,{code:'<FlexGrid item className="left">\n  Left\n</FlexGrid>'}))),e.createElement(A,{item:!0,className:"center"},e.createElement(M,{x:"center",y:"center",minHeight:"auto"},e.createElement(J,{code:'<FlexGrid item className="center">\n  Center\n</FlexGrid>'}))),e.createElement(A,{item:!0,className:"right"},e.createElement(M,{x:"center",y:"center",minHeight:"auto"},e.createElement(J,{code:'<FlexGrid item className="right">\n  Right\n</FlexGrid>'}))),e.createElement(A,{item:!0,className:"footer"},e.createElement(M,{x:"center",y:"center",minHeight:"auto"},e.createElement(J,{code:'<FlexGrid item className="footer">Footer</FlexGrid>'})))))),x?.startsWith("5")?e.createElement(q,{className:"mui-grid2-v5"},e.createElement(D,{text:"Unstable_Grid2 (@mui v5)"}),e.createElement(A,{item:!0,x:"center",y:"center"},e.createElement(C,{container:!0,spacing:2},[...Array(12).keys()].map(t=>e.createElement(C,{key:t,size:{xs:12,sm:6,md:4,lg:3,xl:2}},e.createElement(M,{x:"center",y:"center"},e.createElement(J,{code:`<FlexGrid2>\n  ${t+1}\n</FlexGrid2>`}))))))):e.createElement(q,{className:"mui-grid2-v5"},e.createElement(D,{text:"Grid2 (@mui v6+)"}),e.createElement(A,{item:!0,x:"center",y:"center"},e.createElement(C,{container:!0,spacing:2},[...Array(12).keys()].map(t=>e.createElement(C,{key:t,size:{xs:12,sm:6,md:4,lg:3,xl:2}},e.createElement(M,{x:"center",y:"center"},e.createElement(J,{code:`<FlexGrid2>\n  ${t+1}\n</FlexGrid2>`}))))))),e.createElement(Y,{className:"ref-test",column:!0},e.createElement(D,{text:"Ref test",ref:t}),e.createElement(M,{x:"center",y:"center",column:!0,mt:[.5,1,2]},e.createElement("span",null,t?.current?.innerText?`${t?.current?.innerText} successful`:"Failed"),e.createElement(J,{code:t?.current?.toString()}))),e.createElement(Y,{className:"complex-props-test",column:!0},e.createElement(D,{text:"Complex props test"}),e.createElement(N,{column:!0,mt:[.5,1,2]},e.createElement(J,{code:'<FlexBox prop="invalid" />',margin:"0px 16px"}),e.createElement(M,{x:"center",y:"center",column:!0,prop:"invalid"},e.createElement("span",null,"Complex & invalid props test")))))},Q=['"Source Sans 3Variable"','"Source Sans 3"',"-apple-system","BlinkMacSystemFont",'"Segoe UI"',"Source Sans Pro","Open Sans","Arial","sans-serif"],X=d({typography:{fontFamily:Q.join(",")}}),Z=d({...X,components:{MuiCssBaseline:{styleOverrides:{"div, span, p, h1, h2, h3, h4, h5, h6":{fontFamily:Q.join(",")},"pre, code, code > *":{fontFamily:['"SF Mono"','"Roboto Mono"',"Menlo",'"Source Code Pro"',"monospace"].join(","),fontSize:"0.95em"}}}}}),ee=()=>React.createElement(u,{theme:Z},React.createElement(p,null),React.createElement(K,null));console.log("React version",t.version);const te=()=>t.createElement(ee,null),re=`@mui/material version is ${f}, but Unstable_FlexGrid2 is only available in v5. Please use FlexGrid2 instead.`,ne=(e={})=>{let t;try{if(f>5)throw new Error(re);t=React.lazy(()=>import("@mui/material/Unstable_Grid2"))}catch(e){console.warn(re)}return r((r,n)=>{const{size:l,...a}=r,o="number"==typeof l||"string"==typeof l?l:l?.xs,{xs:c,sm:s,md:m,lg:d,xl:u}=l||{};return r={...a,xs:o||c,sm:s,md:m,lg:d,xl:u,ref:n},React.createElement(i,{fallback:React.createElement("div",{"data-mui-flexy-unstable-grid2":"loading"})},React.createElement(t,{...e,...S(r,n,"Grid2")}))})},le=ne(),ae=ne({row:!0}),oe=ne({column:!0});var ie=Object.freeze({__proto__:null,Unstable_FlexGrid2:le,Unstable_FlexGrid2Column:oe,Unstable_FlexGrid2Row:ae,createUnstable_FlexGrid2:ne,default:le});const ce=`@mui/material version is ${f}, but v6 or above is required to use FlexGrid2. Please use Unstable_FlexGrid2 instead.`,se=(e={})=>{let t;try{if(f<6)throw new Error(ce);t=React.lazy(()=>import("@mui/material/Grid2"))}catch(e){console.warn(ce)}return r((r,n)=>{const{xs:l,sm:a,md:o,lg:c,xl:s,size:m,...d}=r,u=[l,a,o,c,s].filter(e=>null!=e);return r={...d,size:m??(u.every(e=>e===u[0])?u[0]:{xs:l,sm:a,md:o,lg:c,xl:s})},React.createElement(i,{fallback:React.createElement("div",{"data-mui-flexy-grid2":"loading"})},React.createElement(t,{...e,...S(r,n,"Grid2")}))})},me=se(),de=se({row:!0}),ue=se({column:!0});var pe=Object.freeze({__proto__:null,FlexGrid2:me,FlexGrid2Column:ue,FlexGrid2Row:de,createFlexGrid2:se,default:me});const xe=`@mui/material version is ${f}, but v6 or above is required to use FlexGrid2. Please use Unstable_FlexGrid2 instead.`,fe=(e={})=>{let n;try{if(f<6)throw new Error(xe);n=f>=7?t.lazy(()=>import("@mui/material/Grid")):t.lazy(()=>import("@mui/material/Grid2"))}catch(e){console.warn(xe)}return r((r,l)=>{const{xs:a,sm:o,md:c,lg:s,xl:m,size:d,...u}=r,p=[a,o,c,s,m].filter(e=>null!=e);return r={...u,size:d??(p.every(e=>e===p[0])?p[0]:{xs:a,sm:o,md:c,lg:s,xl:m})},t.createElement(i,{fallback:t.createElement("div",{"data-mui-flexy-grid2":"loading"})},t.createElement(n,{...e,...S(r,l,"Grid")}))})},ge=fe(),he=fe({row:!0}),ye=fe({column:!0});var Ee=Object.freeze({__proto__:null,FlexGrid:ge,FlexGridColumn:ye,FlexGridRow:he,createFlexGrid:fe,default:ge});export{te as default};
+import React, { useState, useEffect, useMemo } from 'react';
+
+const FLEXBOX_TAB_TITLE = "Interactive FlexBox sandbox";
+const FLEXGRID_TAB_TITLE = "Interactive FlexGrid sandbox";
+const FLEXGRID2_TAB_TITLE = "Interactive FlexGrid2 sandbox";
+// Code display component with proper styling
+const DemoCode = ({ inline = false, code, children })=>{
+    const content = children?.toString() || code || "";
+    if (inline) {
+        return /*#__PURE__*/ React.createElement("code", {
+            style: {
+                backgroundColor: "#f5f5f5",
+                padding: "2px 4px",
+                borderRadius: "4px",
+                fontSize: "0.875rem",
+                fontFamily: "Consolas, Monaco, 'Courier New', monospace",
+                color: "#24292f"
+            }
+        }, content);
+    }
+    return /*#__PURE__*/ React.createElement("pre", {
+        style: {
+            backgroundColor: "#f5f5f5",
+            borderRadius: "4px",
+            margin: "16px 0",
+            fontSize: "0.875rem",
+            fontFamily: "Consolas, Monaco, 'Courier New', monospace",
+            padding: "10px",
+            overflowX: "auto"
+        }
+    }, content);
+};
+// Demo container styling
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+const createDemoInner = (FlexBox, styled)=>styled(FlexBox)({
+        minHeight: 200,
+        border: "1.5px solid #e2ebf8",
+        borderRadius: "4px",
+        flexGrow: 1,
+        gap: "6px",
+        padding: "4px",
+        backgroundColor: "#fff",
+        // Remove any potential conflicting styles
+        "& > span": {
+            backgroundColor: "#f5f5f5",
+            paddingLeft: "8px",
+            paddingRight: "8px",
+            paddingTop: "4px",
+            paddingBottom: "4px",
+            borderRadius: "4px",
+            fontSize: "1.2em",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minWidth: "40px",
+            minHeight: "40px",
+            // Add border to better visualize alignment
+            border: "1px solid #ddd",
+            // Ensure the spans don't interfere with parent flex alignment
+            flexShrink: 0
+        }
+    });
+// FlexGrid demo styling
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+const createFlexGridDemo = (FlexGrid, styled)=>styled(FlexGrid)({
+        minHeight: 200,
+        border: "1.5px solid #e2ebf8",
+        borderRadius: "4px",
+        backgroundColor: "#fff",
+        padding: "4px",
+        "& .grid-item": {
+            backgroundColor: "#f5f5f5",
+            padding: "8px",
+            borderRadius: "4px",
+            fontSize: "0.875rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "60px",
+            border: "1px solid #ddd",
+            textAlign: "center"
+        }
+    });
+// Version configurations
+const versions = [
+    {
+        key: "v5",
+        label: "MUI v5",
+        version: "5",
+        packageName: "@mui-flexy/v5"
+    },
+    {
+        key: "v6",
+        label: "MUI v6",
+        version: "6",
+        packageName: "@mui-flexy/v6"
+    },
+    {
+        key: "v7",
+        label: "MUI v7",
+        version: "7",
+        packageName: "@mui-flexy/v7"
+    }
+];
+// Shared loading component to avoid visual jumps
+const LoadingComponent = ({ message })=>/*#__PURE__*/ React.createElement("div", {
+        style: {
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#fafafa",
+            zIndex: 9999
+        }
+    }, /*#__PURE__*/ React.createElement("div", {
+        style: {
+            width: "60px",
+            height: "4px",
+            backgroundColor: "#007FFF",
+            borderRadius: "2px",
+            animation: "loading-bar 1.5s ease-in-out infinite"
+        }
+    }), /*#__PURE__*/ React.createElement("style", null, `
+      @keyframes loading-bar {
+        0% { transform: scaleX(0); }
+        50% { transform: scaleX(1); }
+        100% { transform: scaleX(0); }
+      }
+    `));
+// Complete alignment options based on the core types
+const xRowOptions = [
+    {
+        value: "left",
+        label: "left"
+    },
+    {
+        value: "center",
+        label: "center"
+    },
+    {
+        value: "right",
+        label: "right"
+    },
+    {
+        value: "space-between",
+        label: "space-between"
+    },
+    {
+        value: "space-around",
+        label: "space-around"
+    },
+    {
+        value: "space-evenly",
+        label: "space-evenly"
+    },
+    {
+        value: "flex-start",
+        label: "flex-start"
+    },
+    {
+        value: "flex-end",
+        label: "flex-end"
+    }
+];
+const yRowOptions = [
+    {
+        value: "top",
+        label: "top"
+    },
+    {
+        value: "center",
+        label: "center"
+    },
+    {
+        value: "bottom",
+        label: "bottom"
+    },
+    {
+        value: "stretch",
+        label: "stretch"
+    },
+    {
+        value: "baseline",
+        label: "baseline"
+    },
+    {
+        value: "flex-start",
+        label: "flex-start"
+    },
+    {
+        value: "flex-end",
+        label: "flex-end"
+    }
+];
+const xColumnOptions = [
+    {
+        value: "left",
+        label: "left"
+    },
+    {
+        value: "center",
+        label: "center"
+    },
+    {
+        value: "right",
+        label: "right"
+    },
+    {
+        value: "stretch",
+        label: "stretch"
+    },
+    {
+        value: "baseline",
+        label: "baseline"
+    },
+    {
+        value: "flex-start",
+        label: "flex-start"
+    },
+    {
+        value: "flex-end",
+        label: "flex-end"
+    }
+];
+const yColumnOptions = [
+    {
+        value: "top",
+        label: "top"
+    },
+    {
+        value: "center",
+        label: "center"
+    },
+    {
+        value: "bottom",
+        label: "bottom"
+    },
+    {
+        value: "space-between",
+        label: "space-between"
+    },
+    {
+        value: "space-around",
+        label: "space-around"
+    },
+    {
+        value: "space-evenly",
+        label: "space-evenly"
+    },
+    {
+        value: "flex-start",
+        label: "flex-start"
+    },
+    {
+        value: "flex-end",
+        label: "flex-end"
+    }
+];
+// Emojis
+const rowEmoji = "🚣";
+const columnEmoji = "🏛";
+// Global cache for loaded libraries
+const libraryCache = {};
+const loadingPromises = {};
+// Lazy loading component for each version
+const VersionContent = ({ version })=>{
+    const [libraries, setLibraries] = useState(libraryCache[version] || null);
+    const [loading, setLoading] = useState(!libraryCache[version]);
+    const [error, setError] = useState(null);
+    useEffect(()=>{
+        const loadLibraries = async ()=>{
+            // If libraries are already cached, use them immediately
+            if (libraryCache[version]) {
+                setLibraries(libraryCache[version]);
+                setLoading(false);
+                return;
+            }
+            // If there's already a loading promise for this version, wait for it
+            if (loadingPromises[version]) {
+                try {
+                    const cachedLibraries = await loadingPromises[version];
+                    setLibraries(cachedLibraries);
+                    setLoading(false);
+                    return;
+                } catch (err) {
+                    setError(`Failed to load libraries for ${version}`);
+                    setLoading(false);
+                    return;
+                }
+            }
+            // Track loading start time for minimum display duration
+            const loadingStartTime = Date.now();
+            try {
+                setLoading(true);
+                setError(null);
+                // Create loading promise and store it
+                const loadingPromise = (async ()=>{
+                    // Load all required libraries for this version
+                    let Styles;
+                    const [Material, FlexComponents] = await Promise.all([
+                        import(`@mui/material_${version}`),
+                        import(`@mui-flexy/${version}`)
+                    ]);
+                    // Handle different styling approaches per version
+                    if (version === "v5") {
+                        const StylesModule = await import(`@mui/styles_${version}`);
+                        Styles = {
+                            ...StylesModule.default || StylesModule,
+                            createTheme: Material.createTheme || Material.default?.createTheme,
+                            responsiveFontSizes: (StylesModule.default || StylesModule).responsiveFontSizes || ((theme)=>theme),
+                            ThemeProvider: (StylesModule.default || StylesModule).ThemeProvider,
+                            CssBaseline: Material.CssBaseline || Material.default?.CssBaseline
+                        };
+                    } else {
+                        // v6 and v7 use @mui/system for styling
+                        const SystemModule = await import(`@mui/system_${version}`);
+                        const MaterialModule = Material.default || Material;
+                        const SystemModuleResolved = SystemModule.default || SystemModule;
+                        // Create a simple styled function that just applies sx props
+                        const simpleStyled = (Component)=>(styles)=>{
+                                return (props)=>/*#__PURE__*/ React.createElement(Component, {
+                                        ...props,
+                                        sx: {
+                                            ...styles,
+                                            ...props.sx
+                                        }
+                                    });
+                            };
+                        Styles = {
+                            styled: simpleStyled,
+                            createTheme: MaterialModule.createTheme,
+                            responsiveFontSizes: (theme)=>theme,
+                            ThemeProvider: SystemModuleResolved.ThemeProvider,
+                            CssBaseline: MaterialModule.CssBaseline
+                        };
+                    }
+                    const librariesData = {
+                        Material: Material.default || Material,
+                        Styles,
+                        FlexBox: FlexComponents.FlexBox,
+                        FlexGrid: FlexComponents.FlexGrid
+                    };
+                    // Only add FlexGrid2 for v6
+                    if (version === "v6") {
+                        librariesData.FlexGrid2 = FlexComponents.FlexGrid2;
+                    }
+                    // Cache the libraries
+                    libraryCache[version] = librariesData;
+                    return librariesData;
+                })();
+                loadingPromises[version] = loadingPromise;
+                const librariesData = await loadingPromise;
+                setLibraries(librariesData);
+                // Ensure loading is displayed for at least 500ms
+                const loadingDuration = Date.now() - loadingStartTime;
+                const minLoadingTime = 500; // 500ms
+                if (loadingDuration < minLoadingTime) {
+                    await new Promise((resolve)=>setTimeout(resolve, minLoadingTime - loadingDuration));
+                }
+            } catch (err) {
+                console.error(`Error loading libraries for ${version}:`, err);
+                setError(`Failed to load libraries for ${version}`);
+                // Ensure loading is displayed for at least 500ms even on error
+                const loadingDuration = Date.now() - loadingStartTime;
+                const minLoadingTime = 500; // 500ms
+                if (loadingDuration < minLoadingTime) {
+                    await new Promise((resolve)=>setTimeout(resolve, minLoadingTime - loadingDuration));
+                }
+            } finally{
+                setLoading(false);
+                // Clean up loading promise
+                delete loadingPromises[version];
+            }
+        };
+        loadLibraries();
+    }, [
+        version
+    ]);
+    if (loading) {
+        return /*#__PURE__*/ React.createElement(LoadingComponent, {
+            message: "Loading modules..."
+        });
+    }
+    if (error) {
+        return /*#__PURE__*/ React.createElement("div", {
+            style: {
+                minHeight: "80vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                backgroundColor: "#fafafa"
+            }
+        }, /*#__PURE__*/ React.createElement("div", {
+            style: {
+                padding: "24px",
+                textAlign: "center",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                maxWidth: "400px",
+                width: "90%",
+                border: "1px solid #ffcdd2"
+            }
+        }, /*#__PURE__*/ React.createElement("div", {
+            style: {
+                fontSize: "16px",
+                color: "#d32f2f",
+                fontWeight: 500,
+                marginBottom: "8px"
+            }
+        }, "Error Loading ", version.toUpperCase()), /*#__PURE__*/ React.createElement("div", {
+            style: {
+                fontSize: "14px",
+                color: "#666",
+                fontWeight: 400
+            }
+        }, error)));
+    }
+    if (!libraries) {
+        return /*#__PURE__*/ React.createElement("div", {
+            style: {
+                minHeight: "80vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                backgroundColor: "#fafafa"
+            }
+        }, /*#__PURE__*/ React.createElement("div", {
+            style: {
+                padding: "24px",
+                textAlign: "center",
+                backgroundColor: "white",
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+                maxWidth: "300px",
+                width: "90%"
+            }
+        }, /*#__PURE__*/ React.createElement("div", {
+            style: {
+                fontSize: "14px",
+                color: "#666",
+                fontWeight: 400
+            }
+        }, "Libraries not loaded")));
+    }
+    return /*#__PURE__*/ React.createElement(VersionApp, {
+        version: version,
+        libraries: libraries
+    });
+};
+// Main version-specific app component
+const VersionApp = ({ version, libraries })=>{
+    const { Material, Styles, FlexBox, FlexGrid, FlexGrid2 = null } = libraries;
+    const [selectedTab, setSelectedTab] = useState(0);
+    const [direction, setDirection] = useState("row");
+    const [flexBoxProps, setFlexBoxProps] = useState({
+        x: "center",
+        y: "center",
+        row: true,
+        column: false,
+        nowrap: false,
+        reverse: false
+    });
+    const [flexGridProps, setFlexGridProps] = useState({
+        rows: 2,
+        columns: 3,
+        spacing: 2,
+        useTemplate: false
+    });
+    const [flexGridItemProps, setFlexGridItemProps] = useState({
+        x: "left",
+        y: "stretch"
+    });
+    // Update flexBoxProps when direction changes
+    useEffect(()=>{
+        setFlexBoxProps((prev)=>({
+                ...prev,
+                row: direction === "row",
+                column: direction === "column"
+            }));
+    }, [
+        direction
+    ]);
+    // Handle tab switching when version changes
+    useEffect(()=>{
+        // Prevent infinite loops by checking if the tab switch is actually necessary
+        if (selectedTab === 2 && version !== "v6") {
+            // If user is on FlexGrid2 tab (index 2) and switches to v5/v7, go to FlexGrid tab (index 1)
+            console.log(`Switching from FlexGrid2 tab to FlexGrid tab for ${version}`);
+            setSelectedTab(1);
+        } else if (selectedTab === 1 && version === "v6") {
+            // If user is on FlexGrid tab (index 1) and switches to v6, go to FlexGrid2 tab (index 2)
+            console.log(`Switching from FlexGrid tab to FlexGrid2 tab for ${version}`);
+            setSelectedTab(2);
+        }
+    }, [
+        version
+    ]); // Only run when version changes, not when selectedTab changes
+    // Determine current options based on direction
+    const isColumn = direction === "column";
+    const xOptions = isColumn ? xColumnOptions : xRowOptions;
+    const yOptions = isColumn ? yColumnOptions : yRowOptions;
+    const currentVersion = versions.find((v)=>v.key === version);
+    // Create styled components for this version (memoized to prevent re-creation on each render)
+    const FlexBoxInner = useMemo(()=>createDemoInner(FlexBox, Styles.styled), [
+        FlexBox,
+        Styles.styled
+    ]);
+    const FlexGridDemo = useMemo(()=>createFlexGridDemo(FlexGrid, Styles.styled), [
+        FlexGrid,
+        Styles.styled
+    ]);
+    const FlexGrid2Demo = useMemo(()=>version === "v6" && FlexGrid2 ? createFlexGridDemo(FlexGrid2, Styles.styled) : null, [
+        version,
+        FlexGrid2,
+        Styles.styled
+    ]);
+    const generateFlexBoxCode = ()=>{
+        const propsArray = [];
+        if (flexBoxProps.x !== "center") propsArray.push(`x="${flexBoxProps.x}"`);
+        if (flexBoxProps.y !== "center") propsArray.push(`y="${flexBoxProps.y}"`);
+        if (flexBoxProps.row) propsArray.push("row");
+        if (flexBoxProps.column) propsArray.push("column");
+        if (flexBoxProps.nowrap) propsArray.push("nowrap");
+        if (flexBoxProps.reverse) propsArray.push("reverse");
+        const propsString = propsArray.length > 0 ? ` ${propsArray.join(" ")}` : "";
+        return `<FlexBox${propsString}>\n  <span>${isColumn ? columnEmoji : rowEmoji}</span>\n  <span>${isColumn ? columnEmoji : rowEmoji}</span>\n  <span>${isColumn ? columnEmoji : rowEmoji}</span>\n  <span>${isColumn ? columnEmoji : "🚤"}</span>\n</FlexBox>`;
+    };
+    const generateFlexGridCode = ()=>{
+        const gridComponent = selectedTab === 2 ? "FlexGrid2" : "FlexGrid";
+        const containerProps = flexGridProps.useTemplate ? `sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gridGap: ${flexGridProps.spacing} }}` : `container spacing={${flexGridProps.spacing}}`;
+        const baseItemProps = selectedTab === 2 || selectedTab === 1 && version === "v7" ? `size={4}` : `item xs={4}`;
+        // Add x and y props to the item props
+        const itemPropsArray = [
+            baseItemProps
+        ];
+        if (flexGridItemProps.x !== "left") itemPropsArray.push(`x="${flexGridItemProps.x}"`);
+        if (flexGridItemProps.y !== "stretch") itemPropsArray.push(`y="${flexGridItemProps.y}"`);
+        const itemProps = itemPropsArray.join(" ");
+        return `<${gridComponent} ${containerProps}>
+  <${gridComponent} ${itemProps}>
+    <div className="grid-item">Grid 1</div>
+  </${gridComponent}>
+  <${gridComponent} ${itemProps}>
+    <div className="grid-item">Grid 2</div>
+  </${gridComponent}>
+  <${gridComponent} ${itemProps}>
+    <div className="grid-item">Grid 3</div>
+  </${gridComponent}>
+</${gridComponent}>`;
+    };
+    const renderFlexGridItems = ()=>{
+        const totalItems = flexGridProps.rows * flexGridProps.columns;
+        const itemSize = Math.floor(12 / flexGridProps.columns);
+        return Array.from({
+            length: totalItems
+        }, (_, i)=>{
+            // For v6 and FlexGrid2 tab (index 2)
+            if (version === "v6" && selectedTab === 2 && FlexGrid2Demo) {
+                return /*#__PURE__*/ React.createElement(FlexGrid2Demo, {
+                    key: i,
+                    size: itemSize,
+                    x: flexGridItemProps.x,
+                    y: flexGridItemProps.y
+                }, /*#__PURE__*/ React.createElement("div", {
+                    className: "grid-item"
+                }, "Grid ", i + 1));
+            } else if (version === "v7" && selectedTab === 1) {
+                return /*#__PURE__*/ React.createElement(FlexGridDemo, {
+                    key: i,
+                    size: itemSize,
+                    x: flexGridItemProps.x,
+                    y: flexGridItemProps.y
+                }, /*#__PURE__*/ React.createElement("div", {
+                    className: "grid-item"
+                }, "Grid ", i + 1));
+            } else if (version === "v5" && selectedTab === 1) {
+                return /*#__PURE__*/ React.createElement(FlexGridDemo, {
+                    key: i,
+                    item: true,
+                    xs: itemSize,
+                    x: flexGridItemProps.x,
+                    y: flexGridItemProps.y
+                }, /*#__PURE__*/ React.createElement("div", {
+                    className: "grid-item"
+                }, "Grid ", i + 1));
+            } else {
+                return /*#__PURE__*/ React.createElement(FlexGridDemo, {
+                    key: i,
+                    item: true,
+                    xs: itemSize,
+                    x: flexGridItemProps.x,
+                    y: flexGridItemProps.y
+                }, /*#__PURE__*/ React.createElement("div", {
+                    className: "grid-item"
+                }, "Grid ", i + 1));
+            }
+        });
+    };
+    // Create theme for this version
+    const theme = Styles.responsiveFontSizes(Styles.createTheme({
+        palette: {
+            primary: {
+                main: "#007FFF"
+            }
+        }
+    }));
+    return /*#__PURE__*/ React.createElement(Styles.ThemeProvider, {
+        theme: theme
+    }, /*#__PURE__*/ React.createElement(Styles.CssBaseline, null), /*#__PURE__*/ React.createElement(Material.Container, {
+        maxWidth: "lg",
+        sx: {
+            py: 4
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexDirection: "column",
+        gap: 4
+    }, /*#__PURE__*/ React.createElement(Material.Box, null, /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
+        mb: 2
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        component: "img",
+        src: "apple-touch-icon.png",
+        alt: "mui-flexy logo",
+        sx: {
+            width: 100,
+            height: 100
+        }
+    }), /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "h4",
+        component: "h1"
+    }, currentVersion.label, " + mui-flexy")), /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "h6",
+        color: "text.secondary",
+        gutterBottom: true
+    }, "Compatible with @mui/material v", currentVersion.version), /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "body1",
+        component: "div",
+        sx: {
+            mt: 2
+        }
+    }, "mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily align and distribute flexy items in a space in a way that doesn't make you want to pull your hair out trying to remember whether to use ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "justify-content"), " or ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "align-items"), ". Using a simple and consistent x, y coordinate system, you can stop worrying about the CSS working group's choices and get on with your life of centering divs.", /*#__PURE__*/ React.createElement("br", null), /*#__PURE__*/ React.createElement("br", null), "Simply use ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "<FlexBox />"), " or", " ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, `<${version === "v6" ? "FlexGrid2" : "FlexGrid"} />`), " as you would Box or Grid. The default axis is ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "row"), ", but for good hygiene, you might want to set", " ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "row"), " anyway. If you want a column, just pass a", " ", /*#__PURE__*/ React.createElement(DemoCode, {
+        inline: true
+    }, "column"), " prop.")), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            borderBottom: 1,
+            borderColor: "divider"
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Tabs, {
+        value: selectedTab,
+        onChange: (_, newValue)=>setSelectedTab(newValue),
+        role: "tablist"
+    }, /*#__PURE__*/ React.createElement(Material.Tab, {
+        label: "FlexBox",
+        role: "tab"
+    }), /*#__PURE__*/ React.createElement(Material.Tab, {
+        label: "FlexGrid",
+        role: "tab",
+        sx: {
+            display: version === "v6" ? "none" : "flex"
+        }
+    }), /*#__PURE__*/ React.createElement(Material.Tab, {
+        label: "FlexGrid2",
+        role: "tab",
+        sx: {
+            display: version === "v6" ? "flex" : "none"
+        }
+    }))), selectedTab === 0 && /*#__PURE__*/ React.createElement(Material.Paper, {
+        elevation: 2,
+        sx: {
+            p: 3
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "h5",
+        component: "h2",
+        gutterBottom: true
+    }, FLEXBOX_TAB_TITLE), /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        mb: 3,
+        alignItems: "flex-end"
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "X alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexBoxProps.x,
+        label: "X alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexBoxProps((prev)=>({
+                    ...prev,
+                    x: e.target.value
+                }))
+    }, xOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Y alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexBoxProps.y,
+        label: "Y alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexBoxProps((prev)=>({
+                    ...prev,
+                    y: e.target.value
+                }))
+    }, yOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem",
+            color: "rgba(0, 0, 0, 0.6)",
+            pointerEvents: "none",
+            zIndex: 1,
+            backgroundColor: "transparent"
+        }
+    }, "Direction"), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            display: "flex",
+            gap: 0.5,
+            alignItems: "center",
+            height: 32,
+            mt: 0
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Radio, {
+            size: "small",
+            checked: direction === "row",
+            onChange: ()=>{
+                console.log("Row radio clicked");
+                setDirection("row");
+            },
+            value: "row"
+        }),
+        label: "row",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0
+        }
+    }), /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Radio, {
+            size: "small",
+            checked: direction === "column",
+            onChange: ()=>{
+                console.log("Column radio clicked");
+                setDirection("column");
+            },
+            value: "column"
+        }),
+        label: "column",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0
+        }
+    })))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            height: 32,
+            display: "flex",
+            alignItems: "center"
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Switch, {
+            size: "small",
+            checked: Boolean(flexBoxProps.nowrap),
+            onChange: (e)=>setFlexBoxProps((prev)=>({
+                        ...prev,
+                        nowrap: e.target.checked
+                    }))
+        }),
+        label: "nowrap",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0,
+            height: "100%",
+            alignItems: "center"
+        }
+    })), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            height: 32,
+            display: "flex",
+            alignItems: "center"
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Switch, {
+            size: "small",
+            checked: Boolean(flexBoxProps.reverse),
+            onChange: (e)=>setFlexBoxProps((prev)=>({
+                        ...prev,
+                        reverse: e.target.checked
+                    }))
+        }),
+        label: "reverse",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0,
+            height: "100%",
+            alignItems: "center"
+        }
+    }))), /*#__PURE__*/ React.createElement(DemoCode, {
+        code: generateFlexBoxCode()
+    }), /*#__PURE__*/ React.createElement(FlexBoxInner, {
+        "data-testid": "demo-flexbox",
+        x: flexBoxProps.x,
+        y: flexBoxProps.y,
+        row: flexBoxProps.row,
+        column: flexBoxProps.column,
+        nowrap: flexBoxProps.nowrap,
+        reverse: flexBoxProps.reverse
+    }, /*#__PURE__*/ React.createElement("span", null, isColumn ? columnEmoji : rowEmoji), /*#__PURE__*/ React.createElement("span", null, isColumn ? columnEmoji : rowEmoji), /*#__PURE__*/ React.createElement("span", null, isColumn ? columnEmoji : rowEmoji), /*#__PURE__*/ React.createElement("span", null, isColumn ? columnEmoji : "🚤"))), selectedTab === 1 && version !== "v6" && /*#__PURE__*/ React.createElement(Material.Paper, {
+        elevation: 2,
+        sx: {
+            p: 3
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "h5",
+        component: "h2",
+        gutterBottom: true
+    }, FLEXGRID_TAB_TITLE), /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        mb: 2,
+        alignItems: "flex-end"
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Rows"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.rows,
+        label: "Rows",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    rows: Number(e.target.value)
+                }))
+    }, Array.from({
+        length: 5
+    }, (_, i)=>i + 1).map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Columns"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.columns,
+        label: "Columns",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    columns: Number(e.target.value)
+                }))
+    }, Array.from({
+        length: 5
+    }, (_, i)=>i + 1).map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Spacing"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.spacing,
+        label: "Spacing",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    spacing: Number(e.target.value)
+                }))
+    }, [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+    ].map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            height: 32,
+            display: "flex",
+            alignItems: "center"
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Switch, {
+            size: "small",
+            checked: flexGridProps.useTemplate,
+            onChange: (e)=>setFlexGridProps((prev)=>({
+                        ...prev,
+                        useTemplate: e.target.checked
+                    }))
+        }),
+        label: "Use grid template",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0,
+            height: "100%",
+            alignItems: "center"
+        }
+    }))), /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        mb: 3,
+        alignItems: "flex-end"
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "X alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridItemProps.x,
+        label: "X alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridItemProps((prev)=>({
+                    ...prev,
+                    x: e.target.value
+                }))
+    }, xRowOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Y alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridItemProps.y,
+        label: "Y alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridItemProps((prev)=>({
+                    ...prev,
+                    y: e.target.value
+                }))
+    }, yRowOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label)))))), /*#__PURE__*/ React.createElement(DemoCode, {
+        code: generateFlexGridCode()
+    }), flexGridProps.useTemplate ? /*#__PURE__*/ React.createElement(FlexGridDemo, {
+        sx: {
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridGap: flexGridProps.spacing
+        }
+    }, renderFlexGridItems()) : /*#__PURE__*/ React.createElement(FlexGridDemo, {
+        container: true,
+        spacing: flexGridProps.spacing
+    }, renderFlexGridItems())), selectedTab === 2 && version === "v6" && FlexGrid2Demo && /*#__PURE__*/ React.createElement(Material.Paper, {
+        elevation: 2,
+        sx: {
+            p: 3
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Typography, {
+        variant: "h5",
+        component: "h2",
+        gutterBottom: true
+    }, FLEXGRID2_TAB_TITLE), /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        mb: 2,
+        alignItems: "flex-end"
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Rows"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.rows,
+        label: "Rows",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    rows: Number(e.target.value)
+                }))
+    }, Array.from({
+        length: 5
+    }, (_, i)=>i + 1).map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Columns"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.columns,
+        label: "Columns",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    columns: Number(e.target.value)
+                }))
+    }, Array.from({
+        length: 5
+    }, (_, i)=>i + 1).map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 110
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Spacing"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridProps.spacing,
+        label: "Spacing",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridProps((prev)=>({
+                    ...prev,
+                    spacing: Number(e.target.value)
+                }))
+    }, [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+    ].map((num)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: num,
+            value: num,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, num))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            height: 32,
+            display: "flex",
+            alignItems: "center"
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControlLabel, {
+        control: /*#__PURE__*/ React.createElement(Material.Switch, {
+            size: "small",
+            checked: flexGridProps.useTemplate,
+            onChange: (e)=>setFlexGridProps((prev)=>({
+                        ...prev,
+                        useTemplate: e.target.checked
+                    }))
+        }),
+        label: "Use grid template",
+        sx: {
+            "& .MuiFormControlLabel-label": {
+                fontSize: "0.875rem"
+            },
+            margin: 0,
+            height: "100%",
+            alignItems: "center"
+        }
+    }))), /*#__PURE__*/ React.createElement(Material.Box, {
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 2,
+        mb: 3,
+        alignItems: "flex-end"
+    }, /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "X alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridItemProps.x,
+        label: "X alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridItemProps((prev)=>({
+                    ...prev,
+                    x: e.target.value
+                }))
+    }, xRowOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label))))), /*#__PURE__*/ React.createElement(Material.Box, {
+        sx: {
+            minWidth: 140
+        }
+    }, /*#__PURE__*/ React.createElement(Material.FormControl, {
+        fullWidth: true,
+        size: "small",
+        margin: "none"
+    }, /*#__PURE__*/ React.createElement(Material.InputLabel, {
+        sx: {
+            fontSize: "0.875rem"
+        }
+    }, "Y alignment"), /*#__PURE__*/ React.createElement(Material.Select, {
+        value: flexGridItemProps.y,
+        label: "Y alignment",
+        sx: {
+            height: 32,
+            "& .MuiSelect-select": {
+                padding: "6px 12px",
+                fontSize: "0.875rem"
+            }
+        },
+        onChange: (e)=>setFlexGridItemProps((prev)=>({
+                    ...prev,
+                    y: e.target.value
+                }))
+    }, yRowOptions.map((option)=>/*#__PURE__*/ React.createElement(Material.MenuItem, {
+            key: option.value,
+            value: option.value,
+            dense: true,
+            sx: {
+                fontSize: "0.875rem",
+                minHeight: 32,
+                padding: "4px 12px"
+            }
+        }, option.label)))))), /*#__PURE__*/ React.createElement(DemoCode, {
+        code: generateFlexGridCode()
+    }), flexGridProps.useTemplate ? /*#__PURE__*/ React.createElement(FlexGrid2Demo, {
+        sx: {
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            gridGap: flexGridProps.spacing
+        }
+    }, renderFlexGridItems()) : /*#__PURE__*/ React.createElement(FlexGrid2Demo, {
+        container: true,
+        spacing: flexGridProps.spacing
+    }, renderFlexGridItems())))));
+};
+// Preload all versions function
+const preloadAllVersions = async ()=>{
+    const versionsList = [
+        "v5",
+        "v6",
+        "v7"
+    ];
+    // Start loading all versions simultaneously
+    const preloadPromises = versionsList.map(async (version)=>{
+        // Skip if already cached
+        if (libraryCache[version]) return libraryCache[version];
+        // Skip if already loading
+        if (loadingPromises[version]) return loadingPromises[version];
+        try {
+            // Load all required libraries for this version
+            let Styles;
+            const [Material, FlexComponents] = await Promise.all([
+                import(`@mui/material_${version}`),
+                import(`@mui-flexy/${version}`)
+            ]);
+            // Handle different styling approaches per version
+            if (version === "v5") {
+                const StylesModule = await import(`@mui/styles_${version}`);
+                Styles = {
+                    ...StylesModule.default || StylesModule,
+                    createTheme: Material.createTheme || Material.default?.createTheme,
+                    responsiveFontSizes: (StylesModule.default || StylesModule).responsiveFontSizes || ((theme)=>theme),
+                    ThemeProvider: (StylesModule.default || StylesModule).ThemeProvider,
+                    CssBaseline: Material.CssBaseline || Material.default?.CssBaseline
+                };
+            } else {
+                // v6 and v7 use @mui/system for styling
+                const SystemModule = await import(`@mui/system_${version}`);
+                const MaterialModule = Material.default || Material;
+                const SystemModuleResolved = SystemModule.default || SystemModule;
+                // Create a simple styled function that just applies sx props
+                const simpleStyled = (Component)=>(styles)=>{
+                        return (props)=>/*#__PURE__*/ React.createElement(Component, {
+                                ...props,
+                                sx: {
+                                    ...styles,
+                                    ...props.sx
+                                }
+                            });
+                    };
+                Styles = {
+                    styled: simpleStyled,
+                    createTheme: MaterialModule.createTheme,
+                    responsiveFontSizes: (theme)=>theme,
+                    ThemeProvider: SystemModuleResolved.ThemeProvider,
+                    CssBaseline: MaterialModule.CssBaseline
+                };
+            }
+            const librariesData = {
+                Material: Material.default || Material,
+                Styles,
+                FlexBox: FlexComponents.FlexBox,
+                FlexGrid: FlexComponents.FlexGrid
+            };
+            // Only add FlexGrid2 for v6
+            if (version === "v6") {
+                librariesData.FlexGrid2 = FlexComponents.FlexGrid2;
+            }
+            // Cache the libraries
+            libraryCache[version] = librariesData;
+            return librariesData;
+        } catch (err) {
+            console.error(`Error preloading libraries for ${version}:`, err);
+            throw err;
+        }
+    });
+    // Wait for all versions to load
+    try {
+        await Promise.all(preloadPromises);
+    } catch (err) {
+        console.error("Error preloading some versions:", err);
+    }
+};
+const App = ()=>{
+    const [selectedVersion, setSelectedVersion] = useState("v7");
+    const [headerLibraries, setHeaderLibraries] = useState(null);
+    const [appLoading, setAppLoading] = useState(true);
+    useEffect(()=>{
+        const loadAppWithPreloading = async ()=>{
+            // Track loading start time for minimum display duration
+            const loadingStartTime = Date.now();
+            try {
+                // Load header libraries (v7 Material-UI for the header)
+                const [Material, System] = await Promise.all([
+                    import('@mui/material_v7'),
+                    import('@mui/system_v7')
+                ]);
+                setHeaderLibraries({
+                    Material: Material.default || Material,
+                    Styles: {
+                        createTheme: Material.createTheme,
+                        ThemeProvider: System.ThemeProvider
+                    }
+                });
+                // Start preloading all versions in parallel (this will continue in background)
+                preloadAllVersions();
+                // Ensure loading is displayed for at least 500ms
+                const loadingDuration = Date.now() - loadingStartTime;
+                const minLoadingTime = 500; // 500ms
+                if (loadingDuration < minLoadingTime) {
+                    await new Promise((resolve)=>setTimeout(resolve, minLoadingTime - loadingDuration));
+                }
+            } catch (err) {
+                console.error("Error loading application:", err);
+                // Ensure loading is displayed for at least 500ms even on error
+                const loadingDuration = Date.now() - loadingStartTime;
+                const minLoadingTime = 500; // 500ms
+                if (loadingDuration < minLoadingTime) {
+                    await new Promise((resolve)=>setTimeout(resolve, minLoadingTime - loadingDuration));
+                }
+            } finally{
+                setAppLoading(false);
+            }
+        };
+        loadAppWithPreloading();
+    }, []);
+    if (appLoading || !headerLibraries) {
+        return /*#__PURE__*/ React.createElement(LoadingComponent, {
+            message: "Loading application..."
+        });
+    }
+    const { Material, Styles } = headerLibraries;
+    return /*#__PURE__*/ React.createElement("div", null, /*#__PURE__*/ React.createElement(Material.AppBar, {
+        position: "sticky",
+        color: "default",
+        elevation: 1,
+        "data-testid": "app-bar",
+        sx: {
+            top: 0,
+            zIndex: 1100
+        }
+    }, /*#__PURE__*/ React.createElement(Material.Toolbar, null, /*#__PURE__*/ React.createElement(Material.Typography, {
+        component: "h2",
+        variant: "h6",
+        sx: {
+            flexGrow: 1
+        }
+    }, "mui-flexy documentation"), versions.map((version)=>/*#__PURE__*/ React.createElement(Material.Button, {
+            key: version.key,
+            color: selectedVersion === version.key ? "primary" : "inherit",
+            onClick: ()=>setSelectedVersion(version.key),
+            sx: {
+                mx: 0.5,
+                fontWeight: selectedVersion === version.key ? "bold" : "normal"
+            }
+        }, version.label)))), /*#__PURE__*/ React.createElement(VersionContent, {
+        version: selectedVersion
+    }));
+};
+
+export { FLEXBOX_TAB_TITLE, FLEXGRID2_TAB_TITLE, FLEXGRID_TAB_TITLE, App as default };
 //# sourceMappingURL=docs.js.map

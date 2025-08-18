@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../../..",
+    "rootDir": "../../..",
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@mui-flexy/core": [
+        "packages/core/src"
+      ],
+      "@mui-flexy/core/*": [
+        "packages/core/src/*"
+      ]
+    }
+  },
+  "include": [
+    "./**/*",
+    "../../../packages/core/src/**/*"
+  ]
+}

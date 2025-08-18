@@ -2,19 +2,47 @@
   "folders": [
     {
       "path": ".",
-      "name": "🏗️ mui-flexy",
+      "name": "🐙 mui-flexy",
+      "jest.autoEnable": true
     },
     {
-      "path": "demo",
-      "name": "🌍 demo"
+      "path": "packages/core",
+      "name": "📦 @mui-flexy/core",
+      "jest.autoEnable": false
+    },
+    {
+      "path": "packages/v5",
+      "name": "📦 @mui-flexy/v5",
+      "jest.autoEnable": false
+    },
+    {
+      "path": "packages/v6",
+      "name": "📦 @mui-flexy/v6",
+      "jest.autoEnable": false
+    },
+    {
+      "path": "packages/v7",
+      "name": "📦 @mui-flexy/v7",
+      "jest.autoEnable": false
+    },
+    {
+      "path": "tests/e2e",
+      "name": "🎭 playwright",
+      "jest.autoEnable": false
+    },
+    {
+      "path": "tests/unit",
+      "name": "🧪 jest"
+    },
+    {
+      "path": "demos",
+      "name": "🌍 demos",
+      "jest.autoEnable": false
     },
     {
       "path": "docs",
-      "name": "📘 docs"
-    },
-    {
-      "path": "dist",
-      "name": "🚀 dist"
+      "name": "📘 docs",
+      "jest.autoEnable": false
     }
   ],
   "settings": {
@@ -45,22 +73,38 @@
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
-    "typescript.tsdk": "🏗️ mui-flexy/node_modules/typescript/lib",
+    "typescript.tsdk": "🐙 mui-flexy/node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "editor.formatOnSave": true,
     "editor.formatOnPaste": true,
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": "explicit",
+      "source.fixAll.eslint": "explicit"
     },
     "files.exclude": {
-      "dist": true,
-      "demo": true,
+      "demos": true,
       "docs": true,
+      "packages": true,
+      "**/lib": true,
+      "**/build": true,
+      "**/*.tsbuildinfo": true
     },
     "search.exclude": {
       "**/node_modules": true,
-      "dist": true,
       "**/.yarn": true,
-    }
+      "**/lib": true,
+      "**/build": true
+    },
+    "jest.disabledWorkspaceFolders": [
+      "📦 @mui-flexy/core",
+      "📦 @mui-flexy/v5",
+      "📦 @mui-flexy/v6",
+      "📦 @mui-flexy/v7",
+      "🎭 playwright",
+      "🧪 jest",
+      "🌍 demos",
+      "📘 docs"
+    ],
+    "jest.jestCommandLine": "yarn jest",
+    "jest.runMode": "on-demand",
   }
 }

@@ -1,0 +1,56 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../../..",
+    "rootDir": "../../..",
+    "jsx": "react-jsx",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@mui-flexy/core": [
+        "packages/core/src"
+      ],
+      "@mui-flexy/v6": [
+        "packages/v6/src"
+      ],
+      "@mui-flexy/v6/*": [
+        "packages/v6/src/*"
+      ],
+      "@mui/material": [
+        "./packages/v6/node_modules/@mui/material"
+      ],
+      "@mui/material/*": [
+        "./packages/v6/node_modules/@mui/material/*"
+      ],
+      "@mui/system": [
+        "./packages/v6/node_modules/@mui/system"
+      ],
+      "@mui/system/*": [
+        "./packages/v6/node_modules/@mui/system/*"
+      ],
+      "@mui/styles": [
+        "./packages/v6/node_modules/@mui/styles"
+      ],
+      "@mui/styles/*": [
+        "./packages/v6/node_modules/@mui/styles/*"
+      ],
+      "@mui/utils": [
+        "./packages/v6/node_modules/@mui/utils"
+      ],
+      "@mui/utils/*": [
+        "./packages/v6/node_modules/@mui/utils/*"
+      ],
+      "@emotion/react": [
+        "./packages/v6/node_modules/@emotion/react"
+      ],
+      "@emotion/styled": [
+        "./packages/v6/node_modules/@emotion/styled"
+      ]
+    }
+  },
+  "include": [
+    "./**/*",
+    "../../../packages/v6/src/**/*"
+  ]
+}

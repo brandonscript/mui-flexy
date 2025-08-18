@@ -19,46 +19,94 @@
       ]
     },
     {
-      "name": "Demo: webpack dev server",
+      "name": "Demo: Main (v6 compatible)",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demo",
+      "cwd": "${workspaceFolder}/demos/v6",
       "request": "launch",
-      "command": "yarn add '@mui/material@^5 || ^6' && yarn && yarn dev"
+      "command": "yarn install && yarn dev"
     },
     {
-      "name": "Demo: (force v5)",
+      "name": "Test: Core Package (watch)",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demo",
+      "cwd": "${workspaceFolder}/packages/core",
       "request": "launch",
-      "command": "yarn add @mui/material@^5 && yarn && yarn dev"
+      "command": "yarn test --watch"
     },
     {
-      "name": "Demo: (force v6)",
+      "name": "Demo: v5 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demo",
+      "cwd": "${workspaceFolder}/demos/v5",
       "request": "launch",
-      "command": "yarn add @mui/material@^6 && yarn && yarn dev"
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3005",
+        "uriFormat": "http://localhost:3005",
+        "action": "openExternally"
+      }
     },
     {
-      "name": "Docs: http-server",
+      "name": "Demo: v6 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/docs",
+      "cwd": "${workspaceFolder}/demos/v6",
       "request": "launch",
-      "command": "yarn run build:docs && npx serve ./ -p 8036 -c serve.json"
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3006",
+        "uriFormat": "http://localhost:3006",
+        "action": "openExternally"
+      }
     },
     {
-      "name": "Docs: (force v5)",
+      "name": "Demo: v7 Server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demos/v7",
+      "request": "launch",
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3007",
+        "uriFormat": "http://localhost:3007",
+        "action": "openExternally"
+      }
+    },
+    {
+      "name": "Docs: Development Server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn run build:docs && npx serve ./docs -p 8036 -c serve_v5.json"
+      "command": "yarn docs:dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3003",
+        "uriFormat": "http://localhost:3003",
+        "action": "openExternally"
+      }
     },
     {
-      "name": "Docs: (force v6)",
+      "name": "Docs: Build and Serve",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/docs",
+      "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn run build:docs && npx serve ./ -p 8036 -c serve.json"
+      "command": "yarn build:docs && yarn docs"
+    },
+    {
+      "name": "Build: All Packages",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn build"
+    },
+    {
+      "name": "Test: All Packages",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn test"
+    },
+    {
+      "name": "Test: Unit Tests (Watch Mode)",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn test:unit --watch"
     },
     {
       "type": "node",
@@ -76,12 +124,23 @@
       "cwd": "${workspaceFolder}",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "program": "node_modules/.bin/jest",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
       "sourceMaps": true,
       "env": {
         "NODE_ENV": "test",
         "NODE_OPTIONS": "--experimental-vm-modules"
       }
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Demo: All",
+      "configurations": [
+        "Demo: v5 Server",
+        "Demo: v6 Server",
+        "Demo: v7 Server"
+      ],
+      "stopAll": true
     }
   ]
 }
