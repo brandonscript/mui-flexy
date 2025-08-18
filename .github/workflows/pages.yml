@@ -2,8 +2,6 @@ name: Deploy GitHub Pages
 
 on:
   push:
-    branches: ["main", "experimental/multi-package"]
-  pull_request:
     branches: ["main"]
   workflow_dispatch:
 
