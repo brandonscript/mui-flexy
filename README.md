@@ -74,7 +74,7 @@ You can write this:
 
 ### Interactive demo &amp; docs
 
-Check out the [live demo](https://brandonscript.github.io/mui-flexy/) for interactive examples of all `mui-flexy`'s features:
+Check out the <a href="https://brandonscript.github.io/mui-flexy/" target="_blank" rel="noopener noreferrer">live demo</a> for interactive examples of all <code>mui-flexy</code>'s features:
 
 [![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)](https://brandonscript.github.io/mui-flexy/)
 

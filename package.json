@@ -35,6 +35,7 @@
     "lint": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown && eslint --config eslint.config.js --ext .ts,.tsx packages/*/src",
     "precommit": "./.husky/pre-commit",
     "publish": "./scripts/publish.sh",
+    "publish:dry-run": "./scripts/publish.sh --dry-run",
     "test": "yarn test:unit && yarn test:e2e",
     "test:e2e": "playwright test",
     "test:e2e:clean": "PLAYWRIGHT_FORCE_CLEAN=1 playwright test",

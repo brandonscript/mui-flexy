@@ -1,19 +1,63 @@
 #!/bin/bash
 # This script builds and publishes all packages in the workspace
 
-# cd to git root
-git_root=$(git rev-parse --show-toplevel)
-cd "$git_root" || exit 1
+# Parse command line arguments
+DRY_RUN=false
+
+show_help() {
+  cat << EOF
+Usage: $0 [OPTIONS]
+
+Builds and publishes all packages in the workspace.
+
+OPTIONS:
+  --dry-run, -n     Build packages and show what would be published without actually publishing
+  --help, -h        Show this help message
+
+EXAMPLES:
+  $0                # Build and publish all packages
+  $0 --dry-run      # Build packages and show what would be published
+  $0 -n             # Same as --dry-run
+EOF
+}
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --dry-run|-n)
+      DRY_RUN=true
+      shift
+      ;;
+    --help|-h)
+      show_help
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      show_help
+      exit 1
+      ;;
+  esac
+done
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
+# cd to git root
+git_root=$(git rev-parse --show-toplevel)
+cd "$git_root" || exit 1
+
+
 get_package_dirs() {
-  # Get all package directories that contain package.json files
-  find packages -name "package.json" -exec dirname {} \; | sort
+  # Get specific package directories (core, v5, v6, v7)
+  for dir in packages/core packages/v5 packages/v6 packages/v7; do
+    if [[ -f "$dir/package.json" ]]; then
+      echo "$dir"
+    fi
+  done | sort
 }
 
 get_package_info() {
@@ -77,15 +121,22 @@ publish_package() {
 }
 
 main() {
-  echo -e "${YELLOW}🚀 Starting package publishing process...${NC}"
+  echo -e "${YELLOW}Starting package publishing process...${NC}"
   echo ""
+
+  # print dry run status
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${PURPLE}*** Dry-run mode, no packages will be published${NC}"
+    echo ""
+  fi
 
   # Check authentication
   check_npm_auth
   echo ""
 
-  # Build all packages
-  build_all
+  echo -e "${YELLOW}Building all packages...${NC}"
+  # Build all packages (quietly)
+  build_all > /dev/null 2>&1
   echo ""
 
   # Get all packages to publish
@@ -119,7 +170,11 @@ main() {
   fi
 
   echo ""
-  echo -e "${YELLOW}Publishing ${#publishable_packages[@]} packages...${NC}"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${PURPLE}[DRY-RUN] Publishing ${#publishable_packages[@]} packages...${NC}"
+  else
+    echo -e "${YELLOW}Publishing ${#publishable_packages[@]} packages...${NC}"
+  fi
   echo ""
 
   # Publish each package
@@ -129,21 +184,29 @@ main() {
   for package_info in "${publishable_packages[@]}"; do
     IFS='|' read -r package_dir name version <<<"$package_info"
 
-    if publish_package "$package_dir" "$name" "$version"; then
+    if [[ "$DRY_RUN" == "true" ]]; then
+      echo -e "${PURPLE}[DRY-RUN] Would publish $name@$version${NC}"
       ((published_count++))
     else
-      ((failed_count++))
+      if publish_package "$package_dir" "$name" "$version"; then
+        ((published_count++))
+      else
+        ((failed_count++))
+      fi
     fi
   done
 
   echo ""
-  echo -e "${GREEN}📊 Publishing Summary:${NC}"
-  echo "  ✅ Successfully published: $published_count"
-  if [[ $failed_count -gt 0 ]]; then
-    echo "  ❌ Failed: $failed_count"
-    exit 1
+  echo -e "${YELLOW}Done:${NC}"
+  if [[ "$DRY_RUN" == "true" ]]; then
+    echo -e "${PURPLE}[DRY-RUN] No packages were actually published${NC}"
   else
-    echo -e "${GREEN}🎉 All packages published successfully!${NC}"
+    if [[ $failed_count -gt 0 ]]; then
+      echo -e "${RED}✗ Failed: $failed_count${NC}"
+      exit 1
+    else
+      echo -e "${GREEN}✓ Successfully published: $published_count${NC}"
+    fi
   fi
 }
 
