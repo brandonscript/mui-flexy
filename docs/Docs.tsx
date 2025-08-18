@@ -369,7 +369,7 @@ const VersionContent = ({ version }: { version: string }) => {
               marginBottom: "8px",
             }}
           >
-            Error Loading {version.toUpperCase()}
+            Error loading {version} libraries
           </div>
           <div
             style={{

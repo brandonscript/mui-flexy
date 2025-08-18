@@ -17,6 +17,12 @@ dist/_virtual/*
 /packages/*/lib/*
 /packages/*/build/*
 
+# Allow docs static bundled files
+!/docs/static/core.js
+!/docs/static/v5.js
+!/docs/static/v6.js
+!/docs/static/v7.js
+
 # Package tarballs
 /packages/*/*.tgz
 @mui-flexy*.tgz
@@ -25,7 +31,7 @@ dist/_virtual/*
 /packages/*/*.tsbuildinfo
 
 # Rollup cache
-/packages/*/.rollup.cache
+.rollup.cache
 
 # Yarn cache and install state
 /packages/*/.yarn
@@ -42,7 +48,6 @@ dist/_virtual/*
 /tests/e2e/docs-html-report/*
 
 # IDE files
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -58,3 +63,6 @@ Thumbs.db
 # Demo build outputs
 /packages/demo-*/dist/*
 /packages/demo-*/build/*
+
+# Generated docs files
+docs/index.html

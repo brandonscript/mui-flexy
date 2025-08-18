@@ -211,6 +211,21 @@ export default tseslint.config(
       "@typescript-eslint/no-require-imports": "off",
     },
   },
+  // Special configuration for rollup config files
+  {
+    files: ["**/rollup.config.js", "**/rollup.*.js", "**/rollup.config.mjs", "**/rollup.*.mjs"],
+    languageOptions: {
+      sourceType: "module",
+      globals: {
+        process: "readonly",
+        console: "readonly",
+        Buffer: "readonly",
+        global: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
+      },
+    },
+  },
   // Special configuration for babel config files
   {
     files: ["**/babel.config.js", "**/babel.*.js"],

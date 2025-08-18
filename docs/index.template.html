@@ -40,10 +40,10 @@
         
         "@mui/material_v7": "https://esm.sh/@mui/material@7?external=react",
         "@mui/system_v7": "https://esm.sh/@mui/system@7?external=react",
-        "@mui-flexy/core": "./static/core.js",
-        "@mui-flexy/v5": "./static/v5.js",
-        "@mui-flexy/v6": "./static/v6.js",
-        "@mui-flexy/v7": "./static/v7.js"
+        "@mui-flexy/core": "__BASEPATH__/static/core.js",
+        "@mui-flexy/v5": "__BASEPATH__/static/v5.js",
+        "@mui-flexy/v6": "__BASEPATH__/static/v6.js",
+        "@mui-flexy/v7": "__BASEPATH__/static/v7.js"
 
       }
     }
@@ -86,7 +86,7 @@
     console.log('createRoot available:', typeof window.createRoot);
 
     try {
-      const { default: App } = await import('./static/docs.js');
+      const { default: App } = await import('__BASEPATH__/static/docs.js');
       window.createRoot(document.querySelector("#root")).render(window.React.createElement(App));
     } catch (error) {
       console.error('Error loading app:', error);

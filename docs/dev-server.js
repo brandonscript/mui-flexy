@@ -6,6 +6,7 @@ import path from "path";
 
 const PORT = 3003;
 const STATIC_DIR = "./static";
+const BASEPATH = process.env.BASEPATH || "";
 
 // MIME types
 const mimeTypes = {
@@ -20,17 +21,31 @@ const mimeTypes = {
   ".ico": "image/x-icon",
 };
 
+console.log("🔄 Starting docs server...");
+
 // Simple static file server
 const server = http.createServer((req, res) => {
-  let filePath = "." + req.url;
+  let url = req.url;
 
-  if (filePath === "./") {
+  // Strip basepath from URL if present
+  if (BASEPATH && url.startsWith(BASEPATH)) {
+    url = url.slice(BASEPATH.length);
+  }
+
+  // Redirect root basepath requests to index.html
+  if (BASEPATH && req.url === BASEPATH) {
+    url = "/";
+  }
+
+  let filePath = "." + url;
+
+  if (filePath === "./" || filePath === ".") {
     filePath = "./index.html";
   }
 
   // Handle requests for packages directory from parent directory
-  if (req.url.startsWith("/packages/")) {
-    filePath = ".." + req.url;
+  if (url.startsWith("/packages/")) {
+    filePath = ".." + url;
   }
 
   const extname = String(path.extname(filePath)).toLowerCase();
@@ -54,12 +69,16 @@ const server = http.createServer((req, res) => {
 
 // Start server
 server.listen(PORT, () => {
-  console.log(`📘 Docs server running at http://localhost:${PORT}`);
+  const baseUrl = `http://localhost:${PORT}`;
+  const fullUrl = BASEPATH ? `${baseUrl}${BASEPATH}` : baseUrl;
+  console.log(`📘 Docs server running at ${baseUrl}`);
+  if (BASEPATH) {
+    console.log(`🫜 Using basepath: ${fullUrl}`);
+  }
 });
 
 // Start rollup in watch mode
-console.log("🔄 Starting rollup watch...");
-const rollupProcess = spawn("npx", ["rollup", "-c", "../rollup.docs.mjs", "--watch"], {
+const rollupProcess = spawn("npx", ["rollup", "-c", "rollup.docs.mjs", "--watch"], {
   stdio: "inherit",
   shell: true,
 });

@@ -13,7 +13,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [20.x]
+        node-version: [22.x]
         
     steps:
     - uses: actions/checkout@v4
@@ -24,14 +24,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
     
-    - name: Enable Corepack
+    - name: Enable corepack
       run: corepack enable
     
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     
     - name: Build packages
-      run: yarn build:all
+      run: yarn build:packages
     
     - name: Run type checking
       run: yarn typecheck
@@ -42,7 +42,7 @@ jobs:
     - name: Run unit tests
       run: yarn test:unit 
     
-    - name: Install Playwright Browsers
+    - name: Install Playwright browsers
       run: yarn test:e2e:setup
     
     - name: Run Playwright tests
@@ -50,7 +50,7 @@ jobs:
     
     - name: Upload test results
       uses: actions/upload-artifact@v4
-      if: always()
+      if: failure()
       with:
         name: playwright-report
         path: |
@@ -62,7 +62,7 @@ jobs:
     
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
-      if: always()
+      if: failure()
       with:
         name: screenshots
         path: tests/e2e/test-results/screenshots/

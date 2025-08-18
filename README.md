@@ -72,6 +72,12 @@ You can write this:
 />
 ```
 
+### Interactive demo &amp; docs
+
+Check out the [live demo](https://brandonscript.github.io/mui-flexy/) for interactive examples of all `mui-flexy`'s features:
+
+[![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)](https://brandonscript.github.io/mui-flexy/)
+
 ## Get started
 
 #### (Note: _Breaking changes in v2.0.0_)
@@ -232,12 +238,6 @@ import { FlexBox, FlexGrid } from "@mui-flexy/v5";
   </FlexGrid>
 </FlexGrid>;
 ```
-
-### Live demo
-
-Check out the [live demo](https://brandonscript.github.io/mui-flexy/) for examples of all `mui-flexy`'s features, or for a quick explanation of `x` and `y` props.
-
-[![mui-flexy](https://user-images.githubusercontent.com/1480253/186974043-d75cd310-c60b-4835-ba80-e72cbab167c3.gif)](https://brandonscript.github.io/mui-flexy/)
 
 ### More examples & responsive usage
 

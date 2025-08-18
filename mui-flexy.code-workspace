@@ -81,9 +81,6 @@
       "source.fixAll.eslint": "explicit"
     },
     "files.exclude": {
-      "demos": true,
-      "docs": true,
-      "packages": true,
       "**/lib": true,
       "**/build": true,
       "**/*.tsbuildinfo": true

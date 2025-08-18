@@ -24,14 +24,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build packages
+        run: yarn build:packages
+
       - name: Build documentation
         run: yarn build:docs
+        env:
+          BASEPATH: "/mui-flexy"
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -29,7 +29,10 @@
     "**/.yarn": true,
     "**/yarn-error.log": true,
     "**/test-results": true,
-    "**/playwright-report": true
+    "**/playwright-report": true,
+    "demos": true,
+    "docs": true,
+    "packages": true,
   },
   // Search exclusions
   "search.exclude": {
