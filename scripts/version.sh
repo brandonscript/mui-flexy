@@ -18,6 +18,22 @@ if ! command -v jq &>/dev/null; then
   exit 1
 fi
 
+# ------------------------------------------------------------
+# Constants: all package directories to update versions
+# (All directories that contain a package.json file)
+# ------------------------------------------------------------
+PACKAGE_DIRS=(
+  "packages/core"
+  "packages/v5"
+  "packages/v6"
+  "packages/v7"
+  "demos/shared"
+  "demos/v5"
+  "demos/v6"
+  "demos/v7"
+  "docs"
+)
+
 # Parse arguments
 BUILD_FLAG=false
 PUSH_FLAG=false
@@ -178,10 +194,7 @@ get_current_version() {
   echo "$version"
 }
 
-get_package_dirs() {
-  # Get all package directories that contain package.json files (excluding node_modules)
-  find packages -name "package.json" -not -path "*/node_modules/*" -exec dirname {} \; | sort
-}
+
 
 update_package_version() {
   local package_dir="$1"
@@ -197,6 +210,31 @@ update_package_version() {
     # Format the package.json file
     yarn exec prettier --write "$package_json" || {
       echo "Error: Failed to format $package_json with prettier."
+      exit 1
+    }
+  fi
+}
+
+update_readme_version_badge() {
+  local old_version="$1"
+  local new_version="$2"
+  local readme_file="README.md"
+
+  if [[ -f "$readme_file" ]]; then
+    echo "  Updating version badge in $readme_file"
+    
+    # Update the version badge specifically
+    sed -i.bak "s/version-${old_version}-/version-${new_version}-/g" "$readme_file" || {
+      echo "Error: Failed to update version badge in $readme_file."
+      exit 1
+    }
+    
+    # Clean up backup file
+    rm -f "${readme_file}.bak"
+    
+    # Format the README file
+    yarn exec prettier --write "$readme_file" || {
+      echo "Error: Failed to format $readme_file with prettier."
       exit 1
     }
   fi
@@ -299,10 +337,12 @@ yarn exec prettier --write package.json || {
   exit 1
 }
 
-# Update versions in all workspace packages
-echo "Updating workspace packages:"
-for package_dir in $(get_package_dirs); do
-  update_package_version "$package_dir" "$new_version"
+# Update versions in all packages
+echo "Updating all packages:"
+for package_dir in "${PACKAGE_DIRS[@]}"; do
+  if [[ -d "$package_dir" && -f "$package_dir/package.json" ]]; then
+    update_package_version "$package_dir" "$new_version"
+  fi
 done
 
 echo "✓ Version update complete"
@@ -311,9 +351,11 @@ echo "✓ Version update complete"
 if [[ "$BUILD_FLAG" == false && "$PUSH_FLAG" == false ]]; then
   echo ""
   echo "Updated packages:"
-  for package_dir in $(get_package_dirs); do
-    package_name=$(jq -r '.name' "$package_dir/package.json")
-    echo "  - $package_name@$new_version"
+  for package_dir in "${PACKAGE_DIRS[@]}"; do
+    if [[ -d "$package_dir" && -f "$package_dir/package.json" ]]; then
+      package_name=$(jq -r '.name' "$package_dir/package.json")
+      echo "  - $package_name@$new_version"
+    fi
   done
   exit 0
 fi
@@ -333,9 +375,11 @@ if [[ "$BUILD_FLAG" == true ]]; then
   if [[ "$PUSH_FLAG" == false ]]; then
     echo ""
     echo "Updated packages:"
-    for package_dir in $(get_package_dirs); do
-      package_name=$(jq -r '.name' "$package_dir/package.json")
-      echo "  - $package_name@$new_version"
+    for package_dir in "${PACKAGE_DIRS[@]}"; do
+      if [[ -d "$package_dir" && -f "$package_dir/package.json" ]]; then
+        package_name=$(jq -r '.name' "$package_dir/package.json")
+        echo "  - $package_name@$new_version"
+      fi
     done
     exit 0
   fi
@@ -390,7 +434,9 @@ git push origin "v$new_version"
 echo "✓ Version v$new_version released successfully"
 echo ""
 echo "Updated packages:"
-for package_dir in $(get_package_dirs); do
-  package_name=$(jq -r '.name' "$package_dir/package.json")
-  echo "  - $package_name@$new_version"
+for package_dir in "${PACKAGE_DIRS[@]}"; do
+  if [[ -d "$package_dir" && -f "$package_dir/package.json" ]]; then
+    package_name=$(jq -r '.name' "$package_dir/package.json")
+    echo "  - $package_name@$new_version"
+  fi
 done

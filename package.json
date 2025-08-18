@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "type": "module",
   "workspaces": [
@@ -34,8 +34,7 @@
     "docs:killall": "lsof -ti:3003 | xargs -r kill -15 || true; sleep 2; lsof -ti:3003 | xargs -r kill -9 || true",
     "lint": "prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown && eslint --config eslint.config.js --ext .ts,.tsx packages/*/src",
     "prepare": "husky",
-    "publish:packages": "yarn build && yarn workspaces foreach -A --exclude 'mui-flexy-demo-*' npm publish --access public",
-    "ship": "./ship.sh",
+    "publish": "./scripts/publish.sh",
     "test": "yarn test:unit && yarn test:e2e",
     "test:e2e": "playwright test",
     "test:e2e:clean": "PLAYWRIGHT_FORCE_CLEAN=1 playwright test",
@@ -56,7 +55,7 @@
     "test:unit:v6": "yarn jest --selectProjects=v6-tests",
     "test:unit:v7": "yarn jest --selectProjects=v7-tests",
     "typecheck": "yarn workspaces foreach -A run typecheck",
-    "version-up": "./version-up.sh"
+    "set-version": "./scripts/version.sh"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
