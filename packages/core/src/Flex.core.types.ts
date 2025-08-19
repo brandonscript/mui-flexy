@@ -122,7 +122,7 @@ export type V7GridSizeProps = {
 export type LegacyGridSizeProps = V5GridSizeProps;
 export type GridSizeProp = V7GridSizeProps;
 
-export type StrictGrid2Props<P = {}> = Omit<P, "item" | "zeroMinWidth" | "xs" | "sm" | "md" | "lg" | "xl"> & {
+export type StrictGrid2Props = {
   item?: never;
   zeroMinWidth?: never;
   xs?: never;

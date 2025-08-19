@@ -22,7 +22,8 @@ export interface FlexGrid2TypeMap<
     GridBaseProps & {
       sx?: SxProps<MaterialTheme>;
     } & SystemProps<MaterialTheme> &
-    (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
+    (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps) &
+    StrictGrid2Props;
   defaultComponent: D;
 }
 
@@ -32,18 +33,18 @@ export type FlexGrid2Props<
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OverrideProps<FlexGrid2TypeMap<O, P, D>, D>>;
+> = OverrideProps<FlexGrid2TypeMap<O, P, D>, D>;
 
 export type FlexGrid2RowProps<
   D extends React.ElementType = FlexGrid2TypeMap<"row">["defaultComponent"],
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OnlyRow<FlexGrid2Props<"row", D, P>>>;
+> = OnlyRow<FlexGrid2Props<"row", D, P>>;
 
 export type FlexGrid2ColumnProps<
   D extends React.ElementType = FlexGrid2TypeMap<"column">["defaultComponent"],
   P = {
     component?: React.ElementType;
   },
-> = StrictGrid2Props<OnlyColumn<FlexGrid2Props<"column", D, P>>>;
+> = OnlyColumn<FlexGrid2Props<"column", D, P>>;

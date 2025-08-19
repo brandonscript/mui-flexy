@@ -1,6 +1,6 @@
-import { Grid, Typography } from "@mui/material";
+import { Grid, styled, Typography } from "@mui/material";
 import { major as muiVersion } from "@mui/material/version";
-import { FlexGrid } from "@mui-flexy/v5";
+import { FlexGrid, type FlexGridProps } from "@mui-flexy/v5";
 
 console.log("Tests running with MUI version:", muiVersion);
 
@@ -40,5 +40,25 @@ const GridPropsTest = (gridRef?: React.RefObject<HTMLDivElement>) => (
 describe("FlexGrid supports Grid props", () => {
   it("should allow ref and component props", () => {
     expect(() => GridPropsTest()).not.toThrow();
+  });
+});
+
+const StyledFlexGrid = styled((props: FlexGridProps) => (
+  <FlexGrid row={{ xs: false, md: true }} x={{ xs: "left", md: "center" }} y="center" {...props} />
+))(({ theme }) =>
+  theme.unstable_sx({
+    display: "grid",
+    gridTemplateColumns: { xs: "1fr", md: "repeat(2, 1fr)" },
+    gridTemplateRows: { xs: "repeat(2, 1fr)", md: "none" },
+    transition: theme.transitions.create(["margin"], { duration: 250, easing: "cubic-bezier(0.4, 0, 0.2, 1)" }),
+    rowGap: { xs: 1, md: 1 },
+    columnGap: { xs: 1, md: 3 },
+    flexWrap: "nowrap",
+  }),
+);
+
+describe("FlexGrid2 supports styled()", () => {
+  it("should wrap FlexGrid in styled() with correct type inference", () => {
+    expect(() => <StyledFlexGrid />).not.toThrow();
   });
 });
