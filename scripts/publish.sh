@@ -168,6 +168,12 @@ revert_workspace_dependencies() {
       done
     fi
   done
+  
+  # Restore yarn.lock to original state
+  if [[ -f yarn.lock.backup ]]; then
+    echo "  Restoring yarn.lock from backup"
+    mv yarn.lock.backup yarn.lock
+  fi
 }
 
 build_all() {
@@ -216,7 +222,7 @@ main() {
 
   # print dry run status
   if [[ "$DRY_RUN" == "true" ]]; then
-    echo -e "${PURPLE}*** Dry-run mode, no packages will be published${NC}"
+    echo -e "${PURPLE}*** [DRY-RUN] No packages will be published${NC}"
     echo ""
   fi
 
@@ -226,6 +232,10 @@ main() {
 
   # Get current version and convert workspace dependencies
   current_version=$(jq -r '.version' package.json)
+  
+  # Backup yarn.lock before making changes
+  cp yarn.lock yarn.lock.backup
+  
   update_workspace_dependencies "$current_version"
   echo ""
 
