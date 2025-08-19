@@ -50,6 +50,17 @@ NC='\033[0m' # No Color
 git_root=$(git rev-parse --show-toplevel)
 cd "$git_root" || exit 1
 
+# Cleanup function to ensure workspace dependencies are always reset
+cleanup_on_exit() {
+  echo -e "${YELLOW}Script interrupted or failed, ensuring cleanup...${NC}"
+  revert_workspace_dependencies
+  cleanup_readme_files
+  exit 1
+}
+
+# Set trap to run cleanup on script failure or interruption
+trap cleanup_on_exit ERR INT TERM
+
 
 get_package_dirs() {
   # Get specific package directories (core, v5, v6, v7)
@@ -136,57 +147,30 @@ cleanup_readme_files() {
   done
 }
 
-reset_package_deps() {
-  echo -e "${YELLOW}Resetting package dependencies...${NC}"
-  for package_dir in $(get_package_dirs); do
-    if [[ -f "$package_dir/package.json" ]]; then
-      jq '.dependencies["@mui-flexy/core"] = "workspace:*"' "$package_dir/package.json" > "$package_dir/package.json.tmp" && \
-        mv "$package_dir/package.json.tmp" "$package_dir/package.json" && \
-        yarn exec prettier --write "$package_dir/package.json"
-    fi
-  done
-}
-
 revert_workspace_dependencies() {
   echo -e "${YELLOW}Reverting workspace dependencies back to workspace:*...${NC}"
   
-  # List of workspace packages that might be dependencies
-  local workspace_packages=(
-    "@mui-flexy/core"
-    "@mui-flexy/v5"
-    "@mui-flexy/v6"
-    "@mui-flexy/v7"
-  )
-  
-  # Get only publishable package directories to update
-  local package_dirs=(
-    "packages/core"
+  # This must happen regardless of current state to ensure local development works
+  local consumer_packages=(
     "packages/v5"
-    "packages/v6"
+    "packages/v6" 
     "packages/v7"
   )
   
-  for package_dir in "${package_dirs[@]}"; do
+  for package_dir in "${consumer_packages[@]}"; do
     local package_json="$package_dir/package.json"
     
     if [[ -f "$package_json" ]]; then
-      # Check each workspace package to see if it's a dependency
-      for workspace_pkg in "${workspace_packages[@]}"; do
-        # Check if this package has the versioned dependency and revert it
-        if jq -e ".dependencies.\"$workspace_pkg\"" "$package_json" >/dev/null 2>&1; then
-          local current_dep=$(jq -r ".dependencies.\"$workspace_pkg\"" "$package_json")
-          if [[ "$current_dep" =~ ^\^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "  Reverting $workspace_pkg dependency in $package_json"
-            jq --arg pkg "$workspace_pkg" \
-              '.dependencies[$pkg] = "workspace:*"' "$package_json" > "$package_json.tmp" && \
-              mv "$package_json.tmp" "$package_json" && \
-              yarn exec prettier --write "$package_json" || {
-              echo -e "${RED}Error: Failed to revert $workspace_pkg dependency in $package_json${NC}"
-              return 1
-            }
-          fi
-        fi
-      done
+      # Force @mui-flexy/core to workspace:* regardless of current state
+      if jq -e '.dependencies."@mui-flexy/core"' "$package_json" >/dev/null 2>&1; then
+        echo "  Resetting @mui-flexy/core dependency to workspace:* in $package_json"
+        jq '.dependencies."@mui-flexy/core" = "workspace:*"' "$package_json" > "$package_json.tmp" && \
+          mv "$package_json.tmp" "$package_json" && \
+          yarn exec prettier --write "$package_json" || {
+          echo -e "${RED}Warning: Failed to revert @mui-flexy/core dependency in $package_json${NC}"
+          # Don't exit - continue with other packages
+        }
+      fi
     fi
   done
   
@@ -336,15 +320,21 @@ main() {
   if [[ "$DRY_RUN" == "true" ]]; then
     echo -e "${PURPLE}[DRY-RUN] No packages were actually published${NC}"
     echo ""
+    # Disable trap since we're doing normal cleanup
+    trap - ERR INT TERM
     revert_workspace_dependencies
     cleanup_readme_files
+    yarn > /dev/null 2>&1
     exit 0
   else
     if [[ $failed_count -gt 0 ]]; then
       echo -e "${RED}✗ Failed: $failed_count${NC}"
       echo ""
+      # Disable trap since we're doing normal cleanup
+      trap - ERR INT TERM
       revert_workspace_dependencies
       cleanup_readme_files
+      yarn > /dev/null 2>&1
       exit 1
     else
       echo -e "${GREEN}✓ Successfully published: $published_count${NC}"
@@ -352,8 +342,13 @@ main() {
   fi
   
   echo ""
+  
+  # Disable trap since we're doing normal cleanup
+  trap - ERR INT TERM
+  
   revert_workspace_dependencies
   cleanup_readme_files
+  yarn > /dev/null 2>&1
 }
 
 # Run main function
