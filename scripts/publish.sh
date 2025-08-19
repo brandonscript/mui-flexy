@@ -80,6 +80,96 @@ check_npm_auth() {
   echo -e "${GREEN}✓ Authenticated as $(npm whoami)${NC}"
 }
 
+update_workspace_dependencies() {
+  local new_version="$1"
+  
+  echo -e "${YELLOW}Converting workspace dependencies to version ^$new_version...${NC}"
+  
+  # List of workspace packages that might be dependencies
+  local workspace_packages=(
+    "@mui-flexy/core"
+    "@mui-flexy/v5"
+    "@mui-flexy/v6"
+    "@mui-flexy/v7"
+  )
+  
+  # Get only publishable package directories to update
+  local package_dirs=(
+    "packages/core"
+    "packages/v5"
+    "packages/v6"
+    "packages/v7"
+  )
+  
+  for package_dir in "${package_dirs[@]}"; do
+    local package_json="$package_dir/package.json"
+    
+    if [[ -f "$package_json" ]]; then
+      local updated=false
+      
+      # Check each workspace package to see if it's a dependency
+      for workspace_pkg in "${workspace_packages[@]}"; do
+        # Check if this package has the workspace dependency
+        if jq -e ".dependencies.\"$workspace_pkg\"" "$package_json" >/dev/null 2>&1; then
+          echo "  Converting $workspace_pkg dependency in $package_json"
+          jq --arg pkg "$workspace_pkg" --arg version "^$new_version" \
+            '.dependencies[$pkg] = $version' "$package_json" > "$package_json.tmp" && \
+            mv "$package_json.tmp" "$package_json" && \
+            yarn exec prettier --write "$package_json" || {
+            echo -e "${RED}Error: Failed to update $workspace_pkg dependency in $package_json${NC}"
+            exit 1
+          }
+          updated=true
+        fi
+      done
+    fi
+  done
+}
+
+revert_workspace_dependencies() {
+  echo -e "${YELLOW}Reverting workspace dependencies back to workspace:*...${NC}"
+  
+  # List of workspace packages that might be dependencies
+  local workspace_packages=(
+    "@mui-flexy/core"
+    "@mui-flexy/v5"
+    "@mui-flexy/v6"
+    "@mui-flexy/v7"
+  )
+  
+  # Get only publishable package directories to update
+  local package_dirs=(
+    "packages/core"
+    "packages/v5"
+    "packages/v6"
+    "packages/v7"
+  )
+  
+  for package_dir in "${package_dirs[@]}"; do
+    local package_json="$package_dir/package.json"
+    
+    if [[ -f "$package_json" ]]; then
+      # Check each workspace package to see if it's a dependency
+      for workspace_pkg in "${workspace_packages[@]}"; do
+        # Check if this package has the versioned dependency and revert it
+        if jq -e ".dependencies.\"$workspace_pkg\"" "$package_json" >/dev/null 2>&1; then
+          local current_dep=$(jq -r ".dependencies.\"$workspace_pkg\"" "$package_json")
+          if [[ "$current_dep" =~ ^\^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "  Reverting $workspace_pkg dependency in $package_json"
+            jq --arg pkg "$workspace_pkg" \
+              '.dependencies[$pkg] = "workspace:*"' "$package_json" > "$package_json.tmp" && \
+              mv "$package_json.tmp" "$package_json" && \
+              yarn exec prettier --write "$package_json" || {
+              echo -e "${RED}Error: Failed to revert $workspace_pkg dependency in $package_json${NC}"
+              return 1
+            }
+          fi
+        fi
+      done
+    fi
+  done
+}
+
 build_all() {
   echo -e "${YELLOW}Building all packages...${NC}"
   yarn build:all || {
@@ -132,6 +222,11 @@ main() {
 
   # Check authentication
   check_npm_auth
+  echo ""
+
+  # Get current version and convert workspace dependencies
+  current_version=$(jq -r '.version' package.json)
+  update_workspace_dependencies "$current_version"
   echo ""
 
   echo -e "${YELLOW}Building all packages...${NC}"
@@ -203,11 +298,16 @@ main() {
   else
     if [[ $failed_count -gt 0 ]]; then
       echo -e "${RED}✗ Failed: $failed_count${NC}"
+      echo ""
+      revert_workspace_dependencies
       exit 1
     else
       echo -e "${GREEN}✓ Successfully published: $published_count${NC}"
     fi
   fi
+  
+  echo ""
+  revert_workspace_dependencies
 }
 
 # Run main function

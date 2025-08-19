@@ -125,7 +125,8 @@ normalize_version() {
   local version="$1"
 
   # Count the number of dots (trim whitespace from wc output)
-  local dot_count=$(echo "$version" | grep -o '\.' | wc -l | tr -d ' ')
+  local dot_count
+  dot_count=$(echo "$version" | grep -o '\.' | wc -l | tr -d ' ')
 
   case $dot_count in
   0)
@@ -203,13 +204,11 @@ update_package_version() {
 
   if [[ -f "$package_json" ]]; then
     echo "  Updating $package_json"
-    jq --arg new_version "$new_version" '.version = $new_version' "$package_json" >"$package_json.tmp" && mv "$package_json.tmp" "$package_json" || {
+    # Update version and format with prettier
+    jq --arg new_version "$new_version" '.version = $new_version' "$package_json" > "$package_json.tmp" && \
+      mv "$package_json.tmp" "$package_json" && \
+      yarn exec prettier --write "$package_json" || {
       echo "Error: Failed to update version to $new_version in $package_json."
-      exit 1
-    }
-    # Format the package.json file
-    yarn exec prettier --write "$package_json" || {
-      echo "Error: Failed to format $package_json with prettier."
       exit 1
     }
   fi
@@ -238,6 +237,52 @@ update_readme_version_badge() {
       exit 1
     }
   fi
+}
+
+update_workspace_dependencies() {
+  local new_version="$1"
+  
+  echo "Updating workspace dependencies to version ^$new_version"
+  
+  # List of workspace packages that are linked to the root package.json
+  local workspace_packages=(
+    "demos/shared"
+    "demos/v5"
+    "demos/v6"
+    "demos/v7"
+    "docs"
+  )
+  
+  for package_dir in "${PACKAGE_DIRS[@]}"; do
+    local package_json="$package_dir/package.json"
+    
+    if [[ -f "$package_json" ]]; then
+      local updated=false
+      
+      # Check each workspace package to see if it's a dependency
+      for workspace_pkg in "${workspace_packages[@]}"; do
+        # Check if this package has the workspace dependency
+        if jq -e ".dependencies.\"$workspace_pkg\"" "$package_json" >/dev/null 2>&1; then
+          echo "  Updating $workspace_pkg dependency in $package_json"
+          jq --arg pkg "$workspace_pkg" --arg version "^$new_version" \
+            '.dependencies[$pkg] = $version' "$package_json" > "$package_json.tmp" && \
+            mv "$package_json.tmp" "$package_json" || {
+            echo "Error: Failed to update $workspace_pkg dependency in $package_json"
+            exit 1
+          }
+          updated=true
+        fi
+      done
+      
+      # Format the package.json file if it was updated
+      if [[ "$updated" == true ]]; then
+        yarn exec prettier --write "$package_json" || {
+          echo "Error: Failed to format $package_json with prettier."
+          exit 1
+        }
+      fi
+    fi
+  done
 }
 
 current_version=$(get_current_version)
@@ -326,14 +371,10 @@ echo "Updating version $current_version --> $new_version across all packages"
 
 # Update the version in root package.json
 echo "  Updating ./package.json"
-jq --arg new_version "$new_version" '.version = $new_version' package.json >tmp.json && mv tmp.json package.json || {
+jq --arg new_version "$new_version" '.version = $new_version' package.json > tmp.json && \
+  mv tmp.json package.json && \
+  yarn exec prettier --write package.json || {
   echo "Error: Failed to update version to $new_version in package.json."
-  exit 1
-}
-
-# Run prettier to format the root package.json file
-yarn exec prettier --write package.json || {
-  echo "Error: Failed to format package.json with prettier."
   exit 1
 }
 
@@ -344,6 +385,9 @@ for package_dir in "${PACKAGE_DIRS[@]}"; do
     update_package_version "$package_dir" "$new_version"
   fi
 done
+
+# Update workspace dependencies to use proper version numbers
+update_workspace_dependencies "$new_version"
 
 echo "✓ Version update complete"
 
@@ -440,3 +484,7 @@ for package_dir in "${PACKAGE_DIRS[@]}"; do
     echo "  - $package_name@$new_version"
   fi
 done
+
+# Re-run formatting/linting fixes on package.json files
+yarn exec eslint --fix .
+yarn exec prettier --write .

@@ -30,8 +30,8 @@ jobs:
     - name: Install dependencies
       run: yarn install --frozen-lockfile
     
-    - name: Build packages
-      run: yarn build:packages
+    - name: Run Jest tests
+      run: yarn jest --silent --verbose=false --reporters=summary --passWithNoTests
     
     - name: Run type checking
       run: yarn typecheck
@@ -39,14 +39,14 @@ jobs:
     - name: Run linting
       run: yarn lint
     
-    - name: Run unit tests
-      run: yarn test:unit 
+    - name: Build all packages
+      run: yarn build:all
     
     - name: Install Playwright browsers
       run: yarn test:e2e:setup
     
     - name: Run Playwright tests
-      run: yarn test:e2e
+      run: npx playwright test --quiet
     
     - name: Upload test results
       uses: actions/upload-artifact@v4

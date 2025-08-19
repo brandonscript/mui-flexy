@@ -5,25 +5,36 @@ set -e
 
 # Run Jest tests (all unit tests)
 echo "Running Jest tests..."
-yarn test
-
-# Run Playwright tests (all e2e tests)
-echo "Running Playwright tests..."
-yarn test:e2e
+yarn jest --silent --verbose=false --reporters=summary --passWithNoTests
 
 # Run type checking
+echo ""
 echo "Running type checking..."
 yarn run typecheck
 
 # Run linting
+echo ""
 echo "Running linting..."
 yarn run lint
 
 # Build all packages
+echo ""
 echo "Building all packages..."
 yarn run build:all
 
-# Auto-add package dist folders to git index
+# Auto-add package dist folders to git index immediately after build
+git add packages/core/dist/ || true
+git add packages/v5/dist/ || true  
+git add packages/v6/dist/ || true
+git add packages/v7/dist/ || true
+git add docs/static/ || true
+
+# Run Playwright tests (all e2e tests)
+echo ""
+echo "Running Playwright tests..."
+npx playwright test --quiet
+
+# Add dist files again in case Playwright tests modified them
 git add packages/core/dist/ || true
 git add packages/v5/dist/ || true  
 git add packages/v6/dist/ || true
