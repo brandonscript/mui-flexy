@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy-demo-shared",
-  "version": "2.0.2-rc.0",
+  "version": "2.0.2",
   "description": "Shared components for mui-flexy demos",
   "private": true,
   "dependencies": {
