@@ -1,15 +1,15 @@
 {
   "name": "@mui-flexy/core",
-  "version": "2.0.1",
+  "version": "2.0.2-rc.0",
   "description": "Core utilities and types for mui-flexy",
   "type": "module",
-  "main": "dist/cjs/index.cjs",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/cjs/index.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },

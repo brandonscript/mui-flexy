@@ -126,6 +126,27 @@ update_workspace_dependencies() {
   done
 }
 
+cleanup_readme_files() {
+  echo -e "${YELLOW}Cleaning up README.md files from package directories...${NC}"
+  for package_dir in $(get_package_dirs); do
+    if [[ -f "$package_dir/README.md" ]]; then
+      rm "$package_dir/README.md"
+      echo "  Removed README.md from $package_dir"
+    fi
+  done
+}
+
+reset_package_deps() {
+  echo -e "${YELLOW}Resetting package dependencies...${NC}"
+  for package_dir in $(get_package_dirs); do
+    if [[ -f "$package_dir/package.json" ]]; then
+      jq '.dependencies["@mui-flexy/core"] = "workspace:*"' "$package_dir/package.json" > "$package_dir/package.json.tmp" && \
+        mv "$package_dir/package.json.tmp" "$package_dir/package.json" && \
+        yarn exec prettier --write "$package_dir/package.json"
+    fi
+  done
+}
+
 revert_workspace_dependencies() {
   echo -e "${YELLOW}Reverting workspace dependencies back to workspace:*...${NC}"
   
@@ -237,6 +258,15 @@ main() {
   cp yarn.lock yarn.lock.backup
   
   update_workspace_dependencies "$current_version"
+  
+  # Copy README.md to each package directory
+  echo -e "${YELLOW}Copying README.md to package directories...${NC}"
+  for package_dir in $(get_package_dirs); do
+    if [[ -f README.md && -d "$package_dir" ]]; then
+      cp README.md "$package_dir/README.md"
+      echo "  Copied README.md to $package_dir"
+    fi
+  done
   echo ""
 
   echo -e "${YELLOW}Building all packages...${NC}"
@@ -305,11 +335,16 @@ main() {
   echo -e "${YELLOW}Done:${NC}"
   if [[ "$DRY_RUN" == "true" ]]; then
     echo -e "${PURPLE}[DRY-RUN] No packages were actually published${NC}"
+    echo ""
+    revert_workspace_dependencies
+    cleanup_readme_files
+    exit 0
   else
     if [[ $failed_count -gt 0 ]]; then
       echo -e "${RED}✗ Failed: $failed_count${NC}"
       echo ""
       revert_workspace_dependencies
+      cleanup_readme_files
       exit 1
     else
       echo -e "${GREEN}✓ Successfully published: $published_count${NC}"
@@ -318,6 +353,7 @@ main() {
   
   echo ""
   revert_workspace_dependencies
+  cleanup_readme_files
 }
 
 # Run main function

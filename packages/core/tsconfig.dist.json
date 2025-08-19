@@ -1,19 +1,23 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
     "noEmit": false,
     "skipLibCheck": true,
+    "strict": true,
     "declaration": true,
     "declarationDir": "./dist",
     "emitDeclarationOnly": true,
-    "jsx": "react-jsx",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "files": [
-    "src/Flex.core.ts",
-    "src/Flex.core.types.ts",
-    "src/Flex.core.utils.ts",
-    "src/index.ts"
+  "include": [
+    "src/**/*"
   ],
   "exclude": [
     "dist",

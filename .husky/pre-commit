@@ -1,5 +1,9 @@
 #!/bin/bash
 
+max_cpus=$(sysctl -n hw.ncpu)
+max_cpus=$((max_cpus > 4 ? max_cpus : 4))
+max_cpus=$((max_cpus - 1))
+
 # Exit immediately if any command fails
 set -e
 
@@ -20,7 +24,12 @@ yarn run lint
 # Build all packages
 echo ""
 echo "Building all packages..."
-yarn run build:all
+yarn --silent run build:all
+
+# Run Playwright tests (all e2e tests)
+echo ""
+echo "Running Playwright tests..."
+npx playwright test --quiet --workers $max_cpus
 
 # Auto-add package dist folders to git index immediately after build
 git add packages/core/dist/ || true
@@ -28,24 +37,20 @@ git add packages/v5/dist/ || true
 git add packages/v6/dist/ || true
 git add packages/v7/dist/ || true
 git add docs/static/ || true
+git add demos/v5/dist/ || true
+git add demos/v6/dist/ || true
+git add demos/v7/dist/ || true
 
-# Run Playwright tests (all e2e tests)
-echo ""
-echo "Running Playwright tests..."
-npx playwright test --quiet
+# Refresh git index to ensure all changes are properly detected
+git update-index --refresh || true
 
-# Add dist files again in case Playwright tests modified them
-git add packages/core/dist/ || true
-git add packages/v5/dist/ || true  
-git add packages/v6/dist/ || true
-git add packages/v7/dist/ || true
-git add docs/static/ || true
+echo "Checking for unstaged changes in non-build files..."
 
-echo "Checking for unstaged changes in built files..."
-
-# Check for unstaged changes after build:all in package dist directories
-if git status --porcelain | grep -E "(packages/.*/dist/|docs/static/)" > /dev/null; then
-  echo "Changes detected in built files. Please review and commit the changes." >&2
+# Check for unstaged changes OUTSIDE of build directories (these need manual review)
+# git status --porcelain format: XY filename where Y is workspace status (space = clean, M = modified)
+if git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|demos/.*/dist/)" | grep . > /dev/null; then
+  echo "Changes detected in non-build files. Please review and commit the following files:" >&2
+  git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|demos/.*/dist/)" >&2
   git update-index --again
   exit 1
 fi

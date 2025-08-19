@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy-demo-v7",
-  "version": "2.0.1",
+  "version": "2.0.2-rc.0",
   "description": "Demo server for mui-flexy v7",
   "private": true,
   "scripts": {

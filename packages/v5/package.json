@@ -1,15 +1,15 @@
 {
   "name": "@mui-flexy/v5",
-  "version": "2.0.1",
+  "version": "2.0.2-rc.0",
   "description": "A flexbox convenience component for Material UI v5 Box and Grid with handy shorthand props",
   "type": "module",
-  "main": "dist/cjs/index.cjs",
+  "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/cjs/index.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -29,7 +29,7 @@
     "react": "^17.0.0 || ^18.0.0"
   },
   "dependencies": {
-    "@mui-flexy/core": "workspace:*"
+    "@mui-flexy/core": "^2.0.2-rc.0"
   },
   "devDependencies": {
     "@emotion/react": "^11.14.0",

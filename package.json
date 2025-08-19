@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "2.0.1",
+  "version": "2.0.2-rc.0",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "type": "module",
   "workspaces": [
@@ -19,7 +19,7 @@
     "build:all": "yarn build && yarn build:demos",
     "build:demos": "yarn workspaces foreach -p -A --include 'demos/*' run build",
     "build:docs": "cd docs && yarn build",
-    "build:packages": "yarn workspaces foreach -p -A --include 'packages/*' run build",
+    "build:packages": "yarn workspace @mui-flexy/core run build && yarn workspaces foreach -p -A --include 'packages/v*' run build",
     "clean": "rm -rf packages/core/dist packages/v5/dist packages/v6/dist packages/v7/dist && mkdir -p packages/core/dist packages/v5/dist packages/v6/dist packages/v7/dist",
     "clean:all": "yarn clean && yarn workspaces foreach -A run clean",
     "demo:all": "concurrently \"yarn demo:v5\" \"yarn demo:v6\" \"yarn demo:v7\"",
@@ -55,7 +55,7 @@
     "test:unit:v5": "yarn jest --selectProjects=v5-tests",
     "test:unit:v6": "yarn jest --selectProjects=v6-tests",
     "test:unit:v7": "yarn jest --selectProjects=v7-tests",
-    "typecheck": "yarn workspaces foreach -A run typecheck",
+    "typecheck": "yarn workspaces foreach -p -A run typecheck",
     "set-version": "./scripts/version.sh"
   },
   "devDependencies": {

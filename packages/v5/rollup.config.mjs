@@ -6,27 +6,15 @@ import peerDepsExternal from "rollup-plugin-peer-deps-external";
 
 export default {
   input: ["src/index.ts"],
-  output: [
-    {
-      dir: "dist",
-      format: "es",
-      exports: "named",
-      sourcemap: true,
-      strict: false,
-      preserveModules: true,
-      entryFileNames: "[name].js",
-    },
-    {
-      dir: "dist/cjs",
-      format: "cjs",
-      exports: "named",
-      sourcemap: true,
-      strict: false,
-      preserveModules: true,
-      preserveModulesRoot: "src",
-      entryFileNames: "[name].cjs",
-    },
-  ],
+  output: {
+    dir: "dist",
+    format: "es",
+    exports: "named",
+    sourcemap: true,
+    strict: false,
+    preserveModules: true,
+    entryFileNames: "[name].js",
+  },
   plugins: [
     json(),
     peerDepsExternal(),

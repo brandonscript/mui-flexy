@@ -1,22 +1,23 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
     "noEmit": false,
     "skipLibCheck": true,
+    "strict": true,
     "declaration": true,
     "declarationDir": "./dist",
     "emitDeclarationOnly": true,
-    "jsx": "react-jsx",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true
   },
-  "files": [
-    "src/FlexBox.tsx",
-    "src/FlexBox.types.ts",
-    "src/FlexGrid.tsx",
-    "src/FlexGrid.types.ts",
-    "src/FlexGrid2.tsx",
-    "src/FlexGrid2.types.ts",
-    "src/index.ts"
+  "include": [
+    "src/**/*"
   ],
   "exclude": [
     "dist",

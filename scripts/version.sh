@@ -50,18 +50,27 @@ print_help() {
   echo "  -h, --help   Show this help message"
   echo ""
   echo "Version formats supported:"
-  echo "  1.2.3    - Full version (major.minor.patch)"
-  echo "  1.2      - Partial version (becomes 1.2.0)"
-  echo "  1        - Major only (becomes 1.0.0)"
-  echo "  major    - Increment major version, reset minor and patch to 0"
-  echo "  minor    - Increment minor version, reset patch to 0"
-  echo "  patch    - Increment patch version"
+  echo "  1.2.3           - Full version (major.minor.patch)"
+  echo "  1.2.3-alpha.0   - Prerelease version with prerelease number"
+  echo "  1.2.3-alpha     - Prerelease version (becomes 1.2.3-alpha.0)"
+  echo "  1.2             - Partial version (becomes 1.2.0)"
+  echo "  1               - Major only (becomes 1.0.0)"
+  echo "  major           - Increment major version, reset minor and patch to 0"
+  echo "  minor           - Increment minor version, reset patch to 0"
+  echo "  patch           - Increment patch version"
+  echo "  alpha           - Create or increment alpha prerelease (e.g., 1.2.3 → 1.2.4-alpha.0)"
+  echo "  beta            - Create or increment beta prerelease (e.g., 1.2.3 → 1.2.4-beta.0)"
+  echo "  rc              - Create or increment release candidate (e.g., 1.2.3 → 1.2.4-rc.0)"
+  echo "  prerelease      - Increment current prerelease number (e.g., 1.2.3-alpha.0 → 1.2.3-alpha.1)"
   echo ""
   echo "Examples:"
-  echo "  $0 1.3 --build     Update to version 1.3.0 and build"
-  echo "  $0 patch --push    Increment patch version, build, and push"
-  echo "  $0 --build 1.3     Build with version 1.3.0 (options can come first too)"
-  echo "  $0 major           Increment major version only"
+  echo "  $0 1.3 --build        Update to version 1.3.0 and build"
+  echo "  $0 patch --push       Increment patch version, build, and push"
+  echo "  $0 --build 1.3        Build with version 1.3.0 (options can come first too)"
+  echo "  $0 major              Increment major version only"
+  echo "  $0 alpha              Create alpha prerelease (e.g., 1.2.3 → 1.2.4-alpha.0)"
+  echo "  $0 prerelease         Increment prerelease (e.g., 1.2.3-alpha.0 → 1.2.3-alpha.1)"
+  echo "  $0 2.1.0-beta.2       Set specific prerelease version"
   echo ""
   echo "Behavior:"
   echo "  No flags:    Update versions only (stop after version updates)"
@@ -111,8 +120,8 @@ done
 
 is_valid_version() {
   # Check if the provided argument is a valid version number.
-  # A valid version number is in the format X.Y.Z where X, Y, and Z are integers.
-  if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  # A valid version number is in the format X.Y.Z or X.Y.Z-prerelease.N where X, Y, Z, and N are integers.
+  if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z]+\.[0-9]+)?$ ]]; then
     return 0
   else
     return 1
@@ -121,37 +130,61 @@ is_valid_version() {
 
 normalize_version() {
   # Normalize a version string by adding missing components (defaulting to 0)
-  # Examples: "1.3" -> "1.3.0", "2" -> "2.0.0", "1.2.3" -> "1.2.3"
+  # Examples: "1.3" -> "1.3.0", "2" -> "2.0.0", "1.2.3" -> "1.2.3", "1.2.3-alpha" -> "1.2.3-alpha.0"
   local version="$1"
 
-  # Count the number of dots (trim whitespace from wc output)
-  local dot_count
-  dot_count=$(echo "$version" | grep -o '\.' | wc -l | tr -d ' ')
+  # Check if version has prerelease suffix
+  local base_version prerelease_suffix
+  if [[ $version =~ ^([0-9]+(\.[0-9]+){0,2})(-[a-zA-Z]+(\.[0-9]+)?)?$ ]]; then
+    base_version="${BASH_REMATCH[1]}"
+    prerelease_suffix="${BASH_REMATCH[3]}"
+  else
+    echo ""
+    return
+  fi
 
+  # Count the number of dots in base version (trim whitespace from wc output)
+  local dot_count
+  dot_count=$(echo "$base_version" | grep -o '\.' | wc -l | tr -d ' ')
+
+  # Normalize base version
   case $dot_count in
   0)
     # Just major version (e.g., "2")
-    echo "$version.0.0"
+    base_version="$base_version.0.0"
     ;;
   1)
     # Major and minor (e.g., "1.3")
-    echo "$version.0"
+    base_version="$base_version.0"
     ;;
   2)
     # Full version (e.g., "1.2.3")
-    echo "$version"
+    # Keep as is
     ;;
   *)
     # Invalid format
     echo ""
+    return
     ;;
   esac
+
+  # Handle prerelease suffix
+  if [[ -n $prerelease_suffix ]]; then
+    # Check if prerelease has a number
+    if [[ $prerelease_suffix =~ ^-[a-zA-Z]+$ ]]; then
+      # Add .0 to prerelease (e.g., "-alpha" -> "-alpha.0")
+      prerelease_suffix="$prerelease_suffix.0"
+    fi
+    echo "$base_version$prerelease_suffix"
+  else
+    echo "$base_version"
+  fi
 }
 
 is_valid_partial_version() {
   # Check if the provided argument is a valid partial or full version number.
-  # Valid formats: X, X.Y, or X.Y.Z where X, Y, and Z are integers.
-  if [[ $1 =~ ^[0-9]+(\.[0-9]+)?(\.[0-9]+)?$ ]]; then
+  # Valid formats: X, X.Y, X.Y.Z, or X.Y.Z-prerelease, X.Y.Z-prerelease.N where X, Y, Z, and N are integers.
+  if [[ $1 =~ ^[0-9]+(\.[0-9]+)?(\.[0-9]+)?(-[a-zA-Z]+(\.[0-9]+)?)?$ ]]; then
     return 0
   else
     return 1
@@ -168,7 +201,7 @@ validate_version_format() {
 
   # Check for special keywords first
   case "$input" in
-  major | minor | patch)
+  major | minor | patch | alpha | beta | rc | prerelease)
     return 0
     ;;
   esac
@@ -303,10 +336,20 @@ get_new_version() {
   # Increments the version number based on the provided argument.
   local version
   version=$(get_current_version)
-  local major minor patch
+  local major minor patch prerelease_part prerelease_name prerelease_num
 
-  # Split the version into major, minor, and patch components.
-  IFS='.' read -r major minor patch <<<"$version"
+  # Parse current version into components
+  if [[ $version =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)(-([a-zA-Z]+)\.([0-9]+))?$ ]]; then
+    major="${BASH_REMATCH[1]}"
+    minor="${BASH_REMATCH[2]}"
+    patch="${BASH_REMATCH[3]}"
+    prerelease_part="${BASH_REMATCH[4]}"
+    prerelease_name="${BASH_REMATCH[5]}"
+    prerelease_num="${BASH_REMATCH[6]}"
+  else
+    echo "Error: Unable to parse current version: $version" >&2
+    return 1
+  fi
 
   # If the provided argument is a valid partial or full version number, normalize and use it.
   if is_valid_partial_version "$1"; then
@@ -331,22 +374,46 @@ get_new_version() {
     ((major++))
     minor=0
     patch=0
+    new_version="${major}.${minor}.${patch}"
     ;;
   minor)
     ((minor++))
     patch=0
+    new_version="${major}.${minor}.${patch}"
     ;;
   patch)
     ((patch++))
+    new_version="${major}.${minor}.${patch}"
+    ;;
+  alpha|beta|rc)
+    # Create or increment prerelease version
+    if [[ -n $prerelease_part ]]; then
+      # If current version is already a prerelease, increment patch and create new prerelease
+      ((patch++))
+    else
+      # If current version is stable, increment patch for new prerelease
+      ((patch++))
+    fi
+    new_version="${major}.${minor}.${patch}-${1}.0"
+    ;;
+  prerelease)
+    # Increment current prerelease number
+    if [[ -n $prerelease_part ]]; then
+      # Current version is a prerelease, increment the prerelease number
+      ((prerelease_num++))
+      new_version="${major}.${minor}.${patch}-${prerelease_name}.${prerelease_num}"
+    else
+      # Current version is stable, can't increment prerelease
+      echo "Error: Current version is not a prerelease. Use 'alpha', 'beta', or 'rc' to create a prerelease." >&2
+      return 1
+    fi
     ;;
   *)
-    echo ""
-    exit 1
+    echo "Error: Invalid version argument: $1" >&2
+    return 1
     ;;
   esac
 
-  # Construct the new version string.
-  local new_version="${major}.${minor}.${patch}"
   echo "$new_version"
 }
 
