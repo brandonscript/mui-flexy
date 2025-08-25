@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { HiOutlineExternalLink } from "react-icons/hi";
 
 import type { BaseFlexProps } from "../packages/core/dist";
 
@@ -578,6 +580,49 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
           main: "#007FFF",
         },
       },
+      typography: {
+        fontFamily: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          '"Segoe UI"',
+          "Roboto",
+          '"Inter"',
+          '"San Francisco"',
+          '"Helvetica Neue"',
+          "Arial",
+          "sans-serif",
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+        ].join(","),
+      },
+      shadows: [
+        "none",
+        "0px 1px 3px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.12)", // elevation 1 - softer AppBar shadow
+        "0px 2px 6px rgba(0, 0, 0, 0.08), 0px 1px 4px rgba(0, 0, 0, 0.12)", // elevation 2 - softer Paper shadow
+        "0px 3px 12px rgba(0, 0, 0, 0.08), 0px 2px 6px rgba(0, 0, 0, 0.12)",
+        "0px 4px 16px rgba(0, 0, 0, 0.08), 0px 2px 8px rgba(0, 0, 0, 0.12)",
+        "0px 6px 20px rgba(0, 0, 0, 0.08), 0px 3px 10px rgba(0, 0, 0, 0.12)",
+        "0px 8px 24px rgba(0, 0, 0, 0.08), 0px 4px 12px rgba(0, 0, 0, 0.12)",
+        "0px 10px 28px rgba(0, 0, 0, 0.08), 0px 5px 14px rgba(0, 0, 0, 0.12)",
+        "0px 12px 32px rgba(0, 0, 0, 0.08), 0px 6px 16px rgba(0, 0, 0, 0.12)",
+        "0px 14px 36px rgba(0, 0, 0, 0.08), 0px 7px 18px rgba(0, 0, 0, 0.12)",
+        "0px 16px 40px rgba(0, 0, 0, 0.08), 0px 8px 20px rgba(0, 0, 0, 0.12)",
+        "0px 18px 44px rgba(0, 0, 0, 0.08), 0px 9px 22px rgba(0, 0, 0, 0.12)",
+        "0px 20px 48px rgba(0, 0, 0, 0.08), 0px 10px 24px rgba(0, 0, 0, 0.12)",
+        "0px 22px 52px rgba(0, 0, 0, 0.08), 0px 11px 26px rgba(0, 0, 0, 0.12)",
+        "0px 24px 56px rgba(0, 0, 0, 0.08), 0px 12px 28px rgba(0, 0, 0, 0.12)",
+        "0px 26px 60px rgba(0, 0, 0, 0.08), 0px 13px 30px rgba(0, 0, 0, 0.12)",
+        "0px 28px 64px rgba(0, 0, 0, 0.08), 0px 14px 32px rgba(0, 0, 0, 0.12)",
+        "0px 30px 68px rgba(0, 0, 0, 0.08), 0px 15px 34px rgba(0, 0, 0, 0.12)",
+        "0px 32px 72px rgba(0, 0, 0, 0.08), 0px 16px 36px rgba(0, 0, 0, 0.12)",
+        "0px 34px 76px rgba(0, 0, 0, 0.08), 0px 17px 38px rgba(0, 0, 0, 0.12)",
+        "0px 36px 80px rgba(0, 0, 0, 0.08), 0px 18px 40px rgba(0, 0, 0, 0.12)",
+        "0px 38px 84px rgba(0, 0, 0, 0.08), 0px 19px 42px rgba(0, 0, 0, 0.12)",
+        "0px 40px 88px rgba(0, 0, 0, 0.08), 0px 20px 44px rgba(0, 0, 0, 0.12)",
+        "0px 42px 92px rgba(0, 0, 0, 0.08), 0px 21px 46px rgba(0, 0, 0, 0.12)",
+        "0px 44px 96px rgba(0, 0, 0, 0.08), 0px 22px 48px rgba(0, 0, 0, 0.12)",
+      ],
     }),
   );
 
@@ -604,12 +649,35 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
             <Material.Typography variant="h6" color="text.secondary" gutterBottom>
               Compatible with @mui/material v{currentVersion.version}
             </Material.Typography>
+            <Material.Box
+              sx={{
+                mt: 1,
+                mb: 2,
+                p: 2,
+                backgroundColor: "#f5f5f5",
+                borderRadius: 1,
+                borderLeft: "4px solid #007FFF",
+              }}
+            >
+              <Material.Typography variant="body2" sx={{ fontStyle: "italic", color: "text.secondary" }}>
+                Getting started? Check out the{" "}
+                <Material.Link
+                  href="https://github.com/brandonscript/mui-flexy#getting-started"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="primary"
+                  sx={{ fontStyle: "normal", fontWeight: 600 }}
+                >
+                  README <HiOutlineExternalLink size={16} style={{ verticalAlign: "text-bottom" }} />
+                </Material.Link>
+              </Material.Typography>
+            </Material.Box>
             <Material.Typography variant="body1" component="div" sx={{ mt: 2 }}>
-              mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily align and distribute
-              flexy items in a space in a way that doesn't make you want to pull your hair out trying to remember
-              whether to use <DemoCode inline>justify-content</DemoCode> or <DemoCode inline>align-items</DemoCode>.
-              Using a simple and consistent x, y coordinate system, you can stop worrying about the CSS working group's
-              choices and get on with your life of centering divs.
+              mui-flexy extends MUI's Box and Grid components to allow you to easily align and distribute flexbox items
+              in a space in a way that doesn't make you want to pull your hair out trying to remember whether to use
+              <DemoCode inline>justify-content</DemoCode> or <DemoCode inline>align-items</DemoCode>. Using a simple and
+              consistent x, y coordinate system, you can stop worrying about the CSS working group's choices and get on
+              with your life of centering divs and building forms.
               <br />
               <br />
               Simply use <DemoCode inline>&lt;FlexBox /&gt;</DemoCode> or{" "}
@@ -1490,39 +1558,110 @@ const App = () => {
 
   const { Material, Styles } = headerLibraries;
 
-  return (
-    <div>
-      {/* Header with version tabs */}
-      <Material.AppBar
-        position="sticky"
-        color="default"
-        elevation={1}
-        data-testid="app-bar"
-        sx={{ top: 0, zIndex: 1100 }}
-      >
-        <Material.Toolbar>
-          <Material.Typography component="h2" variant="h6" sx={{ flexGrow: 1 }}>
-            mui-flexy documentation
-          </Material.Typography>
-          {versions.map((version) => (
-            <Material.Button
-              key={version.key}
-              color={selectedVersion === version.key ? "primary" : "inherit"}
-              onClick={() => setSelectedVersion(version.key)}
-              sx={{
-                mx: 0.5,
-                fontWeight: selectedVersion === version.key ? "bold" : "normal",
-              }}
-            >
-              {version.label}
-            </Material.Button>
-          ))}
-        </Material.Toolbar>
-      </Material.AppBar>
+  // Create header theme with the same typography and softened shadows
+  const headerTheme = Styles.createTheme({
+    palette: {
+      primary: {
+        main: "#007FFF",
+      },
+    },
+    typography: {
+      fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Inter"',
+        '"San Francisco"',
+        '"Helvetica Neue"',
+        "Arial",
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(","),
+    },
+    shadows: [
+      "none",
+      "0px 1px 3px rgba(0, 0, 0, 0.08), 0px 1px 2px rgba(0, 0, 0, 0.12)", // elevation 1 - softer AppBar shadow
+      "0px 2px 6px rgba(0, 0, 0, 0.08), 0px 1px 4px rgba(0, 0, 0, 0.12)", // elevation 2 - softer Paper shadow
+      "0px 3px 12px rgba(0, 0, 0, 0.08), 0px 2px 6px rgba(0, 0, 0, 0.12)",
+      "0px 4px 16px rgba(0, 0, 0, 0.08), 0px 2px 8px rgba(0, 0, 0, 0.12)",
+      "0px 6px 20px rgba(0, 0, 0, 0.08), 0px 3px 10px rgba(0, 0, 0, 0.12)",
+      "0px 8px 24px rgba(0, 0, 0, 0.08), 0px 4px 12px rgba(0, 0, 0, 0.12)",
+      "0px 10px 28px rgba(0, 0, 0, 0.08), 0px 5px 14px rgba(0, 0, 0, 0.12)",
+      "0px 12px 32px rgba(0, 0, 0, 0.08), 0px 6px 16px rgba(0, 0, 0, 0.12)",
+      "0px 14px 36px rgba(0, 0, 0, 0.08), 0px 7px 18px rgba(0, 0, 0, 0.12)",
+      "0px 16px 40px rgba(0, 0, 0, 0.08), 0px 8px 20px rgba(0, 0, 0, 0.12)",
+      "0px 18px 44px rgba(0, 0, 0, 0.08), 0px 9px 22px rgba(0, 0, 0, 0.12)",
+      "0px 20px 48px rgba(0, 0, 0, 0.08), 0px 10px 24px rgba(0, 0, 0, 0.12)",
+      "0px 22px 52px rgba(0, 0, 0, 0.08), 0px 11px 26px rgba(0, 0, 0, 0.12)",
+      "0px 24px 56px rgba(0, 0, 0, 0.08), 0px 12px 28px rgba(0, 0, 0, 0.12)",
+      "0px 26px 60px rgba(0, 0, 0, 0.08), 0px 13px 30px rgba(0, 0, 0, 0.12)",
+      "0px 28px 64px rgba(0, 0, 0, 0.08), 0px 14px 32px rgba(0, 0, 0, 0.12)",
+      "0px 30px 68px rgba(0, 0, 0, 0.08), 0px 15px 34px rgba(0, 0, 0, 0.12)",
+      "0px 32px 72px rgba(0, 0, 0, 0.08), 0px 16px 36px rgba(0, 0, 0, 0.12)",
+      "0px 34px 76px rgba(0, 0, 0, 0.08), 0px 17px 38px rgba(0, 0, 0, 0.12)",
+      "0px 36px 80px rgba(0, 0, 0, 0.08), 0px 18px 40px rgba(0, 0, 0, 0.12)",
+      "0px 38px 84px rgba(0, 0, 0, 0.08), 0px 19px 42px rgba(0, 0, 0, 0.12)",
+      "0px 40px 88px rgba(0, 0, 0, 0.08), 0px 20px 44px rgba(0, 0, 0, 0.12)",
+      "0px 42px 92px rgba(0, 0, 0, 0.08), 0px 21px 46px rgba(0, 0, 0, 0.12)",
+      "0px 44px 96px rgba(0, 0, 0, 0.08), 0px 22px 48px rgba(0, 0, 0, 0.12)",
+    ],
+  });
 
-      {/* Version-specific content */}
-      <VersionContent version={selectedVersion} />
-    </div>
+  return (
+    <Styles.ThemeProvider theme={headerTheme}>
+      <div>
+        {/* Header with version tabs */}
+        <Material.AppBar
+          position="sticky"
+          color="default"
+          elevation={1}
+          data-testid="app-bar"
+          sx={{ top: 0, zIndex: 1100 }}
+        >
+          <Material.Toolbar>
+            <Material.Box
+              component="img"
+              src="apple-touch-icon.png"
+              alt="mui-flexy logo"
+              sx={{ width: 28, height: 28, filter: "grayscale(100%) brightness(1.4)", mr: 1 }}
+            />
+            <Material.Typography component="h2" variant="h6" sx={{ flexGrow: 1, color: "text.disabled" }}>
+              docs
+            </Material.Typography>
+            {versions.map((version) => (
+              <Material.Button
+                key={version.key}
+                color={selectedVersion === version.key ? "primary" : "inherit"}
+                onClick={() => setSelectedVersion(version.key)}
+                sx={{
+                  mx: 0.5,
+                  fontWeight: selectedVersion === version.key ? "bold" : "normal",
+                }}
+              >
+                {version.label}
+              </Material.Button>
+            ))}
+            <Material.IconButton
+              component="a"
+              href="https://github.com/brandonscript/mui-flexy"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="inherit"
+              sx={{ ml: 1 }}
+              aria-label="View source on GitHub"
+            >
+              <FaGithub />
+            </Material.IconButton>
+          </Material.Toolbar>
+        </Material.AppBar>
+
+        {/* Version-specific content */}
+        <VersionContent version={selectedVersion} />
+      </div>
+    </Styles.ThemeProvider>
   );
 };
 

@@ -110,16 +110,16 @@ export const DemoTitle = ({
 export const DemoDescription = ({ gridComponentName = "FlexGrid" }: { gridComponentName?: string }) => (
   <Typography variant="body1" component="div">
     {
-      "mui-flexy for MUI is a component wrapper for flexbox styles that allows you to easily \
-        align and distribute flexy items in a space in a way that doesn't make you want \
-        to pull your hair out trying to remember whether to use "
+      "mui-flexy extends MUI's Box and Grid components to allow you to easily align and \
+      distribute flexbox items in a space in a way that doesn't make you want to pull your \
+      hair out trying to remember whether to use "
     }
     <DemoCode inline>justify-content</DemoCode>
     {" or "}
     <DemoCode inline>align-items</DemoCode>
     {
       ". Using a simple and consistent x, y coordinate system, you can stop worrying about \
-        the CSS working group's choices and get on with your life of centering divs."
+        the CSS working group's choices and get on with your life of centering divs and building forms."
     }
     <br />
     <br />
