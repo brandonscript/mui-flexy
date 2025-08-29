@@ -19,13 +19,6 @@
       ]
     },
     {
-      "name": "Demo: Main (v6 compatible)",
-      "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v6",
-      "request": "launch",
-      "command": "yarn install && yarn dev"
-    },
-    {
       "name": "Test: Core Package (watch)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/packages/core",

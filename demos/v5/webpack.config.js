@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.tsx",
@@ -52,6 +53,13 @@ module.exports = {
     filename: "bundle.js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        extractComments: false, // Disable generation of LICENSE.txt files
+      }),
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({
