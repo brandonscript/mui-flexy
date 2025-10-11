@@ -12,7 +12,7 @@ import {
 } from "@mui-flexy/core";
 
 /**
- * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
+ * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
  */
 export interface FlexGridTypeMap<
   O extends FlexOrientation | undefined = undefined,
@@ -27,7 +27,7 @@ export interface FlexGridTypeMap<
 }
 
 /**
- * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
+ * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
  */
 export type FlexGridProps<
   O extends FlexOrientation | undefined = undefined,
@@ -38,7 +38,7 @@ export type FlexGridProps<
 > = OverrideProps<FlexGridTypeMap<O, P, D>, D>;
 
 /**
- * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
+ * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
  */
 export type FlexGridRowProps<
   D extends React.ElementType = FlexGridTypeMap<"row">["defaultComponent"],
@@ -48,7 +48,7 @@ export type FlexGridRowProps<
 > = OnlyRow<FlexGridProps<"row", D, P>>;
 
 /**
- * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
+ * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
  */
 export type FlexGridColumnProps<
   D extends React.ElementType = FlexGridTypeMap<"column">["defaultComponent"],

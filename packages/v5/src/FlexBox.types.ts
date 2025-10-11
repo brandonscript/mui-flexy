@@ -15,7 +15,7 @@ export interface FlexBoxTypeMap<
   O extends FlexOrientation | undefined = undefined,
   P = {},
   D extends React.ElementType = "div",
-  T extends object = MaterialTheme,
+  T extends object = object,
 > {
   props: P &
     BoxOwnProps<T> & {
