@@ -54,9 +54,9 @@ const StyledSelect = forwardRef<
   ComponentProps<typeof StyledSelectContainer> & {
     button?: React.ReactNode;
   }
->(({ button, ...props }, ref) => {
+>(({ button, ..._props }, ref) => {
   return (
-    <StyledSelectContainer component={FlexBox} column {...props} ref={ref}>
+    <StyledSelectContainer component={FlexBox} column ref={ref}>
       {button}
     </StyledSelectContainer>
   );

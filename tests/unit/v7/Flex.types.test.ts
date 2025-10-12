@@ -1,5 +1,4 @@
-import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps } from "../../../packages/v7/src/FlexBox.v7.types";
-import type { FlexGridProps } from "../../../packages/v7/src/FlexGrid.v7.types";
+import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexGridProps } from "@mui-flexy/v7";
 
 describe("Flex.types", () => {
   it("should support FlexBoxProps and FlexGridProps along with standard CSS props", () => {

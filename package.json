@@ -1,7 +1,15 @@
 {
   "name": "mui-flexy",
-  "version": "2.0.3",
+  "version": "2.0.4-rc.0",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
+  "keywords": [
+    "react",
+    "material-ui",
+    "mui",
+    "flexbox",
+    "responsive",
+    "layout"
+  ],
   "type": "module",
   "workspaces": [
     "packages/*",
@@ -36,7 +44,7 @@
     "precommit": "./.husky/pre-commit",
     "publish": "./scripts/publish.sh",
     "publish:dry-run": "./scripts/publish.sh --dry-run",
-    "test": "yarn test:unit && yarn test:e2e",
+    "test": "yarn test:unit && yarn test:types && yarn test:e2e",
     "test:e2e": "playwright test",
     "test:e2e:clean": "PLAYWRIGHT_FORCE_CLEAN=1 playwright test",
     "test:e2e:console": "playwright test tests/e2e/console-validation.spec.ts",
@@ -57,6 +65,11 @@
     "test:unit:v5": "yarn jest --selectProjects=v5-tests",
     "test:unit:v6": "yarn jest --selectProjects=v6-tests",
     "test:unit:v7": "yarn jest --selectProjects=v7-tests",
+    "test:types:core": "yarn tsc --noEmit -p tests/unit/core/tsconfig.json",
+    "test:types:v5": "yarn tsc --noEmit -p tests/unit/v5/tsconfig.json",
+    "test:types:v6": "yarn tsc --noEmit -p tests/unit/v6/tsconfig.json",
+    "test:types:v7": "yarn tsc --noEmit -p tests/unit/v7/tsconfig.json",
+    "test:types": "yarn test:types:core && yarn test:types:v5 && yarn test:types:v6 && yarn test:types:v7",
     "typecheck": "yarn workspaces foreach -p -A run typecheck",
     "set-version": "./scripts/version.sh"
   },

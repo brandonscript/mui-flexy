@@ -334,20 +334,32 @@ describe("Responsive prop & sx tests", () => {
     const column: FlexBoxProps["column"] = [false, true, false, true];
     const ComponentViaProps = () => <FlexBox row={row} column={column} />;
     const ComponentDirect = () => <FlexBox row={[true, false, true, false]} column={[false, true, false, true]} />;
+    const ComponentRowViaProps = () => <FlexBox row={row} />;
+    const ComponentRowDirect = () => <FlexBox row={[true, false, true, false]} />;
+    const ComponentColumnViaProps = () => <FlexBox column={column} />;
+    const ComponentColumnDirect = () => <FlexBox column={[false, true, false, true]} />;
     expect(() => ComponentViaProps()).not.toThrow();
     expect(() => ComponentDirect()).not.toThrow();
+    expect(() => ComponentRowViaProps()).not.toThrow();
+    expect(() => ComponentRowDirect()).not.toThrow();
+    expect(() => ComponentColumnDirect()).not.toThrow();
+    expect(() => ComponentColumnViaProps()).not.toThrow();
   });
 
-  it("should infer responsive array props for row v. column", () => {
-    const row: FlexBoxProps["row"] = [true, false, true, false];
-    const column: FlexBoxProps["column"] = [false, true, false, true];
+  it("should infer responsive object props for row/column", () => {
+    const row: FlexBoxProps["row"] = { xs: true, sm: false, md: true, lg: false };
+    const column: FlexBoxProps["column"] = { xs: false, sm: true, md: false, lg: true };
+    const ComponentViaProps = () => <FlexBox row={row} column={column} />;
+    const ComponentDirect = () => <FlexBox row={{ xs: false, md: true }} column={{ xs: true, sm: false }} />;
     const ComponentRowViaProps = () => <FlexBox row={row} />;
+    const ComponentRowDirect = () => <FlexBox row={{ xs: false, md: true }} />;
     const ComponentColumnViaProps = () => <FlexBox column={column} />;
-    const ComponentRowDirect = () => <FlexBox row={[true, false, true, false]} />;
-    const ComponentColumnDirect = () => <FlexBox column={[false, true, false, true]} />;
+    const ComponentColumnDirect = () => <FlexBox column={{ xs: true, sm: false }} />;
+    expect(() => ComponentViaProps()).not.toThrow();
+    expect(() => ComponentDirect()).not.toThrow();
     expect(() => ComponentRowViaProps()).not.toThrow();
-    expect(() => ComponentColumnViaProps()).not.toThrow();
     expect(() => ComponentRowDirect()).not.toThrow();
+    expect(() => ComponentColumnViaProps()).not.toThrow();
     expect(() => ComponentColumnDirect()).not.toThrow();
   });
 });

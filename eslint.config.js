@@ -23,16 +23,15 @@ export default tseslint.config(
   eslint.configs.recommended,
   tseslint.configs.recommended,
   
-  reactConfigs,
+  // Global ignores
   {
-    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     ignores: [
       "**/node_modules/**",
       "**/.next/**",
       "**/out/**",
       "**/dist/**",
       "**/build/**",
-      "**/docs/static/*.js",
+      "**/docs/static/**",
       "**/demos/*/dist/**",
       "*.json",
       "*.code-workspace",
@@ -41,6 +40,10 @@ export default tseslint.config(
       "**/bundle.js.map",
       "**/*.d.ts.map",
     ],
+  },
+  reactConfigs,
+  {
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     plugins: {
       "import-x": importPlugin,
       "simple-import-sort": sisPlugin,

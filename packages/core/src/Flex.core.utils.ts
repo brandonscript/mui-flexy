@@ -89,17 +89,26 @@ const mapResponsiveObject = (
   cross: ResponsiveFlexPosition,
 ) => {
   return Object.fromEntries(
-    Object.entries(direction ?? []).map(([key, d]) => {
+    Object.entries(direction ?? {}).map(([key, d]) => {
       if (typeof d !== "string") {
         throw new Error(
           "Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }",
         );
       }
-      if (d.startsWith("column")) {
-        return [key, typeof cross === "string" ? cross : mapAlignment(cross)?.[key as keyof typeof cross]];
-      } else {
-        return [key, typeof main === "string" ? main : mapAlignment(main)?.[key as keyof typeof main]];
+
+      const target = d.startsWith("column") ? cross : main;
+      const aligned = mapAlignment(target);
+
+      if (aligned === undefined || aligned === null || typeof aligned === "string") {
+        return [key, aligned];
       }
+
+      if (Array.isArray(aligned)) {
+        const index = Number(key);
+        return [key, Number.isNaN(index) ? undefined : aligned[index]];
+      }
+
+      return [key, aligned[key as keyof typeof aligned]];
     }),
   );
 };

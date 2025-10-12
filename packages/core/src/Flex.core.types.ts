@@ -33,11 +33,6 @@ export type ResponsiveArray<T> = (T | null | undefined)[] | readonly (T | null |
 export type ResponsiveObject<T> = Partial<{ [key in Breakpoint]: T | null }>;
 export type StrictResponsiveStyleValue<T> = ResponsiveArray<T> | ResponsiveObject<T>;
 
-type FlexCommonProps = {
-  reverse?: boolean;
-  nowrap?: boolean;
-};
-
 // Generic ResponsiveStyleValue type - each version will provide their own implementation
 export type ResponsiveStyleValue<T> = T | ResponsiveArray<T> | ResponsiveObject<T>;
 
@@ -52,35 +47,23 @@ export type ResponsiveFlexPosition = ResponsiveStyleValue<
 >;
 
 // row === true
-export type FlexRowProps = FlexCommonProps & {
-  row?: true;
+export type FlexRowProps = {
+  row?: true | undefined;
   column?: false | never;
   x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
   y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+  reverse?: boolean;
+  nowrap?: boolean;
 };
 
 // column === true
-export type FlexColumnProps = FlexCommonProps & {
+export type FlexColumnProps = {
   column: true;
   row?: false | never;
   x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
   y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
-};
-
-// row is responsive, column is unknown
-type RowIsResponsive = FlexCommonProps & {
-  row: StrictResponsiveStyleValue<boolean>;
-  column?: boolean | never | StrictResponsiveStyleValue<boolean>;
-  x?: XRowAlign | XColumnAlign | ResponsiveAlign;
-  y?: YColumnAlign | YRowAlign | ResponsiveAlign;
-};
-
-// column is responsive, row is unknown
-type ColumnIsResponsive = FlexCommonProps & {
-  column: StrictResponsiveStyleValue<boolean>;
-  row?: boolean | never | StrictResponsiveStyleValue<boolean>;
-  x?: XRowAlign | XColumnAlign | ResponsiveAlign;
-  y?: YColumnAlign | YRowAlign | ResponsiveAlign;
+  reverse?: boolean;
+  nowrap?: boolean;
 };
 
 // MUI v5 - only supports root xs, sm, md, lg, xl props
@@ -154,7 +137,39 @@ export type BaseFlexProps<T extends _Any = _Any> = {
   className?: string | ((theme: T) => string);
 } & (V5GridSizeProps | V6GridSizeProps | V7GridSizeProps);
 
-export type InferFlexProps = FlexColumnProps | ColumnIsResponsive | FlexRowProps | RowIsResponsive;
+export type InferFlexProps = (
+  | {
+      row?: true | undefined;
+      column?: false | never;
+      x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
+      y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+    }
+  | {
+      row?: false | never;
+      column: true;
+      x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
+      y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
+    }
+  | {
+      row: StrictResponsiveStyleValue<boolean>;
+      column?: boolean | never | StrictResponsiveStyleValue<boolean>;
+      x?: XRowAlign | XColumnAlign | ResponsiveAlign;
+      y?: YColumnAlign | YRowAlign | ResponsiveAlign;
+      reverse?: boolean;
+      nowrap?: boolean;
+    }
+  | {
+      column: StrictResponsiveStyleValue<boolean>;
+      row?: boolean | never | StrictResponsiveStyleValue<boolean>;
+      x?: XRowAlign | XColumnAlign | ResponsiveAlign;
+      y?: YColumnAlign | YRowAlign | ResponsiveAlign;
+      reverse?: boolean;
+      nowrap?: boolean;
+    }
+) & {
+  reverse?: boolean;
+  nowrap?: boolean;
+};
 
 // restricts the props to only row
 export type OnlyRow<T> = Omit<T, "row" | "column"> & {

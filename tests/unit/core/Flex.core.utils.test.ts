@@ -717,6 +717,35 @@ describe("mapFlexProps", () => {
       flexDirection: { xs: "row", sm: "column" },
     });
   });
+
+  for (const [directionLabel, direction] of [
+    ["row-to-column", { xs: "row", md: "column" }],
+    ["column-to-row", { xs: "column", md: "row" }],
+  ] as const) {
+    Object.entries(flexMap.y).forEach(([y, mappedY]) => {
+      Object.entries(flexMap.x).forEach(([x, mappedX]) => {
+        it(`should map responsive object direction ${directionLabel} for x=${x} y=${y}`, () => {
+          const props = mapFlexProps({
+            x,
+            y,
+            flexDirection: direction,
+          } as _Any);
+
+          const isColumnFirst = direction.xs.startsWith("column");
+          const xsJustify = isColumnFirst ? mappedY : mappedX;
+          const xsAlign = isColumnFirst ? mappedX : mappedY;
+          const mdJustify = direction.md.startsWith("column") ? mappedY : mappedX;
+          const mdAlign = direction.md.startsWith("column") ? mappedX : mappedY;
+
+          expect(props).toMatchObject({
+            justifyContent: { xs: xsJustify, md: mdJustify },
+            alignItems: { xs: xsAlign, md: mdAlign },
+            flexDirection: direction,
+          });
+        });
+      });
+    });
+  }
 });
 
 describe("verifyGridSizeProps", () => {

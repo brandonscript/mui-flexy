@@ -74,21 +74,29 @@ const stringOrArrayValue = (value, index)=>{
     }
 };
 const mapResponsiveObject = (direction, main, cross)=>{
-    return Object.fromEntries(Object.entries(direction ?? []).map(([key, d])=>{
+    return Object.fromEntries(Object.entries(direction ?? {}).map(([key, d])=>{
         if (typeof d !== "string") {
             throw new Error("Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }");
         }
-        if (d.startsWith("column")) {
+        const target = d.startsWith("column") ? cross : main;
+        const aligned = mapAlignment(target);
+        if (aligned === undefined || aligned === null || typeof aligned === "string") {
             return [
                 key,
-                typeof cross === "string" ? cross : mapAlignment(cross)?.[key]
-            ];
-        } else {
-            return [
-                key,
-                typeof main === "string" ? main : mapAlignment(main)?.[key]
+                aligned
             ];
         }
+        if (Array.isArray(aligned)) {
+            const index = Number(key);
+            return [
+                key,
+                Number.isNaN(index) ? undefined : aligned[index]
+            ];
+        }
+        return [
+            key,
+            aligned[key]
+        ];
     }));
 };
 const resolveAlignment = (direction, x, y)=>{
