@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy",
-  "version": "2.0.3",
+  "version": "2.0.4-rc.0",
   "description": "A flexbox convenience component for Material UI Box and Grid with handy shorthand props",
   "keywords": [
     "react",
@@ -65,7 +65,11 @@
     "test:unit:v5": "yarn jest --selectProjects=v5-tests",
     "test:unit:v6": "yarn jest --selectProjects=v6-tests",
     "test:unit:v7": "yarn jest --selectProjects=v7-tests",
-    "test:types": "yarn tsc --noEmit -p tests/unit/core/tsconfig.json && yarn tsc --noEmit -p tests/unit/v5/tsconfig.json && yarn tsc --noEmit -p tests/unit/v6/tsconfig.json && yarn tsc --noEmit -p tests/unit/v7/tsconfig.json",
+    "test:types:core": "yarn tsc --noEmit -p tests/unit/core/tsconfig.json",
+    "test:types:v5": "yarn tsc --noEmit -p tests/unit/v5/tsconfig.json",
+    "test:types:v6": "yarn tsc --noEmit -p tests/unit/v6/tsconfig.json",
+    "test:types:v7": "yarn tsc --noEmit -p tests/unit/v7/tsconfig.json",
+    "test:types": "yarn test:types:core && yarn test:types:v5 && yarn test:types:v6 && yarn test:types:v7",
     "typecheck": "yarn workspaces foreach -p -A run typecheck",
     "set-version": "./scripts/version.sh"
   },
