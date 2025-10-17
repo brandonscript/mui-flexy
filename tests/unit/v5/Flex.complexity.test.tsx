@@ -1,5 +1,5 @@
-import { Menu, MenuList, type MenuListProps, type MenuProps, styled } from "@mui/material";
-import { FlexBox } from "@mui-flexy/v5";
+import { CardContent, Menu, MenuList, type MenuListProps, type MenuProps, styled } from "@mui/material";
+import { FlexBox, FlexColumnBox, FlexRowBox } from "@mui-flexy/v5";
 import { type FlexBoxColumnProps, type FlexBoxProps } from "@mui-flexy/v5";
 import type * as React from "react";
 import { type ComponentProps, forwardRef, type PropsWithChildren } from "react";
@@ -54,9 +54,9 @@ const StyledSelect = forwardRef<
   ComponentProps<typeof StyledSelectContainer> & {
     button?: React.ReactNode;
   }
->(({ button, ..._props }, ref) => {
+>(({ button, ...props }, ref) => {
   return (
-    <StyledSelectContainer component={FlexBox} column ref={ref}>
+    <StyledSelectContainer component={FlexBox} column {...props} ref={ref}>
       {button}
     </StyledSelectContainer>
   );
@@ -90,6 +90,28 @@ describe("StyledMenu", () => {
     };
 
     expect(() => StyledMenu({ id: "test", menuProps, ...menuListFlexProps })).not.toThrow();
+  });
+});
+
+describe("Flex[Orientation]Box integration", () => {
+  it("allows CardContent to use all FlexBox variants as its component", () => {
+    const AnyCard = () => (
+      <CardContent component={FlexBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+    const RowCard = () => (
+      <CardContent component={FlexRowBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+    const ColumnCard = () => (
+      <CardContent component={FlexColumnBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+
+    [AnyCard, RowCard, ColumnCard].forEach((factory) => expect(factory).toBeDefined());
   });
 });
 

@@ -1,9 +1,10 @@
+import CardContent from "@mui/material/CardContent";
 import type { MenuProps as MuiMenuProps } from "@mui/material/Menu";
 import Menu from "@mui/material/Menu";
 import type { MenuListProps as MuiMenuListProps } from "@mui/material/MenuList";
 import MenuList from "@mui/material/MenuList";
 import { styled as muiStyled } from "@mui/material/styles";
-import { FlexBox } from "@mui-flexy/v7";
+import { FlexBox, FlexColumnBox, FlexRowBox } from "@mui-flexy/v7";
 import { type FlexBoxColumnProps, type FlexBoxProps } from "@mui-flexy/v7";
 import type React from "react";
 import { type ComponentProps, forwardRef, type PropsWithChildren } from "react";
@@ -97,6 +98,28 @@ describe("StyledMenu", () => {
     };
 
     expect(() => StyledMenu({ id: "test", menuProps, ...menuListFlexProps })).not.toThrow();
+  });
+});
+
+describe("Flex[Orientation]Box integration", () => {
+  it("allows CardContent to use all FlexBox variants as its component", () => {
+    const AnyCard = () => (
+      <CardContent component={FlexBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+    const RowCard = () => (
+      <CardContent component={FlexRowBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+    const ColumnCard = () => (
+      <CardContent component={FlexColumnBox} x="center" y="center">
+        <div />
+      </CardContent>
+    );
+
+    [AnyCard, RowCard, ColumnCard].forEach((factory) => expect(factory).toBeDefined());
   });
 });
 

@@ -6,7 +6,13 @@ import type { FlexOrientation } from "@mui-flexy/core";
 import { mapFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
-import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexBoxTypeMap } from "./FlexBox.types";
+import type {
+  FlexBoxColumnProps,
+  FlexBoxProps,
+  FlexBoxRowProps,
+  FlexBoxTypeMap,
+  FlexFixedOrientationTypeMap,
+} from "./FlexBox.types";
 
 export type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps };
 
@@ -20,12 +26,17 @@ const createFlexBox = <
   D extends React.ElementType = "div",
   P = {},
   T extends object = MaterialTheme,
+  R extends object = O extends "row"
+    ? OverridableComponent<FlexFixedOrientationTypeMap<"row">>
+    : O extends "column"
+      ? OverridableComponent<FlexFixedOrientationTypeMap<"column">>
+      : OverridableComponent<FlexBoxTypeMap<O, P, D, T>>,
 >(
   defaultProps: FlexBoxProps<O, D, P> = {} as FlexBoxProps<O, D, P>,
 ) =>
   forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => (
     <MuiBox {...defaultProps} {...mapFlexProps(props, ref, "Box")} />
-  )) as OverridableComponent<FlexBoxTypeMap<O, P, D, T>>;
+  )) as R;
 export const FlexBox = createFlexBox();
 export const FlexRowBox = createFlexBox<"row">({ row: true });
 export const FlexColumnBox = createFlexBox<"column">({ column: true });

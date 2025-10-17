@@ -1,7 +1,7 @@
 import { Box, styled, type SxProps, type Theme, Typography } from "@mui/material";
 import { major as muiVersion } from "@mui/material/version";
 import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps } from "@mui-flexy/v6";
-import { FlexBox } from "@mui-flexy/v6";
+import { FlexBox, FlexColumnBox, FlexRowBox } from "@mui-flexy/v6";
 
 console.log("Tests running with MUI version:", muiVersion);
 
@@ -128,6 +128,24 @@ const ColumnTests = [
   () => <FlexBox column="invalid-column" />,
 ];
 
+const FixedOrientationValidTests = [
+  () => <FlexRowBox />,
+  () => <FlexRowBox x="center" y="center" />,
+  () => <FlexColumnBox />,
+  () => <FlexColumnBox x="center" y="center" />,
+];
+
+const FixedOrientationInvalidTests = [
+  // @ts-expect-error
+  () => <FlexRowBox row />,
+  // @ts-expect-error
+  () => <FlexRowBox column />,
+  // @ts-expect-error
+  () => <FlexColumnBox row />,
+  // @ts-expect-error
+  () => <FlexColumnBox column />,
+];
+
 const OverrideBoxTests = [
   () => <Box component="div" />,
   () => <Box component="div" className="myClass" />,
@@ -151,6 +169,18 @@ describe("FlexBox JSX tests", () => {
 
   it("should exec ColumnTests without errors", () => {
     ColumnTests.forEach((TestComponent) => {
+      expect(() => TestComponent()).not.toThrow();
+    });
+  });
+
+  it("should exec FixedOrientationValidTests without errors", () => {
+    FixedOrientationValidTests.forEach((TestComponent) => {
+      expect(() => TestComponent()).not.toThrow();
+    });
+  });
+
+  it("should flag FixedOrientationInvalidTests", () => {
+    FixedOrientationInvalidTests.forEach((TestComponent) => {
       expect(() => TestComponent()).not.toThrow();
     });
   });

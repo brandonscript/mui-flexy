@@ -72,6 +72,16 @@ export interface FlexBoxTypeMap<
   defaultComponent: D;
 }
 
+export type FlexFixedOrientationTypeMap<
+  O extends FlexOrientation,
+  P = {},
+  D extends React.ElementType = FlexBoxTypeMap<O, P>["defaultComponent"],
+  T extends object = MaterialTheme,
+> = {
+  props: Omit<FlexBoxTypeMap<O, P, D, T>["props"], "row" | "column">;
+  defaultComponent: FlexBoxTypeMap<O, P, D, T>["defaultComponent"];
+};
+
 export type FlexBoxProps<
   O extends FlexOrientation | undefined = undefined,
   D extends React.ElementType = FlexBoxTypeMap<O>["defaultComponent"],
