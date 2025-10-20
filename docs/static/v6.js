@@ -325,8 +325,10 @@ const verifyGridSizeProps = (props, gridVersion)=>{
 // @ts-ignore
 const MuiBox = _MuiBox?.default ?? _MuiBox;
 const createFlexBox = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(MuiBox, {
-            ...defaultProps,
-            ...mapFlexProps(props, ref, "Box")
+            ...mapFlexProps({
+                ...defaultProps,
+                ...props
+            }, ref, "Box")
         }));
 const FlexBox = createFlexBox();
 const FlexRowBox = createFlexBox({
@@ -336,14 +338,12 @@ const FlexColumnBox = createFlexBox({
     column: true
 });
 
-const createFlexGrid = (defaultProps = {})=>{
-    return /*#__PURE__*/ forwardRef((props, ref)=>{
-        return /*#__PURE__*/ jsx(Grid, {
-            ...defaultProps,
-            ...mapFlexProps(verifyGridSizeProps(props, "legacy"), ref, "Grid")
-        });
-    });
-};
+const createFlexGrid = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(Grid, {
+            ...mapFlexProps(verifyGridSizeProps({
+                ...defaultProps,
+                ...props
+            }, "legacy"), ref, "Grid")
+        }));
 const FlexGrid = createFlexGrid();
 const FlexGridRow = createFlexGrid({
     row: true

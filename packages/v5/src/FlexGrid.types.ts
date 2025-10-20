@@ -1,7 +1,5 @@
-import type { GridOwnProps } from "@mui/material/Grid";
+import type { GridOwnProps } from "@mui/material/Grid/Grid";
 import type { OverrideProps } from "@mui/material/OverridableComponent";
-import type { Theme as MaterialTheme } from "@mui/material/styles";
-import type { SxProps } from "@mui/system/styleFunctionSx/styleFunctionSx";
 import {
   type FlexColumnProps,
   type FlexOrientation,
@@ -11,6 +9,12 @@ import {
   type OnlyRow,
 } from "@mui-flexy/core";
 
+type FlexGridOrientationProps<O extends FlexOrientation | undefined> = O extends "row"
+  ? OnlyRow<FlexRowProps>
+  : O extends "column"
+    ? OnlyColumn<FlexColumnProps>
+    : InferFlexProps;
+
 /**
  * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).
  */
@@ -19,12 +23,18 @@ export interface FlexGridTypeMap<
   P = {},
   D extends React.ElementType = "div",
 > {
-  props: P &
-    GridOwnProps & {
-      sx?: SxProps<MaterialTheme>;
-    } & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
+  props: P & GridOwnProps & FlexGridOrientationProps<O>;
   defaultComponent: D;
 }
+
+export type FlexGridFixedOrientationTypeMap<
+  O extends FlexOrientation,
+  P = {},
+  D extends React.ElementType = FlexGridTypeMap<O, P>["defaultComponent"],
+> = {
+  props: Omit<FlexGridTypeMap<O, P, D>["props"], "row" | "column">;
+  defaultComponent: FlexGridTypeMap<O, P, D>["defaultComponent"];
+};
 
 /**
  * @deprecated Grid will be replaced in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)).

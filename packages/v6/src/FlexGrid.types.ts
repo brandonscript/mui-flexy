@@ -11,6 +11,12 @@ import {
   type OnlyRow,
 } from "@mui-flexy/core";
 
+type FlexGridOrientationProps<O extends FlexOrientation | undefined> = O extends "row"
+  ? OnlyRow<FlexRowProps>
+  : O extends "column"
+    ? OnlyColumn<FlexColumnProps>
+    : InferFlexProps;
+
 /**
  * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)). You can migrate to `Grid2` in v6.
  */
@@ -22,9 +28,18 @@ export interface FlexGridTypeMap<
   props: P &
     GridOwnProps & {
       sx?: SxProps<MaterialTheme>;
-    } & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
+    } & FlexGridOrientationProps<O>;
   defaultComponent: D;
 }
+
+export type FlexGridFixedOrientationTypeMap<
+  O extends FlexOrientation,
+  P = {},
+  D extends React.ElementType = FlexGridTypeMap<O, P>["defaultComponent"],
+> = {
+  props: Omit<FlexGridTypeMap<O, P, D>["props"], "row" | "column">;
+  defaultComponent: FlexGridTypeMap<O, P, D>["defaultComponent"];
+};
 
 /**
  * @deprecated Grid will be replaced with Grid2 in MUI v7 (see [`Grid2`](https://mui.com/material-ui/react-grid2/)). You can migrate to `Grid2` in v6.

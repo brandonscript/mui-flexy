@@ -14,16 +14,16 @@ export const createFlexGrid = <
   P = {},
 >(
   defaultProps: FlexGridProps<O, D, P> = {} as FlexGridProps<O, D, P>,
-) => {
-  return forwardRef<GridProps["ref"], FlexGridProps<O, D, P>>((props, ref) => {
-    return (
-      <Grid
-        {...defaultProps}
-        {...mapFlexProps(verifyGridSizeProps(props as FlexGridProps<O, D, P>, "new"), ref, "Grid2")}
-      />
-    );
-  }) as OverridableComponent<FlexGridTypeMap<O, P, D>>;
-};
+) =>
+  forwardRef<GridProps["ref"], FlexGridProps<O, D, P>>((props, ref) => (
+    <Grid
+      {...mapFlexProps(
+        verifyGridSizeProps({ ...defaultProps, ...props } as FlexGridProps<O, D, P>, "new"),
+        ref,
+        "Grid2",
+      )}
+    />
+  )) as OverridableComponent<FlexGridTypeMap<O, P, D>>;
 
 export const FlexGridRow = createFlexGrid<"row">({ row: true });
 export const FlexGridColumn = createFlexGrid<"column">({ column: true });
