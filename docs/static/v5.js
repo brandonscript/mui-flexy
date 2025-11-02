@@ -3,7 +3,6 @@ import _MuiBox from '@mui/material/Box';
 import { forwardRef } from 'react';
 import Grid from '@mui/material/Grid';
 
-// @ts-ignore
 const stripUndefined = (obj)=>{
     return Object.fromEntries(Object.entries(obj).filter(([, value])=>value !== undefined));
 };
@@ -233,13 +232,13 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
     }
 };
 const mapFlexProps = (props, ref, componentName = "Box")=>{
-    const { x, y, row, column, flexDirection, reverse, nowrap, ...rest } = props;
+    const { x, y, row, column, flexDirection, reverse, wrap, ...rest } = props;
     const direction = resolveDirection(row, column, reverse, flexDirection);
-    const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
+    const flexWrap = wrap ? "wrap" : undefined;
     const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`.trim();
     const flexProps = {
         display: rest.display || "flex",
-        whiteSpace
+        flexWrap
     };
     const alignments = resolveAlignment(direction, x, y);
     return stripUndefined({

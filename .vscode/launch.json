@@ -102,6 +102,13 @@
       "command": "yarn test:unit --watch"
     },
     {
+      "name": "Test: TypeScript Types",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn typecheck"
+    },
+    {
       "type": "node",
       "name": "vscode-jest-tests.v2.mui-flexy",
       "request": "launch",

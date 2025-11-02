@@ -33,7 +33,7 @@ type FlexCase<P> = {
 };
 
 const theme = createTheme();
-const defaultStripped = ["row", "column", "x", "y", "reverse", "nowrap"];
+const defaultStripped = ["row", "column", "x", "y", "reverse", "wrap"];
 const knownShorthand = new Set([...defaultStripped, "size", "xs", "sm", "md", "lg", "xl"]);
 
 const renderWithTheme = (ui: ReactElement) => render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
@@ -130,9 +130,9 @@ const flexBoxCases: FlexCase<FlexBoxProps>[] = [
     expectStyle: { flexDirection: "column-reverse" },
   },
   {
-    name: "applies nowrap to white-space",
-    props: { row: true, nowrap: true },
-    expectStyle: { whiteSpace: "nowrap" },
+    name: "applies wrap to flexWrap",
+    props: { row: true, wrap: true },
+    expectStyle: { flexWrap: "wrap" },
   },
   {
     name: "handles responsive row arrays without leaking attributes",
@@ -143,6 +143,24 @@ const flexBoxCases: FlexCase<FlexBoxProps>[] = [
     name: "handles responsive column objects without leaking attributes",
     props: { column: { xs: true, md: false } as const },
     expectStyle: { display: "flex" },
+  },
+  {
+    name: "supports breakpoint direction shorthands via root props",
+    props: { xs: "column", md: "row" } as const,
+    expectStyle: { flexDirection: "column" },
+    strippedAttrs: [...defaultStripped, "xs", "md"],
+  },
+  {
+    name: "supports direction alias for responsive objects",
+    props: { direction: { xs: "column", sm: "row" } } as const,
+    expectStyle: { flexDirection: "column" },
+    strippedAttrs: [...defaultStripped, "direction"],
+  },
+  {
+    name: "supports direction alias for responsive arrays",
+    props: { direction: ["column", "row"] as const },
+    expectStyle: { flexDirection: "column" },
+    strippedAttrs: [...defaultStripped, "direction"],
   },
 ];
 
@@ -257,9 +275,9 @@ const flexGridRowCases: FlexCase<FlexGridRowProps>[] = [
     strippedAttrs: gridStripped,
   },
   {
-    name: "respects nowrap while stripping shorthand props",
-    props: { nowrap: true },
-    expectStyle: { whiteSpace: "nowrap" },
+    name: "respects wrap while stripping shorthand props",
+    props: { wrap: true },
+    expectStyle: { flexWrap: "wrap" },
     strippedAttrs: gridStripped,
   },
 ];

@@ -3,7 +3,7 @@ import type { MenuProps as MuiMenuProps } from "@mui/material/Menu";
 import Menu from "@mui/material/Menu";
 import type { MenuListProps as MuiMenuListProps } from "@mui/material/MenuList";
 import MenuList from "@mui/material/MenuList";
-import { styled as muiStyled } from "@mui/material/styles";
+import { styled as muiStyled, styled } from "@mui/material/styles";
 import { FlexBox, FlexColumnBox, FlexRowBox } from "@mui-flexy/v7";
 import { type FlexBoxColumnProps, type FlexBoxProps } from "@mui-flexy/v7";
 import type React from "react";
@@ -87,6 +87,36 @@ const StyledMenu = ({ children, id, menuProps, menuListFlexProps }: StyledMenuLi
   );
 };
 
+type PropsOverrideProps = FlexBoxProps & {
+  scale?: number;
+};
+
+const PropsOverrideDefaults = styled(
+  (props: PropsOverrideProps) => <FlexBox row component="section" x="center" y="center" {...props} />,
+  {
+    shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
+  },
+)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+  theme.unstable_sx({
+    opacity: 0.95,
+    transform: `scale(${scale})`,
+    willChange: "transform, opacity",
+  }),
+);
+
+const DefaultsOverrideProps = styled(
+  (props: PropsOverrideProps) => <FlexBox {...props} column component="section" x="center" y="center" />,
+  {
+    shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
+  },
+)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+  theme.unstable_sx({
+    opacity: 0.95,
+    transform: `scale(${scale})`,
+    willChange: "transform, opacity",
+  }),
+);
+
 describe("StyledMenu", () => {
   it("should render StyledSelectContainer with correct props", () => {
     const menuProps = {
@@ -120,6 +150,23 @@ describe("Flex[Orientation]Box integration", () => {
     );
 
     [AnyCard, RowCard, ColumnCard].forEach((factory) => expect(factory).toBeDefined());
+  });
+});
+
+describe("FlexBox styled clobbering cases", () => {
+  it("allows styled FlexBox props to override defaults", () => {
+    expect(
+      <PropsOverrideDefaults id="props-override-defaults">
+        <div />
+      </PropsOverrideDefaults>,
+    ).toBeDefined();
+  });
+  it("allows styled FlexBox defaults to supersede props", () => {
+    expect(
+      <DefaultsOverrideProps id="defaults-override-props">
+        <div />
+      </DefaultsOverrideProps>,
+    ).toBeDefined();
   });
 });
 

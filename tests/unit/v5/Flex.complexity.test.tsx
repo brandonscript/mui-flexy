@@ -79,6 +79,36 @@ const StyledMenu = ({ children, id, menuProps, menuListFlexProps }: StyledMenuLi
   );
 };
 
+type PropsOverrideProps = FlexBoxProps & {
+  scale?: number;
+};
+
+const PropsOverrideDefaults = styled(
+  (props: PropsOverrideProps) => <FlexBox row component="section" x="center" y="center" {...props} />,
+  {
+    shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
+  },
+)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+  theme.unstable_sx({
+    opacity: 0.95,
+    transform: `scale(${scale})`,
+    willChange: "transform, opacity",
+  }),
+);
+
+const DefaultsOverrideProps = styled(
+  (props: PropsOverrideProps) => <FlexBox {...props} column component="section" x="center" y="center" />,
+  {
+    shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
+  },
+)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+  theme.unstable_sx({
+    opacity: 0.95,
+    transform: `scale(${scale})`,
+    willChange: "transform, opacity",
+  }),
+);
+
 describe("StyledMenu", () => {
   it("should render StyledSelectContainer with correct props", () => {
     const menuProps = {
@@ -112,6 +142,23 @@ describe("Flex[Orientation]Box integration", () => {
     );
 
     [AnyCard, RowCard, ColumnCard].forEach((factory) => expect(factory).toBeDefined());
+  });
+});
+
+describe("FlexBox styled clobbering cases", () => {
+  it("allows styled FlexBox props to override defaults", () => {
+    expect(
+      <PropsOverrideDefaults id="props-override-defaults">
+        <div />
+      </PropsOverrideDefaults>,
+    ).toBeDefined();
+  });
+  it("allows styled FlexBox defaults to supersede props", () => {
+    expect(
+      <DefaultsOverrideProps id="defaults-override-props">
+        <div />
+      </DefaultsOverrideProps>,
+    ).toBeDefined();
   });
 });
 

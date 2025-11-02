@@ -884,7 +884,7 @@ var VersionApp = function(param) {
         y: "center",
         row: true,
         column: false,
-        nowrap: false,
+        wrap: false,
         reverse: false
     }), 2), flexBoxProps = _useState2[0], setFlexBoxProps = _useState2[1];
     var _useState3 = _sliced_to_array(useState({
@@ -956,7 +956,7 @@ var VersionApp = function(param) {
         if (flexBoxProps.y !== "center") propsArray.push('y="'.concat(flexBoxProps.y, '"'));
         if (flexBoxProps.row) propsArray.push("row");
         if (flexBoxProps.column) propsArray.push("column");
-        if (flexBoxProps.nowrap) propsArray.push("nowrap");
+        if (flexBoxProps.wrap) propsArray.push("wrap");
         if (flexBoxProps.reverse) propsArray.push("reverse");
         var propsString = propsArray.length > 0 ? " ".concat(propsArray.join(" ")) : "";
         return "<FlexBox".concat(propsString, ">\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : "🚤", "</span>\n</FlexBox>");
@@ -1458,16 +1458,16 @@ var VersionApp = function(param) {
                                             children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
                                                 control: /*#__PURE__*/ jsx(Material.Switch, {
                                                     size: "small",
-                                                    checked: Boolean(flexBoxProps.nowrap),
+                                                    checked: Boolean(flexBoxProps.wrap),
                                                     onChange: function(e) {
                                                         return setFlexBoxProps(function(prev) {
                                                             return _object_spread_props(_object_spread({}, prev), {
-                                                                nowrap: e.target.checked
+                                                                wrap: e.target.checked
                                                             });
                                                         });
                                                     }
                                                 }),
-                                                label: "nowrap",
+                                                label: "wrap",
                                                 sx: {
                                                     "& .MuiFormControlLabel-label": {
                                                         fontSize: "0.875rem"
@@ -1518,7 +1518,7 @@ var VersionApp = function(param) {
                                     y: flexBoxProps.y,
                                     row: flexBoxProps.row,
                                     column: flexBoxProps.column,
-                                    nowrap: flexBoxProps.nowrap,
+                                    wrap: flexBoxProps.wrap,
                                     reverse: flexBoxProps.reverse,
                                     children: [
                                         /*#__PURE__*/ jsx("span", {

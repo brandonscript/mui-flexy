@@ -1,4 +1,3 @@
-// @ts-ignore
 import type { CSSProperties } from "react";
 
 import type {
@@ -266,15 +265,15 @@ export const mapFlexProps = <P extends BaseFlexProps = BaseFlexProps>(
   ref?: React.Ref<_Any> | null,
   componentName: "Box" | "Grid" | "Grid2" = "Box",
 ) => {
-  const { x, y, row, column, flexDirection, reverse, nowrap, ...rest } = props;
+  const { x, y, row, column, flexDirection, reverse, wrap, ...rest } = props;
 
   const direction = resolveDirection(row, column, reverse, flexDirection as ResponsiveFlexDirection);
 
-  const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
+  const flexWrap = wrap ? "wrap" : undefined;
   const className =
     `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`.trim();
 
-  const flexProps = { display: rest.display || "flex", whiteSpace };
+  const flexProps = { display: rest.display || "flex", flexWrap };
   const alignments = resolveAlignment(direction, x, y);
 
   return stripUndefined({

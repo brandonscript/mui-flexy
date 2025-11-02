@@ -93,6 +93,20 @@ import { FlexBox } from "@mui-flexy/v7"; // new
 
 > And, as of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
 
+#### (Note: _Breaking change - `nowrap` prop replaced with `wrap`_)
+
+> The `nowrap` prop was incorrectly setting `whiteSpace: "nowrap"` instead of `flexWrap: "nowrap"`. Since `flexWrap: "nowrap"` is the default CSS behavior, the new `wrap` prop correctly enables flex wrapping by setting `flexWrap: "wrap"`.
+
+```jsx
+// Old
+<FlexBox nowrap={true} />
+
+// New (simple)
+<FlexBox wrap /> // Sets flexWrap: "wrap"
+// or use ResponsiveStyleValue (object or array) notation
+<FlexBox wrap={{ xs: true, md: false }} />
+```
+
 ### Installing
 
 Choose the package that matches your MUI version:
@@ -396,7 +410,7 @@ It supports `reverse` and `flex-wrap` too:
 ```
 
 ```jsx
-<FlexBox x="left" y="center" flexWrap="nowrap" />
+<FlexBox x="left" y="center" wrap />
 
 // ...is equivalent to:
 
@@ -405,7 +419,7 @@ It supports `reverse` and `flex-wrap` too:
   justifyContent: "flex-start",
   alignItems: "center",
   flexDirection: "row",
-  flexWrap: "nowrap"
+  flexWrap: "wrap"
 }} />
 ```
 

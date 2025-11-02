@@ -53,7 +53,7 @@ export type FlexRowProps = {
   x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
   y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
   reverse?: boolean;
-  nowrap?: boolean;
+  wrap?: boolean;
 };
 
 // column === true
@@ -63,7 +63,7 @@ export type FlexColumnProps = {
   x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
   y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
   reverse?: boolean;
-  nowrap?: boolean;
+  wrap?: boolean;
 };
 
 // MUI v5 - only supports root xs, sm, md, lg, xl props
@@ -119,7 +119,7 @@ export type BaseFlexProps<T extends _Any = _Any> = {
   row?: ResponsiveStyleValue<boolean> | null | undefined;
   column?: ResponsiveStyleValue<boolean> | null | undefined;
   reverse?: ResponsiveStyleValue<boolean> | null | undefined;
-  nowrap?: ResponsiveStyleValue<boolean> | null | undefined;
+  wrap?: ResponsiveStyleValue<boolean> | null | undefined;
   x?: XRowAlign | XColumnAlign | ResponsiveAlign;
   y?: YRowAlign | YColumnAlign | ResponsiveAlign;
   whiteSpace?:
@@ -156,7 +156,7 @@ export type InferFlexProps = (
       x?: XRowAlign | XColumnAlign | ResponsiveAlign;
       y?: YColumnAlign | YRowAlign | ResponsiveAlign;
       reverse?: boolean;
-      nowrap?: boolean;
+      wrap?: boolean;
     }
   | {
       column: StrictResponsiveStyleValue<boolean>;
@@ -164,11 +164,11 @@ export type InferFlexProps = (
       x?: XRowAlign | XColumnAlign | ResponsiveAlign;
       y?: YColumnAlign | YRowAlign | ResponsiveAlign;
       reverse?: boolean;
-      nowrap?: boolean;
+      wrap?: boolean;
     }
 ) & {
   reverse?: boolean;
-  nowrap?: boolean;
+  wrap?: boolean;
 };
 
 // restricts the props to only row

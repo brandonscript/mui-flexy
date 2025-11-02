@@ -438,7 +438,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
     y: "center",
     row: true,
     column: false,
-    nowrap: false,
+    wrap: false,
     reverse: false,
   });
 
@@ -498,7 +498,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
     if (flexBoxProps.y !== "center") propsArray.push(`y="${flexBoxProps.y}"`);
     if (flexBoxProps.row) propsArray.push("row");
     if (flexBoxProps.column) propsArray.push("column");
-    if (flexBoxProps.nowrap) propsArray.push("nowrap");
+    if (flexBoxProps.wrap) propsArray.push("wrap");
     if (flexBoxProps.reverse) propsArray.push("reverse");
 
     const propsString = propsArray.length > 0 ? ` ${propsArray.join(" ")}` : "";
@@ -864,11 +864,11 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                     control={
                       <Material.Switch
                         size="small"
-                        checked={Boolean(flexBoxProps.nowrap)}
-                        onChange={(e: any) => setFlexBoxProps((prev) => ({ ...prev, nowrap: e.target.checked }))}
+                        checked={Boolean(flexBoxProps.wrap)}
+                        onChange={(e: any) => setFlexBoxProps((prev) => ({ ...prev, wrap: e.target.checked }))}
                       />
                     }
-                    label="nowrap"
+                    label="wrap"
                     sx={{
                       "& .MuiFormControlLabel-label": {
                         fontSize: "0.875rem",
@@ -911,7 +911,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                 y={flexBoxProps.y}
                 row={flexBoxProps.row}
                 column={flexBoxProps.column}
-                nowrap={flexBoxProps.nowrap}
+                wrap={flexBoxProps.wrap}
                 reverse={flexBoxProps.reverse}
               >
                 <span>{isColumn ? columnEmoji : rowEmoji}</span>

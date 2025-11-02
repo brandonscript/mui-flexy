@@ -22,7 +22,7 @@ import type { ComponentType, ReactElement } from "react";
 type _Any = any;
 
 type StyleExpectations = Partial<
-  Pick<CSSStyleDeclaration, "display" | "flexDirection" | "justifyContent" | "alignItems" | "whiteSpace">
+  Pick<CSSStyleDeclaration, "display" | "flexDirection" | "justifyContent" | "alignItems" | "flexWrap">
 >;
 
 type FlexCase<P> = {
@@ -33,7 +33,7 @@ type FlexCase<P> = {
 };
 
 const theme = createTheme();
-const defaultStripped = ["row", "column", "x", "y", "reverse", "nowrap"];
+const defaultStripped = ["row", "column", "x", "y", "reverse", "wrap"];
 const knownShorthand = new Set([...defaultStripped, "xs", "sm", "md", "lg", "xl"]);
 
 const renderWithTheme = (ui: ReactElement) => render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
@@ -127,9 +127,9 @@ const flexBoxCases: FlexCase<FlexBoxProps>[] = [
     expectStyle: { flexDirection: "column-reverse" },
   },
   {
-    name: "applies nowrap to white-space",
-    props: { row: true, nowrap: true },
-    expectStyle: { whiteSpace: "nowrap" },
+    name: "applies wrap to flexWrap",
+    props: { row: true, wrap: true },
+    expectStyle: { flexWrap: "wrap" },
   },
   {
     name: "handles responsive row arrays without leaking attributes",
@@ -141,6 +141,8 @@ const flexBoxCases: FlexCase<FlexBoxProps>[] = [
     props: { column: { xs: true, md: false } as const },
     expectStyle: { display: "flex" },
   },
+  // Note: breakpoint direction shorthands and direction alias are not supported in v5
+  // These features are only available in v6 and v7
 ];
 
 describe("FlexBox rendered output", () => {
@@ -254,9 +256,9 @@ const flexGridRowCases: FlexCase<FlexGridRowProps>[] = [
     strippedAttrs: gridStripped,
   },
   {
-    name: "respects nowrap while stripping shorthand props",
-    props: { nowrap: true },
-    expectStyle: { whiteSpace: "nowrap" },
+    name: "respects wrap while stripping shorthand props",
+    props: { wrap: true },
+    expectStyle: { flexWrap: "wrap" },
     strippedAttrs: gridStripped,
   },
 ];

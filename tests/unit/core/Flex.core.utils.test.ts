@@ -724,7 +724,7 @@ describe("mapFlexProps", () => {
   ] as const) {
     Object.entries(flexMap.y).forEach(([y, mappedY]) => {
       Object.entries(flexMap.x).forEach(([x, mappedX]) => {
-        it(`should map responsive object direction ${directionLabel} for x=${x} y=${y}`, () => {
+        it(`should map ${directionLabel} for x=${x} y=${y}`, () => {
           const props = mapFlexProps({
             x,
             y,
@@ -746,6 +746,432 @@ describe("mapFlexProps", () => {
       });
     });
   }
+
+  it("should treat breakpoint root props as direction shorthands", () => {
+    const props = mapFlexProps({
+      xs: "column",
+      md: "row",
+      x: { xs: "center", md: "right" },
+      y: { xs: "top", md: "bottom" },
+    } as _Any);
+    expect(props.flexDirection).toMatchObject({ xs: "column", md: "row" });
+    expect(props.justifyContent).toMatchObject({ xs: "flex-start", md: "flex-end" });
+    expect(props.alignItems).toMatchObject({ xs: "center", md: "flex-end" });
+  });
+
+  it("should accept direction alias as equivalent to flexDirection", () => {
+    const props = mapFlexProps({
+      direction: { xs: "column", sm: "row" },
+      x: "center",
+      y: "bottom",
+    } as _Any);
+
+    expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row" });
+    expect(props.justifyContent).toMatchObject({ xs: "flex-end", sm: "center" });
+    expect(props.alignItems).toMatchObject({ xs: "center", sm: "flex-end" });
+  });
+
+  it("should handle direction alias arrays", () => {
+    const props = mapFlexProps({
+      direction: ["column", "row"],
+      x: ["center", "space-between"],
+      y: ["top", "bottom"],
+    } as _Any);
+
+    expect(props.flexDirection).toMatchObject(["column", "row"]);
+    expect(props.justifyContent).toMatchObject(["flex-start", "space-between"]);
+    expect(props.alignItems).toMatchObject(["center", "flex-end"]);
+  });
+});
+
+describe("breakpoint direction shorthands", () => {
+  const breakpoints = ["xs", "sm", "md", "lg", "xl"] as const;
+  const directionValues = ["row", "column", "row-reverse", "column-reverse"] as const;
+
+  describe("single breakpoint direction", () => {
+    breakpoints.forEach((bp) => {
+      directionValues.forEach((dir) => {
+        it(`should handle ${bp}="${dir}" as direction shorthand`, () => {
+          const props = mapFlexProps({
+            [bp]: dir,
+            x: "center",
+            y: "bottom",
+          } as _Any);
+
+          expect(props.flexDirection).toBe(dir);
+          expect(props[bp]).toBeUndefined(); // should be stripped from output
+        });
+      });
+    });
+  });
+
+  describe("multiple breakpoint directions", () => {
+    it("should handle xs and sm breakpoint directions", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        x: "center",
+        y: "top",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row" });
+      expect(props.xs).toBeUndefined();
+      expect(props.sm).toBeUndefined();
+    });
+
+    it("should handle all breakpoints with direction values", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        md: "column-reverse",
+        lg: "row-reverse",
+        xl: "row",
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({
+        xs: "column",
+        sm: "row",
+        md: "column-reverse",
+        lg: "row-reverse",
+        xl: "row",
+      });
+    });
+
+    it("should handle breakpoint directions with responsive x/y props", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        md: "row",
+        x: { xs: "left", md: "right" },
+        y: { xs: "top", md: "bottom" },
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", md: "row" });
+      expect(props.justifyContent).toMatchObject({ xs: "flex-start", md: "flex-end" });
+      expect(props.alignItems).toMatchObject({ xs: "flex-start", md: "flex-end" });
+    });
+
+    it("should handle breakpoint directions with reverse prop", () => {
+      const props = mapFlexProps({
+        xs: "row",
+        md: "column",
+        reverse: true,
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "row-reverse", md: "column-reverse" });
+    });
+
+    it("should handle breakpoint directions mixed with row/column props", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        row: { md: true },
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      // Breakpoint props should take precedence over row/column for those breakpoints
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row", md: "row" });
+    });
+  });
+
+  describe("breakpoint direction edge cases", () => {
+    it("should handle breakpoint direction with string x/y alignment", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        x: "left",
+        y: "top",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row" });
+      // xs is column, so y maps to justifyContent and x to alignItems
+      expect(props.justifyContent).toMatchObject({ xs: "flex-start", sm: "flex-start" });
+      expect(props.alignItems).toMatchObject({ xs: "flex-start", sm: "flex-start" });
+    });
+
+    it("should handle breakpoint direction with array x/y alignment", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        x: ["left", "center"],
+        y: ["top", "bottom"],
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row" });
+    });
+
+    it("should strip breakpoint direction props from output", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        sm: "row",
+        md: "column",
+        lg: "row",
+        xl: "column",
+        className: "test-class",
+      } as _Any);
+
+      expect(props.xs).toBeUndefined();
+      expect(props.sm).toBeUndefined();
+      expect(props.md).toBeUndefined();
+      expect(props.lg).toBeUndefined();
+      expect(props.xl).toBeUndefined();
+      expect(props.className).toContain("test-class");
+    });
+
+    it("should handle breakpoint direction when combined with flexDirection", () => {
+      const props = mapFlexProps({
+        xs: "column",
+        md: "row",
+        flexDirection: { lg: "column-reverse", xl: "row-reverse" },
+      } as _Any);
+
+      // Breakpoint root props should take precedence over flexDirection for those breakpoints
+      expect(props.flexDirection).toMatchObject({
+        xs: "column",
+        md: "row",
+        lg: "column-reverse",
+        xl: "row-reverse",
+      });
+    });
+  });
+});
+
+describe("direction alias", () => {
+  describe("direction alias primitive values", () => {
+    const directions = ["row", "column", "row-reverse", "column-reverse"] as const;
+
+    directions.forEach((dir) => {
+      it(`should handle direction="${dir}" as flexDirection equivalent`, () => {
+        const props = mapFlexProps({
+          direction: dir,
+          x: "center",
+          y: "bottom",
+        } as _Any);
+
+        expect(props.flexDirection).toBe(dir);
+        expect(props.direction).toBeUndefined(); // should be stripped
+      });
+    });
+
+    directions.forEach((dir) => {
+      it(`should handle direction="${dir}" with reverse prop`, () => {
+        const props = mapFlexProps({
+          direction: dir,
+          reverse: true,
+        } as _Any);
+
+        if (dir === "row" || dir === "column") {
+          expect(props.flexDirection).toBe(`${dir}-reverse`);
+        } else {
+          // Already has -reverse, should not double reverse
+          expect(props.flexDirection).toBe(dir);
+        }
+      });
+    });
+  });
+
+  describe("direction alias array values", () => {
+    it("should handle direction array with matching x/y arrays", () => {
+      const props = mapFlexProps({
+        direction: ["row", "column", "row"],
+        x: ["left", "center", "right"],
+        y: ["top", "bottom", "center"],
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject(["row", "column", "row"]);
+      expect(props.justifyContent).toMatchObject(["flex-start", "flex-end", "flex-end"]);
+      expect(props.alignItems).toMatchObject(["flex-start", "center", "center"]);
+    });
+
+    it("should handle direction array with string x/y", () => {
+      const props = mapFlexProps({
+        direction: ["column", "row", "column-reverse"],
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject(["column", "row", "column-reverse"]);
+      // String x/y should be applied consistently
+      expect(props.justifyContent).toMatchObject(["flex-end", "center", "flex-end"]);
+    });
+
+    it("should handle direction array with reverse prop", () => {
+      const props = mapFlexProps({
+        direction: ["row", "column"],
+        reverse: true,
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject(["row-reverse", "column-reverse"]);
+    });
+  });
+
+  describe("direction alias object values", () => {
+    it("should handle direction object with matching x/y objects", () => {
+      const props = mapFlexProps({
+        direction: { xs: "column", sm: "row", md: "column-reverse" },
+        x: { xs: "left", sm: "center", md: "right" },
+        y: { xs: "top", sm: "bottom", md: "center" },
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row", md: "column-reverse" });
+      expect(props.justifyContent).toMatchObject({ xs: "flex-start", sm: "center", md: "center" });
+      expect(props.alignItems).toMatchObject({ xs: "flex-start", sm: "flex-end", md: "flex-end" });
+    });
+
+    it("should handle direction object with string x/y", () => {
+      const props = mapFlexProps({
+        direction: { xs: "column", md: "row", xl: "row-reverse" },
+        x: "center",
+        y: "top",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "column", md: "row", xl: "row-reverse" });
+      expect(props.justifyContent).toMatchObject({ xs: "flex-start", md: "center", xl: "center" });
+    });
+
+    it("should handle direction object with array x/y", () => {
+      const props = mapFlexProps({
+        direction: { xs: "row", sm: "column" },
+        x: ["left", "center"],
+        y: ["top", "bottom"],
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "row", sm: "column" });
+    });
+
+    it("should handle direction object with reverse prop", () => {
+      const props = mapFlexProps({
+        direction: { xs: "row", sm: "column", md: "row" },
+        reverse: true,
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "row-reverse", sm: "column-reverse", md: "row-reverse" });
+    });
+
+    it("should handle direction object with all breakpoints", () => {
+      const props = mapFlexProps({
+        direction: { xs: "column", sm: "row", md: "column", lg: "row", xl: "column" },
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({
+        xs: "column",
+        sm: "row",
+        md: "column",
+        lg: "row",
+        xl: "column",
+      });
+    });
+  });
+
+  describe("direction alias interactions", () => {
+    it("should prioritize direction over flexDirection", () => {
+      const props = mapFlexProps({
+        direction: "column",
+        flexDirection: "row",
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toBe("column");
+    });
+
+    it("should prioritize direction over row/column props", () => {
+      const props = mapFlexProps({
+        direction: "column",
+        row: true,
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toBe("column");
+    });
+
+    it("should handle direction with row/column in responsive objects", () => {
+      const props = mapFlexProps({
+        direction: { xs: "column", md: "row" },
+        row: { sm: true },
+        column: { lg: true },
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      // direction should take precedence for xs and md
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row", md: "row", lg: "column" });
+    });
+
+    it("should strip direction prop from output", () => {
+      const props = mapFlexProps({
+        direction: "row",
+        className: "test-class",
+      } as _Any);
+
+      expect(props.direction).toBeUndefined();
+      expect(props.className).toContain("test-class");
+    });
+  });
+
+  describe("direction alias edge cases", () => {
+    it("should handle direction with breakpoint root props", () => {
+      const props = mapFlexProps({
+        direction: { xs: "column", sm: "row" },
+        md: "column",
+        lg: "row",
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      // Breakpoint root props should take precedence for md and lg
+      expect(props.flexDirection).toMatchObject({ xs: "column", sm: "row", md: "column", lg: "row" });
+    });
+
+    it("should handle direction with CSS base values", () => {
+      const props = mapFlexProps({
+        direction: "inherit",
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toBe("inherit");
+    });
+
+    it("should handle direction object with mixed valid and CSS base values", () => {
+      const props = mapFlexProps({
+        direction: { xs: "row", sm: "inherit", md: "column", lg: "initial" },
+        x: "center",
+        y: "bottom",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "row", sm: "inherit", md: "column", lg: "initial" });
+    });
+
+    it("should handle direction with wrap prop", () => {
+      const props = mapFlexProps({
+        direction: "column",
+        wrap: true,
+      } as _Any);
+
+      expect(props.flexDirection).toBe("column");
+      expect(props.flexWrap).toBe("wrap");
+    });
+
+    it("should handle direction with className and other props", () => {
+      const props = mapFlexProps({
+        direction: { xs: "row", md: "column" },
+        className: "custom-class",
+        display: "flex",
+        x: "center",
+        y: "top",
+      } as _Any);
+
+      expect(props.flexDirection).toMatchObject({ xs: "row", md: "column" });
+      expect(props.className).toContain("custom-class");
+      expect(props.display).toBe("flex");
+    });
+  });
 });
 
 describe("verifyGridSizeProps", () => {
@@ -904,7 +1330,7 @@ describe("verifyGridSizeProps", () => {
       md: 6,
       lg: null,
       xl: 4,
-      nowrap: false,
+      wrap: false,
     };
     const result = verifyGridSizeProps(props, "legacy");
     expect(result).toEqual({
@@ -913,7 +1339,7 @@ describe("verifyGridSizeProps", () => {
       md: 6,
       lg: null,
       xl: 4,
-      nowrap: false,
+      wrap: false,
     });
   });
 
@@ -924,14 +1350,14 @@ describe("verifyGridSizeProps", () => {
       md: 6,
       lg: null,
       xl: undefined,
-      nowrap: true,
+      wrap: true,
     };
     const result = verifyGridSizeProps(props, "legacy");
     expect(result).toEqual({
       xs: null,
       md: 6,
       lg: null,
-      nowrap: true,
+      wrap: true,
     });
   });
 

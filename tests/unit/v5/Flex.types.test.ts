@@ -290,4 +290,24 @@ describe("Flex.types", () => {
       expect(columnWhenRow).toBe(true);
     }
   });
+
+  it("should support wrap prop", () => {
+    const flexBoxWrapTrueProps: FlexBoxProps = {
+      wrap: true,
+    };
+    const flexBoxWrapFalseProps: FlexBoxProps = {
+      wrap: false,
+    };
+    const flexGridWrapTrueProps: FlexGridProps = {
+      wrap: true,
+    };
+    const flexGridWrapFalseProps: FlexGridProps = {
+      wrap: false,
+    };
+
+    expect(flexBoxWrapTrueProps).toBeDefined();
+    expect(flexBoxWrapFalseProps).toBeDefined();
+    expect(flexGridWrapTrueProps).toBeDefined();
+    expect(flexGridWrapFalseProps).toBeDefined();
+  });
 });
