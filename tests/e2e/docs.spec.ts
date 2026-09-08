@@ -139,10 +139,11 @@ test.describe("Documentation", () => {
   test("should display MUI version buttons", async ({ page }) => {
     await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
 
-    // Check that all three version buttons are present
+    // Check that all version buttons are present
     await expect(page.locator('button:has-text("MUI v5")')).toBeVisible();
     await expect(page.locator('button:has-text("MUI v6")')).toBeVisible();
     await expect(page.locator('button:has-text("MUI v7")')).toBeVisible();
+    await expect(page.locator('button:has-text("MUI v9")')).toBeVisible();
 
     // Check that v7 is selected by default
     await expect(page.locator('button:has-text("MUI v7")')).toHaveClass(/\bMuiButton-textPrimary\b/);
@@ -315,6 +316,30 @@ test.describe("Documentation", () => {
     await page.waitForTimeout(1000);
 
     // Verify no critical errors in console
+    const criticalErrors = consoleErrors.filter(
+      (error) =>
+        !error.includes("Warning:") && !error.includes("favicon") && !error.includes("Download the React DevTools"),
+    );
+    expect(criticalErrors).toHaveLength(0);
+  });
+
+  test("should load MUI v9 tab", async ({ page }) => {
+    await page.waitForSelector('button:has-text("MUI v9")', { timeout: 10000 });
+
+    const consoleErrors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") {
+        consoleErrors.push(msg.text());
+      }
+    });
+
+    await page.locator('button:has-text("MUI v9")').click();
+
+    await expect(page.locator("h1")).toContainText("MUI v9 + mui-flexy");
+    await expect(page.locator("h6").first()).toContainText("Compatible with @mui/material v9");
+
+    await page.waitForTimeout(1000);
+
     const criticalErrors = consoleErrors.filter(
       (error) =>
         !error.includes("Warning:") && !error.includes("favicon") && !error.includes("Download the React DevTools"),

@@ -17,7 +17,7 @@ export const createFlexGrid = <
 ) =>
   forwardRef<GridProps["ref"], FlexGridProps<O, D, P>>((props, ref) => (
     <Grid
-      {...mapFlexProps(
+      {...mapFlexProps<FlexGridProps<O, D, P>, GridProps>(
         verifyGridSizeProps({ ...defaultProps, ...props } as FlexGridProps<O, D, P>, "new"),
         ref,
         "Grid2",

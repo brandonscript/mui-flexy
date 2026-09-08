@@ -4,8 +4,14 @@ import Menu from "@mui/material/Menu";
 import type { MenuListProps as MuiMenuListProps } from "@mui/material/MenuList";
 import MenuList from "@mui/material/MenuList";
 import { styled as muiStyled, styled } from "@mui/material/styles";
-import { FlexBox, FlexColumnBox, FlexRowBox } from "@mui-flexy/v7";
-import { type FlexBoxColumnProps, type FlexBoxProps } from "@mui-flexy/v7";
+import {
+  FlexBox,
+  type FlexBoxColumnProps,
+  type FlexBoxProps,
+  type FlexBoxRowProps,
+  FlexColumnBox,
+  FlexRowBox,
+} from "@mui-flexy/v7";
 import type React from "react";
 import { type ComponentProps, forwardRef, type PropsWithChildren } from "react";
 
@@ -87,16 +93,23 @@ const StyledMenu = ({ children, id, menuProps, menuListFlexProps }: StyledMenuLi
   );
 };
 
-type PropsOverrideProps = FlexBoxProps & {
-  scale?: number;
-};
-
-const PropsOverrideDefaults = styled(
-  (props: PropsOverrideProps) => <FlexBox row component="section" x="center" y="center" {...props} />,
+// Ideally if you know this is a row FlexBox, you would use the FlexBoxRowProps type instead
+// e.g type PropsOverrideProps = FlexBoxRowProps & { scale?: number };
+const PropsOverrideDefaultsAgnostic = styled(
+  // In lieu of using FlexBoxRowProps, you can ignore the strict type restrictions by using the agnostic prop
+  (
+    props: FlexBoxProps & {
+      scale?: number;
+    },
+  ) => <FlexBox row component="section" x="center" y="center" {...props} agnostic />,
   {
     shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
   },
-)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+)<
+  FlexBoxProps & {
+    scale?: number;
+  }
+>(({ theme, scale = 1 }) =>
   theme.unstable_sx({
     opacity: 0.95,
     transform: `scale(${scale})`,
@@ -104,17 +117,39 @@ const PropsOverrideDefaults = styled(
   }),
 );
 
-const DefaultsOverrideProps = styled(
-  (props: PropsOverrideProps) => <FlexBox {...props} column component="section" x="center" y="center" />,
+const PropsOverrideDefaults = styled(
+  // @ts-expect-error
+  (props: FlexBoxProps & { scale?: number }) => <FlexBox row component="section" x="center" y="center" {...props} />,
   {
     shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
   },
-)<PropsOverrideProps>(({ theme, scale = 1 }) =>
+)<FlexBoxProps & { scale?: number }>(({ theme, scale = 1 }) =>
   theme.unstable_sx({
     opacity: 0.95,
     transform: `scale(${scale})`,
     willChange: "transform, opacity",
   }),
+);
+const _SpecifyOrientationWhenOverridingDefaults = (props: FlexBoxRowProps & { scale?: number }) => (
+  <FlexRowBox component="section" x="center" y="center" {...props} />
+);
+
+const DefaultsOverrideProps = styled(
+  // @ts-expect-error
+  (props: FlexBoxProps & { scale?: number }) => <FlexBox {...props} column component="section" x="center" y="center" />,
+  {
+    shouldForwardProp: (prop) => !["scale"].includes(String(prop)),
+  },
+)<FlexBoxProps & { scale?: number }>(({ theme, scale = 1 }) =>
+  theme.unstable_sx({
+    opacity: 0.95,
+    transform: `scale(${scale})`,
+    willChange: "transform, opacity",
+  }),
+);
+
+const _SpecifyOrientationWhenOverridingProps = (props: FlexBoxColumnProps & { scale?: number }) => (
+  <FlexColumnBox {...props} component="section" x="center" y="center" />
 );
 
 describe("StyledMenu", () => {
@@ -154,6 +189,13 @@ describe("Flex[Orientation]Box integration", () => {
 });
 
 describe("FlexBox styled clobbering cases", () => {
+  it("allows using agnostic prop to ignore orientation restrictions", () => {
+    expect(
+      <PropsOverrideDefaultsAgnostic id="props-override-defaults-agnostic">
+        <div />
+      </PropsOverrideDefaultsAgnostic>,
+    ).toBeDefined();
+  });
   it("allows styled FlexBox props to override defaults", () => {
     expect(
       <PropsOverrideDefaults id="props-override-defaults">

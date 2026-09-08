@@ -34,9 +34,9 @@ const createFlexBox = <
 >(
   defaultProps: FlexBoxProps<O, D, P> = {} as FlexBoxProps<O, D, P>,
 ) =>
-  forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => (
-    <MuiBox {...mapFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box")} />
-  )) as R;
+  forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => {
+    return <MuiBox {...mapFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box")} />;
+  }) as R;
 export const FlexBox = createFlexBox();
 export const FlexRowBox = createFlexBox<"row">({ row: true });
 export const FlexColumnBox = createFlexBox<"column">({ column: true });

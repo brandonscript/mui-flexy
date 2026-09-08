@@ -1,53 +1,11 @@
 import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexGridProps } from "@mui-flexy/v7";
 
-describe("Flex.types", () => {
-  it("should support FlexBoxProps and FlexGridProps along with standard CSS props", () => {
-    const flexBoxProps: FlexBoxProps = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-    const _legacyFlexGridProps: FlexGridProps = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
-      // @ts-expect-error
-      xs: 12,
-      // @ts-expect-error
-      sm: 6,
-      // @ts-expect-error
-      md: 4,
-      // @ts-expect-error
-      lg: 3,
-      // @ts-expect-error
-      xl: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
+import { runCommonTypesTests, test_standardCssProps } from "../shared/Flex.types.test-shared";
 
-    const flexGridProps: FlexGridProps = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
+describe("v7: Flex.types", () => {
+  runCommonTypesTests<FlexGridProps>({
+    createFlexGridProps: (base) => ({
+      ...base,
       size: {
         xs: 12,
         sm: 6,
@@ -55,15 +13,45 @@ describe("Flex.types", () => {
         lg: 3,
         xl: 2,
       },
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
+    }),
+  });
+
+  it("should reject legacy Grid props on FlexGridProps", () => {
+    const flexBoxProps: FlexBoxProps = {
+      ...test_standardCssProps,
+    } as FlexBoxProps;
+
+    const _legacyFlexGridProps: FlexGridProps = {
+      ...test_standardCssProps,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      item: true,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      zeroMinWidth: true,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      xs: 12,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      sm: 6,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      md: 4,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      lg: 3,
+      // @ts-expect-error - FlexGridProps in v7 uses Grid2 API and should not accept legacy Grid props
+      xl: 2,
     };
 
+    const flexGridProps: FlexGridProps = {
+      ...test_standardCssProps,
+      size: {
+        xs: 12,
+        sm: 6,
+        md: 4,
+        lg: 3,
+        xl: 2,
+      },
+    } as FlexGridProps;
+
     expect(flexBoxProps).toBeDefined();
+    expect(_legacyFlexGridProps).toBeDefined();
     expect(flexGridProps).toBeDefined();
   });
 
@@ -234,46 +222,6 @@ describe("Flex.types", () => {
     }
   });
 
-  it("should support responsive style props", () => {
-    const flexBoxProps: FlexBoxProps = {
-      alignItems: ["center", "flex-start"],
-      row: true,
-      justifyContent: { xs: "center", sm: "flex-start" },
-      flexWrap: "nowrap",
-      gap: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-    const flexGridProps: FlexGridProps = {
-      alignItems: ["center", "flex-start"],
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
-      size: {
-        xs: 12,
-        sm: 6,
-        md: 4,
-        lg: 3,
-        xl: 2,
-      },
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-
-    expect(flexBoxProps).toBeDefined();
-    expect(flexGridProps).toBeDefined();
-  });
-
   it("should allow explicit usage of orientation-based props", () => {
     const flexBoxRowProps = {} as FlexBoxRowProps;
     const fleXColumnAlign = {} as FlexBoxColumnProps;
@@ -316,25 +264,5 @@ describe("Flex.types", () => {
     if (columnWhenRow === true) {
       expect(columnWhenRow).toBe(true);
     }
-  });
-
-  it("should support wrap prop", () => {
-    const flexBoxWrapTrueProps: FlexBoxProps = {
-      wrap: true,
-    };
-    const flexBoxWrapFalseProps: FlexBoxProps = {
-      wrap: false,
-    };
-    const flexGridWrapTrueProps: FlexGridProps = {
-      wrap: true,
-    };
-    const flexGridWrapFalseProps: FlexGridProps = {
-      wrap: false,
-    };
-
-    expect(flexBoxWrapTrueProps).toBeDefined();
-    expect(flexBoxWrapFalseProps).toBeDefined();
-    expect(flexGridWrapTrueProps).toBeDefined();
-    expect(flexGridWrapFalseProps).toBeDefined();
   });
 });

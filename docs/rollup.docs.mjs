@@ -24,6 +24,7 @@ const packages = [
   { name: 'v5', input: join(rootDir, 'packages/v5/src/index.ts') },
   { name: 'v6', input: join(rootDir, 'packages/v6/src/index.ts') },
   { name: 'v7', input: join(rootDir, 'packages/v7/src/index.ts') },
+  { name: 'v9', input: join(rootDir, 'packages/v9/src/index.ts') },
 ];
 
 // Package bundles configuration

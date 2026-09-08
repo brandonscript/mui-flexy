@@ -1,6 +1,6 @@
 # mui-flexy Documentation
 
-This directory contains the documentation for mui-flexy, showcasing all three supported MUI versions (v5, v6, and v7).
+This directory contains the documentation for mui-flexy, showcasing all supported MUI versions (v5, v6, v7, and v9; MUI skipped v8).
 
 ## Building the Documentation
 
@@ -47,9 +47,9 @@ yarn serve
 ## Documentation Structure
 
 - `Docs.tsx` - Main documentation component
-- `index.html` - MUI v7 documentation (default)
-- `index_v5.html` - MUI v5 documentation
+- `index.html` - Interactive docs with version switching (v5, v6, v7, v9)
 - `static/docs.js` - Compiled documentation bundle
+- `static/v5.js`, `static/v6.js`, `static/v7.js`, `static/v9.js` - Version-specific package bundles
 - `webpack.config.js` - Webpack configuration for development
 - `package.json` - Documentation dependencies and scripts
 
@@ -57,10 +57,9 @@ yarn serve
 
 The documentation uses ESM imports and external dependencies loaded from CDN:
 
-- **index.html**: Loads MUI v7 and the documentation bundle
-- **index_v5.html**: Loads MUI v5 and the documentation bundle
+- **index.html**: Loads MUI (v5/v6/v7/v9 via import maps) and the documentation bundle
 
-Both files reference the same compiled JavaScript bundle (`static/docs.js`) which dynamically switches between MUI versions based on the selected version in the UI.
+The compiled JavaScript bundle (`static/docs.js`) dynamically switches between MUI versions based on the selected version in the UI.
 
 ## Development
 
@@ -68,8 +67,8 @@ The documentation is built with:
 
 - React 18
 - TypeScript
-- MUI Material-UI (v5, v6, v7)
+- MUI Material-UI (v5, v6, v7, v9)
 - Webpack (for development)
 - Rollup (for production builds)
 
-The component demonstrates all mui-flexy features across the three supported MUI versions with interactive examples and version switching.
+The component demonstrates all mui-flexy features across the supported MUI versions (v5, v6, v7, and v9) with interactive examples and version switching.

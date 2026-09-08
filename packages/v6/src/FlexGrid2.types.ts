@@ -13,16 +13,22 @@ import type {
   StrictGrid2Props,
 } from "@mui-flexy/core";
 
+type FlexGrid2OrientationProps<O extends FlexOrientation | undefined> = O extends "row"
+  ? OnlyRow<FlexRowProps>
+  : O extends "column"
+    ? OnlyColumn<FlexColumnProps>
+    : InferFlexProps;
+
 export interface FlexGrid2TypeMap<
   O extends FlexOrientation | undefined = undefined,
   P = {},
   D extends React.ElementType = "div",
 > {
   props: P &
-    GridBaseProps & {
+    Omit<GridBaseProps, "wrap"> & {
       sx?: SxProps<MaterialTheme>;
-    } & SystemProps<MaterialTheme> &
-    (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps) &
+    } & Omit<SystemProps<MaterialTheme>, "wrap"> &
+    FlexGrid2OrientationProps<O> &
     StrictGrid2Props;
   defaultComponent: D;
 }

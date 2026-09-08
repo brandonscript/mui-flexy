@@ -26,6 +26,11 @@
       "jest.autoEnable": false
     },
     {
+      "path": "packages/v9",
+      "name": "📦 @mui-flexy/v9",
+      "jest.autoEnable": false
+    },
+    {
       "path": "tests/e2e",
       "name": "🎭 playwright",
       "jest.autoEnable": false
@@ -66,10 +71,15 @@
       "statusBarItem.remoteBackground": "#007fff",
       "statusBarItem.remoteForeground": "#e7e7e7",
       "titleBar.activeBackground": "#007fff",
-      "titleBar.activeForeground": "#e7e7e7",
+      "titleBar.activeForeground": "#595959",
       "titleBar.inactiveBackground": "#007fff99",
       "titleBar.inactiveForeground": "#e7e7e799",
-      "statusBar.debuggingForeground": "#15202b"
+      "statusBar.debuggingForeground": "#15202b",
+      "activityBarTop.activeBackground": "#3399ff",
+      "activityBarTop.background": "#3399ff",
+      "activityBarTop.foreground": "#15202b",
+      "activityBarTop.inactiveForeground": "#15202b99",
+      "commandCenter.foreground": "#595959"
     },
     "peacock.color": "#007fff",
     "peacock.affectDebuggingStatusBar": true,
@@ -96,12 +106,13 @@
       "📦 @mui-flexy/v5",
       "📦 @mui-flexy/v6",
       "📦 @mui-flexy/v7",
+      "📦 @mui-flexy/v9",
       "🎭 playwright",
       "🧪 jest",
       "🌍 demos",
       "📘 docs"
     ],
-    "jest.jestCommandLine": "yarn jest",
+    "jest.jestCommandLine": "./node_modules/.bin/jest",
     "jest.runMode": "on-demand",
   }
 }

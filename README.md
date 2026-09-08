@@ -7,7 +7,7 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 <a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Version](https://img.shields.io/npm/v/mui-flexy)</a>
 <a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)</a>
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/brandonscript/mui-flexy)
-![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6%20%7C%20v7-blue)
+![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6%20%7C%20v7%20%7C%20v9-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018%20%7C%2019-8A2BE2?logo=react)
 
 ## Why?
@@ -82,7 +82,7 @@ Check out the <a href="https://brandonscript.github.io/mui-flexy/" target="_blan
 
 #### (Note: _Breaking changes in v2.0.0_)
 
-> mui-flexy is now a monorepo with separate packages for each MUI version (`@mui-flexy/v5`, `@mui-flexy/v6`, `@mui-flexy/v7`) with a dedicated `@mui-flexy/core` package for shared utilities. Each package is now optimized specifically for its MUI version, resulting in smaller bundle sizes and better TypeScript resolution.
+> mui-flexy is now a monorepo with separate packages for each MUI version (`@mui-flexy/v5`, `@mui-flexy/v6`, `@mui-flexy/v7`, `@mui-flexy/v9`) with a dedicated `@mui-flexy/core` package for shared utilities. Each package is now optimized specifically for its MUI version, resulting in smaller bundle sizes and better TypeScript resolution.
 
 > Make sure to update your imports to the new package structure:
 
@@ -112,6 +112,9 @@ import { FlexBox } from "@mui-flexy/v7"; // new
 Choose the package that matches your MUI version:
 
 ```shell
+# For @mui/material v9 (MUI skipped v8)
+npm install @mui-flexy/v9
+
 # For @mui/material v7
 npm install @mui-flexy/v7
 
@@ -122,8 +125,8 @@ npm install @mui-flexy/v6
 npm install @mui-flexy/v5
 
 # or...
-yarn add @mui-flexy/v{5,6,7}
-pnpm add @mui-flexy/v{5,6,7}
+yarn add @mui-flexy/v{5,6,7,9}
+pnpm add @mui-flexy/v{5,6,7,9}
 ```
 
 ### Dependencies & setup
@@ -193,6 +196,9 @@ import { FlexBox, FlexGrid } from "@mui-flexy/v6";
 // For MUI v7
 import { FlexBox, FlexGrid } from "@mui-flexy/v7";
 
+// For MUI v9
+import { FlexBox, FlexGrid } from "@mui-flexy/v9";
+
 <FlexBox x="top" y="center">
   <Typography>Hello, Bajor</Typography>
 </FlexBox>;
@@ -229,8 +235,9 @@ import { FlexBox, FlexGrid } from "@mui-flexy/v5";
 // For MUI v6 (uses Grid2)
 import { FlexBox, FlexGrid2 } from "@mui-flexy/v6";
 
-// For MUI v7 (uses Grid)
+// For MUI v7 / v9 (uses Grid with size prop)
 import { FlexBox, FlexGrid } from "@mui-flexy/v7";
+import { FlexBox, FlexGrid } from "@mui-flexy/v9";
 
 // Usage is the same across versions:
 <FlexGrid2 container x="center" y="top">
@@ -425,7 +432,7 @@ It supports `reverse` and `flex-wrap` too:
 
 ## FlexGrid migration and legacy Grid support
 
-MUI v5 introduced `Unstable_Grid2`, a new grid system based on flexbox. In v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated. In v7, `Grid2` has replaced the flagship `Grid` component.
+MUI v5 introduced `Unstable_Grid2`, a new grid system based on flexbox. In v6, `Unstable_Grid2` has been renamed to `Grid2`, and `Grid` is deprecated. In v7, `Grid2` replaced the flagship `Grid` component. MUI skipped v8 and released v9 with the same Grid `size` API as v7 (system props like `mt`/`p` now go through `sx`).
 
 ```jsx
 // FlexGrid (v5), based on @mui/material/Grid

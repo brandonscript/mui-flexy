@@ -1,6 +1,6 @@
 {
   "name": "mui-flexy-docs",
-  "version": "2.0.4-rc.3",
+  "version": "2.1.0",
   "description": "Documentation for mui-flexy",
   "private": true,
   "type": "module",
@@ -19,6 +19,7 @@
     "@mui-flexy/v5": "workspace:*",
     "@mui-flexy/v6": "workspace:*",
     "@mui-flexy/v7": "workspace:*",
+    "@mui-flexy/v9": "workspace:*",
     "@mui/material": "^7",
     "@mui/system": "^7",
     "@types/react-syntax-highlighter": "^15.5.13",

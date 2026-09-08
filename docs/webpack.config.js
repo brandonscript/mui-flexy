@@ -37,6 +37,7 @@ module.exports = {
       "@mui-flexy/v5": path.resolve(__dirname, "../packages/v5/src"),
       "@mui-flexy/v6": path.resolve(__dirname, "../packages/v6/src"),
       "@mui-flexy/v7": path.resolve(__dirname, "../packages/v7/src"),
+      "@mui-flexy/v9": path.resolve(__dirname, "../packages/v9/src"),
       // Add alias for demos/shared
       "demos-shared": path.resolve(__dirname, "../demos/shared"),
     },

@@ -27,10 +27,12 @@ PACKAGE_DIRS=(
   "packages/v5"
   "packages/v6"
   "packages/v7"
+  "packages/v9"
   "demos/shared"
   "demos/v5"
   "demos/v6"
   "demos/v7"
+  "demos/v9"
   "docs"
 )
 
@@ -283,6 +285,7 @@ update_workspace_dependencies() {
     "demos/v5"
     "demos/v6"
     "demos/v7"
+    "demos/v9"
     "docs"
   )
   

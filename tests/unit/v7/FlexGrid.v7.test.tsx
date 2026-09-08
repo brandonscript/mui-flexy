@@ -48,7 +48,7 @@ describe("FlexGrid supports Grid props", () => {
 });
 
 const StyledFlexGrid = styled((props: FlexGridProps) => (
-  <FlexGrid row={{ xs: false, md: true }} x={{ xs: "left", md: "center" }} y="center" {...props} />
+  <FlexGrid {...props} row={{ xs: false, md: true }} x={{ xs: "left", md: "center" }} y="center" />
 ))(({ theme }) =>
   theme.unstable_sx({
     display: "grid",

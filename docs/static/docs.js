@@ -388,6 +388,12 @@ var versions = [
         label: "MUI v7",
         version: "7",
         packageName: "@mui-flexy/v7"
+    },
+    {
+        key: "v9",
+        label: "MUI v9",
+        version: "9",
+        packageName: "@mui-flexy/v9"
     }
 ];
 // Shared loading component to avoid visual jumps
@@ -964,7 +970,7 @@ var VersionApp = function(param) {
     var generateFlexGridCode = function() {
         var gridComponent = selectedTab === 2 ? "FlexGrid2" : "FlexGrid";
         var containerProps = flexGridProps.useTemplate ? 'sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gridGap: '.concat(flexGridProps.spacing, " }}") : "container spacing={".concat(flexGridProps.spacing, "}");
-        var baseItemProps = selectedTab === 2 || selectedTab === 1 && version === "v7" ? "size={4}" : "item xs={4}";
+        var baseItemProps = selectedTab === 2 || selectedTab === 1 && (version === "v7" || version === "v9") ? "size={4}" : "item xs={4}";
         // Add x and y props to the item props
         var itemPropsArray = [
             baseItemProps
@@ -994,7 +1000,7 @@ var VersionApp = function(param) {
                         ]
                     })
                 }, i);
-            } else if (version === "v7" && selectedTab === 1) {
+            } else if ((version === "v7" || version === "v9") && selectedTab === 1) {
                 return /*#__PURE__*/ jsx(FlexGridDemo, {
                     size: itemSize,
                     x: flexGridItemProps.x,
@@ -2215,7 +2221,8 @@ var preloadAllVersions = function() {
                     versionsList = [
                         "v5",
                         "v6",
-                        "v7"
+                        "v7",
+                        "v9"
                     ];
                     // Start loading all versions simultaneously
                     preloadPromises = versionsList.map(function(version) {

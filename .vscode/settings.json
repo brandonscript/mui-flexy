@@ -43,11 +43,11 @@
     "**/test-results": true,
     "**/playwright-report": true
   },
-  // Jest extension settings for multi-project support
-  "jest.jestCommandLine": "yarn jest",
-  "jest.pathToConfig": ".vscode/jest.config.cjs",
+  // Jest extension: use local binary so PATH/nvm/yarn aren't required
+  "jest.jestCommandLine": "./node_modules/.bin/jest",
+  "jest.pathToConfig": "jest.config.js",
   "jest.rootPath": ".",
-  "jest.runMode": "watch",
+  "jest.runMode": "on-demand",
   "jest.useDashedArgs": true,
   // Disable workspace folder filtering for multi-root workspace
   "jest.disabledWorkspaceFolders": [],

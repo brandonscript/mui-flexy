@@ -39,7 +39,7 @@
         }
       },
       "runOptions": {
-        "runOn": "folderOpen"
+        // "runOn": "folderOpen"
       }
     }
   ]
