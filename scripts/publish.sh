@@ -217,12 +217,18 @@ publish_package() {
     return 0
   fi
 
-  # Publish the package
-  npm publish --access public || {
+  # Publish the package (OIDC authenticates during this command)
+  if ! npm publish --access public; then
     echo -e "${RED}Error: Failed to publish $package_name${NC}"
+    echo -e "${YELLOW}If this was ENEEDAUTH, add a GitHub Actions trusted publisher on npm for $package_name:${NC}"
+    echo "  Organization or user: brandonscript"
+    echo "  Repository:            mui-flexy"
+    echo "  Workflow filename:     publish.yml"
+    echo "  Environment name:      (leave blank)"
+    echo "  Allowed actions:       npm publish"
     cd "$git_root"
     return 1
-  }
+  fi
 
   echo -e "${GREEN}✓ Successfully published $package_name@$package_version${NC}"
   cd "$git_root"
@@ -318,6 +324,8 @@ main() {
         ((published_count++))
       else
         ((failed_count++))
+        echo -e "${RED}Stopping after failure publishing $name@$version${NC}"
+        break
       fi
     fi
   done
