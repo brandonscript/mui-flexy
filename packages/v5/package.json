@@ -1,6 +1,6 @@
 {
   "name": "@mui-flexy/v5",
-  "version": "2.0.4-rc.2",
+  "version": "2.1.0",
   "description": "A flexbox convenience component for Material UI v5 Box and Grid with handy shorthand props",
   "type": "module",
   "main": "dist/index.js",
@@ -42,7 +42,13 @@
     "rollup": "^4.39.0",
     "typescript": "^5.8.3"
   },
-  "repository": "https://github.com/brandonscript/mui-flexy",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandonscript/mui-flexy.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "author": "github.com/brandonscript",
   "license": "MIT",
   "keywords": [

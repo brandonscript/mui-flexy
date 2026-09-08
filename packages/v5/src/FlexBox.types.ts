@@ -2,6 +2,7 @@ import type { OverrideProps } from "@mui/material/OverridableComponent";
 import type { Theme as MaterialTheme } from "@mui/material/styles";
 import type { ResponsiveStyleValue, SxProps } from "@mui/system";
 import type {
+  AgnosticFlexProps,
   FlexColumnProps,
   FlexOrientation,
   FlexRowProps,
@@ -68,7 +69,13 @@ export interface FlexBoxTypeMap<
   props: P &
     SimplifiedBoxOwnProps<T> & {
       sx?: SxProps<MaterialTheme>;
-    } & (O extends "row" ? FlexRowProps : O extends "column" ? FlexColumnProps : InferFlexProps);
+    } & (O extends "row"
+      ? FlexRowProps
+      : O extends "column"
+        ? FlexColumnProps
+        : O extends "agnostic"
+          ? AgnosticFlexProps
+          : InferFlexProps);
   defaultComponent: D;
 }
 

@@ -138,5 +138,16 @@ export default defineConfig({
         FORCE_COLOR: "0",
       },
     },
+    {
+      cwd: "demos/v9",
+      command: "yarn dev",
+      url: "http://127.0.0.1:3008",
+      reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
+      timeout: 60000,
+      env: {
+        ...process.env,
+        FORCE_COLOR: "0",
+      },
+    },
   ],
 });

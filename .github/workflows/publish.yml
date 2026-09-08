@@ -1,0 +1,60 @@
+# npm Trusted Publishing (OIDC) — no NPM_TOKEN required.
+#
+# Claim this workflow on npm for each package:
+#   Organization or user: brandonscript
+#   Repository:            mui-flexy
+#   Workflow filename:     publish.yml
+#   Environment name:      (leave blank)
+#   Allowed actions:       npm publish
+#
+# Packages: @mui-flexy/core, @mui-flexy/v5, @mui-flexy/v6, @mui-flexy/v7, @mui-flexy/v9
+# Docs: https://docs.npmjs.com/trusted-publishers/
+
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: npm-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Run unit tests
+        run: yarn jest --silent --verbose=false --reporters=summary --passWithNoTests
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Publish packages
+        run: ./scripts/publish.sh
+        env:
+          NPM_TRUSTED_PUBLISHING: "true"

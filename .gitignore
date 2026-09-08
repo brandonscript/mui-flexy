@@ -22,6 +22,7 @@ dist/_virtual/*
 !/docs/static/v5.js
 !/docs/static/v6.js
 !/docs/static/v7.js
+!/docs/static/v9.js
 
 # Package tarballs
 /packages/*/*.tgz

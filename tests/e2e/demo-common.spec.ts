@@ -10,6 +10,7 @@ test.describe("Demo cross-version tests", () => {
     { version: "5", port: 3005 },
     { version: "6", port: 3006 },
     { version: "7", port: 3007 },
+    { version: "9", port: 3008 },
   ];
 
   test("should load all demo versions successfully", async ({ browser }) => {
@@ -45,6 +46,7 @@ test.describe("Demo cross-version tests", () => {
       "5": "@mui/material^5",
       "6": "@mui/material^6",
       "7": "@mui/material^7",
+      "9": "@mui/material^9",
     };
 
     for (const { version, port } of versions) {
@@ -78,6 +80,7 @@ test.describe("Demo cross-version tests", () => {
       "5": 235,
       "6": 263,
       "7": 263,
+      "9": 263,
     };
 
     for (const viewport of viewports) {
@@ -123,11 +126,15 @@ test.describe("Demo cross-version tests", () => {
         expect(flexElementCount).toBe(expectedCounts[version as keyof typeof expectedCounts]);
       });
 
-      // Verify versions 6 and 7 have identical counts (both use Grid2)
+      // Verify versions 6, 7, and 9 have identical counts (all use Grid2-style API)
       const v6Result = results.find((r) => r.version === "6");
       const v7Result = results.find((r) => r.version === "7");
+      const v9Result = results.find((r) => r.version === "9");
       if (v6Result && v7Result) {
         expect(v7Result.flexElementCount).toBe(v6Result.flexElementCount);
+      }
+      if (v7Result && v9Result) {
+        expect(v9Result.flexElementCount).toBe(v7Result.flexElementCount);
       }
 
       // Log for debugging
@@ -269,12 +276,14 @@ test.describe("Demo cross-version tests", () => {
         expect(widthDiff).toBeLessThanOrEqual(20);
 
         // For height, account for version-specific content differences
-        // v6 and v7 have additional Grid2 sections that v5 doesn't have
+        // v6, v7, and v9 have additional Grid2 sections that v5 doesn't have
         let expectedHeightDiff = 50; // Base tolerance
-        if (
-          (baseLayout.version === "5" && (compareLayout.version === "6" || compareLayout.version === "7")) ||
-          (compareLayout.version === "5" && (baseLayout.version === "6" || baseLayout.version === "7"))
-        ) {
+        const isV5VsGrid2 =
+          (baseLayout.version === "5" &&
+            (compareLayout.version === "6" || compareLayout.version === "7" || compareLayout.version === "9")) ||
+          (compareLayout.version === "5" &&
+            (baseLayout.version === "6" || baseLayout.version === "7" || baseLayout.version === "9"));
+        if (isV5VsGrid2) {
           // Different tolerances for different viewports due to responsive layout changes
           if (viewport.name === "large-screen") {
             expectedHeightDiff = 600; // Large screen tolerance (similar to desktop)
@@ -294,10 +303,12 @@ test.describe("Demo cross-version tests", () => {
           `  Sections: base=${baseLayout.layout!.sectionsCount}, compare=${compareLayout.layout!.sectionsCount}`,
         );
 
-        // v6 and v7 have one additional header (Grid2) compared to v5
+        // v6, v7, and v9 have one additional header (Grid2) compared to v5
         if (
-          (baseLayout.version === "5" && (compareLayout.version === "6" || compareLayout.version === "7")) ||
-          (compareLayout.version === "5" && (baseLayout.version === "6" || baseLayout.version === "7"))
+          (baseLayout.version === "5" &&
+            (compareLayout.version === "6" || compareLayout.version === "7" || compareLayout.version === "9")) ||
+          (compareLayout.version === "5" &&
+            (baseLayout.version === "6" || baseLayout.version === "7" || baseLayout.version === "9"))
         ) {
           expect(Math.abs(compareLayout.layout!.headersCount - baseLayout.layout!.headersCount)).toBeLessThanOrEqual(1);
         } else {
@@ -380,9 +391,9 @@ test.describe("Demo cross-version tests", () => {
           const flexWidthDiff = Math.abs(baseFlex.width - compareFlex.width);
           const flexHeightDiff = Math.abs(baseFlex.height - compareFlex.height);
 
-          // Allow up to 20px difference in flex element dimensions (more realistic)
-          expect(flexWidthDiff).toBeLessThanOrEqual(20);
-          expect(flexHeightDiff).toBeLessThanOrEqual(20);
+          // Allow up to 40px difference across MUI majors (typography/spacing can vary slightly)
+          expect(flexWidthDiff).toBeLessThanOrEqual(40);
+          expect(flexHeightDiff).toBeLessThanOrEqual(40);
         }
 
         // Compare computed flex elements count (allow some variation due to MUI internals)
@@ -578,60 +589,72 @@ test.describe("Demo cross-version tests", () => {
     }
 
     // Verify all versions have the grid section
-    expect(gridData).toHaveLength(3);
+    expect(gridData).toHaveLength(4);
 
     const baseVersion = gridData.find((d) => d.version === "5");
     const v6Data = gridData.find((d) => d.version === "6");
     const v7Data = gridData.find((d) => d.version === "7");
+    const v9Data = gridData.find((d) => d.version === "9");
 
     expect(baseVersion).toBeDefined();
     expect(v6Data).toBeDefined();
     expect(v7Data).toBeDefined();
+    expect(v9Data).toBeDefined();
 
     // Test 1: All versions should have the Basic CSS Grid header
     expect(baseVersion!.hasGridHeader).toBe(true);
     expect(v6Data!.hasGridHeader).toBe(true);
     expect(v7Data!.hasGridHeader).toBe(true);
+    expect(v9Data!.hasGridHeader).toBe(true);
 
     // Test 2: All versions should have the same number of grid items
     expect(v6Data!.gridItemsCount).toBe(baseVersion!.gridItemsCount);
     expect(v7Data!.gridItemsCount).toBe(baseVersion!.gridItemsCount);
+    expect(v9Data!.gridItemsCount).toBe(baseVersion!.gridItemsCount);
 
     // Test 3: All versions should have the same grid item content
     expect(v6Data!.gridItemTexts).toEqual(baseVersion!.gridItemTexts);
     expect(v7Data!.gridItemTexts).toEqual(baseVersion!.gridItemTexts);
+    expect(v9Data!.gridItemTexts).toEqual(baseVersion!.gridItemTexts);
 
     // Test 4: All versions should have responsive behavior
     expect(baseVersion!.responsiveBreaks).toBe(true);
     expect(v6Data!.responsiveBreaks).toBe(true);
     expect(v7Data!.responsiveBreaks).toBe(true);
+    expect(v9Data!.responsiveBreaks).toBe(true);
 
     // Test 5: Container widths - allow for expected differences between Grid vs Grid2
     // but verify they're within reasonable bounds (Grid2 may be narrower due to different defaults)
     const v5Width = baseVersion!.containerWidth;
     const v6Width = v6Data!.containerWidth;
     const v7Width = v7Data!.containerWidth;
+    const v9Width = v9Data!.containerWidth;
 
-    // v6 and v7 might be narrower due to Grid2 behavior, but should be within 30% of v5
+    // v6/v7/v9 might be narrower due to Grid2 behavior, but should be within 30% of v5
     const maxWidthDiffPercent = 30;
     const maxAllowedDiff = (v5Width * maxWidthDiffPercent) / 100;
 
     expect(Math.abs(v6Width - v5Width)).toBeLessThanOrEqual(maxAllowedDiff);
     expect(Math.abs(v7Width - v5Width)).toBeLessThanOrEqual(maxAllowedDiff);
+    expect(Math.abs(v9Width - v5Width)).toBeLessThanOrEqual(maxAllowedDiff);
 
-    // v6 and v7 should have very similar widths to each other (both use Grid2)
+    // v6, v7, and v9 should have very similar widths to each other (all use Grid2-style API)
     expect(Math.abs(v7Width - v6Width)).toBeLessThanOrEqual(50); // Allow 50px difference
+    expect(Math.abs(v9Width - v7Width)).toBeLessThanOrEqual(50);
 
     // Log summary for debugging
     console.log(`Grid section summary:
       - v5: ${baseVersion!.gridItemsCount} items, ${v5Width}px width, responsive: ${baseVersion!.responsiveBreaks}
       - v6: ${v6Data!.gridItemsCount} items, ${v6Width}px width, responsive: ${v6Data!.responsiveBreaks}
       - v7: ${v7Data!.gridItemsCount} items, ${v7Width}px width, responsive: ${v7Data!.responsiveBreaks}
+      - v9: ${v9Data!.gridItemsCount} items, ${v9Width}px width, responsive: ${v9Data!.responsiveBreaks}
       - Width diff v5→v6: ${v6Width - v5Width}px
       - Width diff v5→v7: ${v7Width - v5Width}px
+      - Width diff v5→v9: ${v9Width - v5Width}px
       - Sample classes v5: ${baseVersion!.sampleClassNames}
       - Sample classes v6: ${v6Data!.sampleClassNames}
-      - Sample classes v7: ${v7Data!.sampleClassNames}`);
+      - Sample classes v7: ${v7Data!.sampleClassNames}
+      - Sample classes v9: ${v9Data!.sampleClassNames}`);
   });
 
   test("should display all required section headers consistently across versions", async ({ browser }) => {
@@ -665,7 +688,7 @@ test.describe("Demo cross-version tests", () => {
         ];
 
         // Check version-specific headers
-        if (version === "6" || version === "7") {
+        if (version === "6" || version === "7" || version === "9") {
           expectedHeaders.push("grid2");
         }
 
@@ -691,30 +714,35 @@ test.describe("Demo cross-version tests", () => {
       expect(headers.complexProps).toBe(1);
 
       // Check version-specific headers
-      if (version === "6" || version === "7") {
+      if (version === "6" || version === "7" || version === "9") {
         expect(headers.grid2).toBe(1);
       } else {
         expect(headers.grid2).toBeUndefined();
       }
     });
 
-    // Verify v6 and v7 have identical header structure (both should include Grid2)
+    // Verify v6, v7, and v9 have identical header structure (all should include Grid2)
     const v5Headers = headerResults.find((r) => r.version === "5")!.headers;
     const v6Headers = headerResults.find((r) => r.version === "6")!.headers;
     const v7Headers = headerResults.find((r) => r.version === "7")!.headers;
+    const v9Headers = headerResults.find((r) => r.version === "9")!.headers;
 
-    // v5 should have one less header than v6/v7 (no Grid2)
+    // v5 should have one less header than v6/v7/v9 (no Grid2)
     const v5HeaderCount = Object.keys(v5Headers).length;
     const v6HeaderCount = Object.keys(v6Headers).length;
     const v7HeaderCount = Object.keys(v7Headers).length;
+    const v9HeaderCount = Object.keys(v9Headers).length;
 
     expect(v6HeaderCount).toBe(v5HeaderCount + 1); // v6 has Grid2 header
     expect(v7HeaderCount).toBe(v5HeaderCount + 1); // v7 has Grid2 header
+    expect(v9HeaderCount).toBe(v5HeaderCount + 1); // v9 has Grid2 header
     expect(v6HeaderCount).toBe(v7HeaderCount); // v6 and v7 should be identical
+    expect(v7HeaderCount).toBe(v9HeaderCount); // v7 and v9 should be identical
 
-    // Verify v6 and v7 have exactly the same headers
+    // Verify v6, v7, and v9 have exactly the same headers
     Object.keys(v6Headers).forEach((headerKey) => {
       expect(v7Headers[headerKey]).toBe(v6Headers[headerKey]);
+      expect(v9Headers[headerKey]).toBe(v6Headers[headerKey]);
     });
 
     // Log header summary for debugging

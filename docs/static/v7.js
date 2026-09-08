@@ -3,9 +3,76 @@ import _MuiBox from '@mui/material/Box';
 import { forwardRef } from 'react';
 import Grid from '@mui/material/Grid';
 
-// @ts-ignore
 const stripUndefined = (obj)=>{
     return Object.fromEntries(Object.entries(obj).filter(([, value])=>value !== undefined));
+};
+const isResponsiveArray = (value)=>{
+    return Array.isArray(value) && value.every((v)=>typeof v === "string" || typeof v === "boolean" || v === null || v === undefined);
+};
+const isResponsiveObject = (value)=>{
+    return !!value && typeof value === "object" && Object.keys(value).some((key)=>[
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+        ].includes(key));
+};
+const getResponsiveKeys = (...responsiveObjects)=>{
+    return Array.from(new Set(responsiveObjects.flatMap((obj)=>Object.keys(obj ?? {})))).sort((a, b)=>[
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+        ].indexOf(a) - [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+        ].indexOf(b));
+};
+const resolveWrapValue = (wrap)=>{
+    const resolvePrimitive = (value)=>{
+        if (value === null || value === undefined) return undefined;
+        // String values pass through
+        if (typeof value === "string") {
+            return value;
+        }
+        // Boolean values map to wrap/nowrap
+        if (typeof value === "boolean") {
+            return value ? "wrap" : "nowrap";
+        }
+        return undefined;
+    };
+    if (wrap === null || wrap === undefined) return undefined;
+    // String values pass through
+    if (typeof wrap === "string") {
+        return resolvePrimitive(wrap);
+    }
+    // Boolean values map to wrap/nowrap
+    if (typeof wrap === "boolean") {
+        return resolvePrimitive(wrap);
+    }
+    // Array values map each element
+    if (Array.isArray(wrap)) {
+        return wrap.map(resolvePrimitive);
+    }
+    // Object values map each breakpoint value
+    if (typeof wrap === "object") {
+        const mapped = {};
+        let hasValue = false;
+        Object.entries(wrap).forEach(([key, value])=>{
+            const mappedValue = resolvePrimitive(value);
+            if (mappedValue !== undefined) {
+                mapped[key] = mappedValue;
+                hasValue = true;
+            }
+        });
+        return hasValue ? mapped : undefined;
+    }
+    return undefined;
 };
 const mapAlignment = (alignment)=>{
     if (!alignment) return;
@@ -33,9 +100,71 @@ const mapAlignment = (alignment)=>{
     }
     return alignment;
 };
-const mapDirection = (direction, reverse = false)=>{
-    if (!direction) return "row";
-    if (typeof direction === "string") {
+const coerceToResponsiveArray = (value)=>{
+    if (value === null || value === undefined) return [];
+    if (isResponsiveArray(value)) {
+        return value;
+    }
+    if (isResponsiveObject(value)) {
+        // Make sure we account for gaps in breakpoint keys, e.g. { xs: 'row', lg: 'column' } => ['row', undefined, undefined, 'column']
+        if ("xl" in value) return [
+            value.xs,
+            value.sm,
+            value.md,
+            value.lg,
+            value.xl
+        ];
+        if ("lg" in value) return [
+            value.xs,
+            value.sm,
+            value.md,
+            value.lg
+        ];
+        if ("md" in value) return [
+            value.xs,
+            value.sm,
+            value.md
+        ];
+        if ("sm" in value) return [
+            value.xs,
+            value.sm
+        ];
+        return [
+            value.xs
+        ];
+    }
+    return [
+        value
+    ];
+};
+// TODO: Handle function values and breakpoint overrides
+const coerceToResponsiveObject = (value)=>{
+    if (value === null || value === undefined) return {
+        xs: value
+    };
+    if (isResponsiveArray(value)) {
+        const keys = [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl"
+        ].slice(0, value.length);
+        return Object.fromEntries(keys.map((key, index)=>[
+                key,
+                value?.[index]
+            ]));
+    }
+    if (isResponsiveObject(value)) {
+        return value;
+    }
+    return {
+        xs: value
+    };
+};
+const resolveStringDirection = (direction, reverse)=>{
+    if (!direction && !reverse) return "row";
+    if (typeof direction === "string" && (!reverse || reverse === true)) {
         if (![
             "row",
             "row-reverse",
@@ -45,22 +174,49 @@ const mapDirection = (direction, reverse = false)=>{
             console.warn(`Using { flex-direction: ${direction} } with mui-flexy shorthand is not recommended \
 because it can cause unexpected alignment and orientation anomalies.`);
         }
-        switch(direction){
-            case "row":
-            case "column":
-                return `${direction}${reverse ? "-reverse" : ""}`;
-            default:
-                return direction;
+        if (reverse && (direction === "row" || direction === "column")) {
+            // No double reverse - only reverse "row" and "column", not other CSS values
+            return `${direction.replace("-reverse", "")}-reverse`;
         }
-    } else if (Array.isArray(direction)) {
-        return direction.map((d)=>!d ? "row" : mapDirection(d, reverse));
-    } else if (typeof direction === "object") {
-        const mapped = {};
-        for (const [key, value] of Object.entries(direction)){
-            mapped[key] = mapDirection(value, reverse);
-        }
-        return mapped;
+        return direction;
     }
+    // We need to find the largest common type, i.e. if both are string (or null/undefined), return string.
+    // But if one is an object, or an array, convert the other to the same type.
+    if (isResponsiveObject(direction) || isResponsiveObject(reverse)) {
+        let directionAsObject = coerceToResponsiveObject(direction);
+        let reverseAsObject = coerceToResponsiveObject(reverse);
+        // If direction is an object and reverse is a boolean (not an object), expand reverse to match all direction keys
+        if (isResponsiveObject(direction) && typeof reverse === "boolean") {
+            const directionKeys = Object.keys(directionAsObject);
+            reverseAsObject = Object.fromEntries(directionKeys.map((key)=>[
+                    key,
+                    reverse
+                ]));
+        }
+        // If direction is a string and reverse is an object, expand direction to match all reverse keys
+        if (typeof direction === "string" && isResponsiveObject(reverse)) {
+            const reverseKeys = Object.keys(reverseAsObject);
+            directionAsObject = Object.fromEntries(reverseKeys.map((key)=>[
+                    key,
+                    direction
+                ]));
+        }
+        const keys = getResponsiveKeys(directionAsObject, reverseAsObject);
+        return Object.fromEntries(keys.map((key)=>[
+                key,
+                resolveStringDirection(directionAsObject?.[key], reverseAsObject?.[key])
+            ]));
+    }
+    if (isResponsiveArray(direction) || isResponsiveArray(reverse)) {
+        const directionAsArray = coerceToResponsiveArray(direction);
+        const reverseAsArray = coerceToResponsiveArray(reverse);
+        const maxLength = Math.max(directionAsArray.length, reverseAsArray.length);
+        return Array.from({
+            length: maxLength
+        }, (_, i)=>resolveStringDirection(directionAsArray?.[Math.min(i, directionAsArray.length - 1)], reverseAsArray?.[Math.min(i, reverseAsArray.length - 1)]));
+    }
+    console.warn(`Invalid value for resolveStringDirection: ${JSON.stringify(direction)} and ${JSON.stringify(reverse)}`);
+    return "row";
 };
 const stringOrArrayValue = (value, index)=>{
     if (typeof value === "string") {
@@ -70,6 +226,13 @@ const stringOrArrayValue = (value, index)=>{
     }
 };
 const mapResponsiveObject = (direction, main, cross)=>{
+    const breakpointIndexMap = {
+        xs: 0,
+        sm: 1,
+        md: 2,
+        lg: 3,
+        xl: 4
+    };
     return Object.fromEntries(Object.entries(direction ?? {}).map(([key, d])=>{
         if (typeof d !== "string") {
             throw new Error("Values for a flex direction ResponsiveStyleObject must be strings, e.g. { xs: 'row', sm: 'column' }");
@@ -83,10 +246,16 @@ const mapResponsiveObject = (direction, main, cross)=>{
             ];
         }
         if (Array.isArray(aligned)) {
-            const index = Number(key);
+            const index = breakpointIndexMap[key];
+            if (index !== undefined && typeof index === "number" && !Number.isNaN(index) && index >= 0) {
+                return [
+                    key,
+                    aligned[index]
+                ];
+            }
             return [
                 key,
-                Number.isNaN(index) ? undefined : aligned[index]
+                undefined
             ];
         }
         return [
@@ -120,11 +289,11 @@ const resolveAlignment = (direction, x, y)=>{
         alignItems: y
     };
 };
-const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
+const resolveBoolDirection = (row, column, reverse, fallback = "row")=>{
     /* Maps boolean responsive row/column props to flexDirection values */ const rowIsNullOrUndefined = row === null || row === undefined;
     const columnIsNullOrUndefined = column === null || column === undefined;
     if (rowIsNullOrUndefined && columnIsNullOrUndefined) {
-        return mapDirection(fallback, reverse);
+        return resolveStringDirection(fallback, reverse);
     }
     const rowIsFalse = row === false;
     const columnIsFalse = column === false;
@@ -145,25 +314,31 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
     } else if (chooseRow && chooseColumn) {
         chooseColumn = false;
     }
-    const rowIsArray = Array.isArray(row);
-    const columnIsArray = Array.isArray(column);
-    const rowIsObject = typeof row === "object" && !rowIsArray && !rowIsNullOrUndefined;
-    const columnIsObject = typeof column === "object" && !columnIsArray && !columnIsNullOrUndefined;
+    const rowIsArray = isResponsiveArray(row);
+    const columnIsArray = isResponsiveArray(column);
+    const rowIsObject = isResponsiveObject(row);
+    const columnIsObject = isResponsiveObject(column);
+    // Check if both are empty objects - return empty object
+    const rowIsEmptyObject = typeof row === "object" && !Array.isArray(row) && row !== null && !Object.keys(row).length;
+    const columnIsEmptyObject = typeof column === "object" && !Array.isArray(column) && column !== null && !Object.keys(column).length;
+    if (rowIsEmptyObject && columnIsEmptyObject) {
+        return {};
+    }
     if ([
         !rowIsObject,
         !columnIsObject,
         !rowIsArray,
         !columnIsArray
     ].every(Boolean)) {
-        return mapDirection(chooseColumn ? "column" : chooseRow ? "row" : fallback, reverse);
+        return resolveStringDirection(chooseColumn ? "column" : chooseRow ? "row" : fallback, reverse);
     }
-    const rowIsFalsy = !row || rowIsArray && !row.length || rowIsObject && !Object.keys(row).length;
-    const columnIsFalsy = !column || columnIsArray && !column.length || columnIsObject && !Object.keys(column).length;
+    const rowIsFalsy = !row || rowIsArray && !row.length || rowIsObject && !Object.keys(row).length || typeof row === "object" && !Array.isArray(row) && row !== null && !Object.keys(row).length;
+    const columnIsFalsy = !column || columnIsArray && !column.length || columnIsObject && !Object.keys(column).length || typeof column === "object" && !Array.isArray(column) && column !== null && !Object.keys(column).length;
     if (rowIsArray && columnIsFalsy) {
-        return row.map((r)=>resolveDirection(r, column, reverse, fallback));
+        return row.map((r)=>resolveBoolDirection(r, column, reverse, fallback));
     }
     if (columnIsArray && rowIsFalsy) {
-        return column.map((c)=>resolveDirection(row, c, reverse, fallback));
+        return column.map((c)=>resolveBoolDirection(row, c, reverse, fallback));
     }
     if (rowIsArray && columnIsArray) {
         const composite = [];
@@ -174,7 +349,7 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
                 const r = row[i] ?? (column[i] === "column" ? "row" : "column");
                 const c = column[i] ?? (row[i] === "row" ? "column" : "row");
                 if (Array.isArray(composite)) {
-                    composite.push(resolveDirection(r, c, reverse, fallback));
+                    composite.push(resolveBoolDirection(r, c, reverse, fallback));
                 }
             }
             return composite;
@@ -186,7 +361,7 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
                 console.warn(`When using Array type ResponsiveFlexDirection for both 'row' and 'column', they cannot not both be true for the same breakpoint index - got row=${JSON.stringify(row)} and column=${JSON.stringify(column)}. Defaulting to 'row' for conflicting indices.`);
                 c = false;
             }
-            return resolveDirection(r, c, reverse, fallback);
+            return resolveBoolDirection(r, c, reverse, fallback);
         });
     }
     if (rowIsObject && columnIsFalsy) {
@@ -195,7 +370,7 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
                 undefined
             ].includes(r)).map(([k, r])=>[
                 k,
-                resolveDirection(r, undefined, reverse, fallback)
+                resolveBoolDirection(r, undefined, reverse, fallback)
             ]));
     }
     if (columnIsObject && rowIsFalsy) {
@@ -204,7 +379,7 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
                 undefined
             ].includes(r)).map(([k, c])=>[
                 k,
-                resolveDirection(undefined, c, reverse, fallback)
+                resolveBoolDirection(undefined, c, reverse, fallback)
             ]));
     }
     if (rowIsObject && columnIsObject) {
@@ -227,26 +402,29 @@ const resolveDirection = (row, column, reverse = false, fallback = "row")=>{
             ].includes(c)) {
                 continue;
             }
-            composite[key] = resolveDirection(r, c, reverse, fallback);
+            composite[key] = resolveBoolDirection(r, c, reverse, fallback);
         }
         return composite;
     }
 };
 const mapFlexProps = (props, ref, componentName = "Box")=>{
-    const { x, y, row, column, flexDirection, reverse, nowrap, ...rest } = props;
-    const direction = resolveDirection(row, column, reverse, flexDirection);
-    const whiteSpace = nowrap ? "nowrap" : props.whiteSpace;
+    const { x, y, row, column, flexDirection, direction, reverse, wrap, agnostic: _agnostic, ...rest } = props;
+    // If direction is explicitly provided, it takes precedence over row/column/flexDirection
+    const resolvedDirection = direction !== undefined && direction !== null ? resolveStringDirection(direction, reverse) : resolveBoolDirection(row, column, reverse, flexDirection);
+    // Map wrap to flexWrap (supports boolean, string, and responsive values)
+    const flexWrap = resolveWrapValue(wrap);
+    // TODO: Add unique classnames for each variant of the flex component
     const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`.trim();
     const flexProps = {
         display: rest.display || "flex",
-        whiteSpace
+        flexWrap
     };
-    const alignments = resolveAlignment(direction, x, y);
+    const alignments = resolveAlignment(resolvedDirection, x, y);
     return stripUndefined({
         ...rest,
         ...flexProps,
         ...alignments,
-        flexDirection: direction,
+        flexDirection: resolvedDirection,
         className,
         ref
     });

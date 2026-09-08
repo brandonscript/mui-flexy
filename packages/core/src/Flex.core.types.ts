@@ -1,10 +1,10 @@
-import type { Breakpoint } from "@mui/system";
+import type { Breakpoint, SxProps, Theme } from "@mui/system";
 import type { CSSProperties } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type _Any = any;
 
-export type FlexOrientation = "row" | "column";
+export type FlexOrientation = "row" | "column" | "agnostic";
 
 // Orientation-specific alignment properties
 type JustifyContent =
@@ -52,8 +52,9 @@ export type FlexRowProps = {
   column?: false | never;
   x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
   y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
-  reverse?: boolean;
-  nowrap?: boolean;
+  direction?: ResponsiveFlexDirection;
+  reverse?: ResponsiveFlexBoolean;
+  wrap?: ResponsiveFlexWrap;
 };
 
 // column === true
@@ -62,8 +63,9 @@ export type FlexColumnProps = {
   row?: false | never;
   x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
   y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
-  reverse?: boolean;
-  nowrap?: boolean;
+  direction?: ResponsiveFlexDirection;
+  reverse?: ResponsiveFlexBoolean;
+  wrap?: ResponsiveFlexWrap;
 };
 
 // MUI v5 - only supports root xs, sm, md, lg, xl props
@@ -101,6 +103,9 @@ export type V7GridSizeProps = {
       };
 };
 
+// MUI v9 - same Grid size API as v7 (v8 was skipped by MUI)
+export type V9GridSizeProps = V7GridSizeProps;
+
 // Legacy aliases for backward compatibility
 export type LegacyGridSizeProps = V5GridSizeProps;
 export type GridSizeProp = V7GridSizeProps;
@@ -115,18 +120,21 @@ export type StrictGrid2Props = {
   xl?: never;
 };
 
+export type FlexWrapValue = "wrap" | "nowrap" | "wrap-reverse";
+export type ResponsiveFlexWrap = ResponsiveStyleValue<FlexWrapValue | boolean>;
+
 export type BaseFlexProps<T extends _Any = _Any> = {
-  row?: ResponsiveStyleValue<boolean> | null | undefined;
-  column?: ResponsiveStyleValue<boolean> | null | undefined;
-  reverse?: ResponsiveStyleValue<boolean> | null | undefined;
-  nowrap?: ResponsiveStyleValue<boolean> | null | undefined;
+  row?: ResponsiveFlexBoolean;
+  column?: ResponsiveFlexBoolean;
+  reverse?: ResponsiveFlexBoolean;
+  wrap?: ResponsiveFlexWrap;
   x?: XRowAlign | XColumnAlign | ResponsiveAlign;
   y?: YRowAlign | YColumnAlign | ResponsiveAlign;
-  whiteSpace?:
-    | readonly string[]
-    | ResponsiveStyleValue<CSSProperties["whiteSpace"] | readonly string[] | undefined>
-    | ((theme: T) => ResponsiveStyleValue<CSSProperties["whiteSpace"] | readonly string[] | undefined>);
   flexDirection?:
+    | readonly string[]
+    | ResponsiveStyleValue<CSSProperties["flexDirection"] | readonly string[] | undefined>
+    | ((theme: T) => ResponsiveStyleValue<CSSProperties["flexDirection"] | readonly string[] | undefined>);
+  direction?:
     | readonly string[]
     | ResponsiveStyleValue<CSSProperties["flexDirection"] | readonly string[] | undefined>
     | ((theme: T) => ResponsiveStyleValue<CSSProperties["flexDirection"] | readonly string[] | undefined>);
@@ -135,50 +143,79 @@ export type BaseFlexProps<T extends _Any = _Any> = {
     | ResponsiveStyleValue<CSSProperties["display"] | readonly string[] | undefined>
     | ((theme: T) => ResponsiveStyleValue<CSSProperties["display"] | readonly string[] | undefined>);
   className?: string | ((theme: T) => string);
-} & (V5GridSizeProps | V6GridSizeProps | V7GridSizeProps);
+  agnostic?: boolean | undefined;
+} & (V5GridSizeProps | V6GridSizeProps | V7GridSizeProps | V9GridSizeProps);
+
+/**
+ * When working with unknown or computed props, use the agnostic mode to turn off strict typing.
+ */
+export type AgnosticFlexProps = {
+  agnostic: true;
+} & BaseFlexProps;
 
 export type InferFlexProps = (
   | {
+      agnostic: true;
+      row?: BaseFlexProps["row"];
+      column?: BaseFlexProps["column"];
+      x?: BaseFlexProps["x"];
+      y?: BaseFlexProps["y"];
+    }
+  | {
       row?: true | undefined;
-      column?: false | never;
+      column?: false | never | StrictResponsiveStyleValue<boolean>;
       x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
       y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
     }
   | {
-      row?: false | never;
+      row?: false | never | StrictResponsiveStyleValue<boolean>;
       column: true;
       x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
       y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
     }
   | {
       row: StrictResponsiveStyleValue<boolean>;
-      column?: boolean | never | StrictResponsiveStyleValue<boolean>;
+      column?: boolean | never | ResponsiveStyleValue<boolean>;
       x?: XRowAlign | XColumnAlign | ResponsiveAlign;
       y?: YColumnAlign | YRowAlign | ResponsiveAlign;
-      reverse?: boolean;
-      nowrap?: boolean;
     }
   | {
       column: StrictResponsiveStyleValue<boolean>;
-      row?: boolean | never | StrictResponsiveStyleValue<boolean>;
+      row?: boolean | never | ResponsiveStyleValue<boolean>;
       x?: XRowAlign | XColumnAlign | ResponsiveAlign;
       y?: YColumnAlign | YRowAlign | ResponsiveAlign;
-      reverse?: boolean;
-      nowrap?: boolean;
     }
 ) & {
-  reverse?: boolean;
-  nowrap?: boolean;
+  reverse?: ResponsiveFlexBoolean;
+  wrap?: ResponsiveFlexWrap;
+  direction?: BaseFlexProps["direction"];
+  flexDirection?: BaseFlexProps["flexDirection"];
+  display?: BaseFlexProps["display"];
+  className?: BaseFlexProps["className"];
 };
 
 // restricts the props to only row
-export type OnlyRow<T> = Omit<T, "row" | "column"> & {
+export type OnlyRow<T> = Omit<T, "row" | "column" | "agnostic"> & {
   row?: true | StrictResponsiveStyleValue<boolean>;
   column?: false | never | StrictResponsiveStyleValue<boolean>;
 };
 
 // restricts the props to only column
-export type OnlyColumn<T> = Omit<T, "row" | "column"> & {
+export type OnlyColumn<T> = Omit<T, "row" | "column" | "agnostic"> & {
   column?: true | StrictResponsiveStyleValue<boolean>;
   row?: false | never | StrictResponsiveStyleValue<boolean>;
+};
+
+export type TypeMapLike<P = {}, D extends React.ElementType = "div"> = {
+  props: P &
+    React.CSSProperties & {
+      sx?: SxProps<Theme>;
+    };
+  defaultComponent: D;
+};
+
+export type AnyMuiComponentProps = React.CSSProperties & {
+  sx?: SxProps<Theme>;
+  className?: string;
+  ref?: React.Ref<unknown>;
 };

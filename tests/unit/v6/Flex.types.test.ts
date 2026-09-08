@@ -1,53 +1,28 @@
 import type { FlexBoxColumnProps, FlexBoxProps, FlexBoxRowProps, FlexGrid2Props, FlexGridProps } from "@mui-flexy/v6";
 
-describe("Flex.types", () => {
-  it("should support FlexBoxProps and FlexGrid2Props along with standard CSS props", () => {
-    const flexBoxProps: FlexBoxProps = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-    const flexGridProps: FlexGridProps = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
+import { runCommonTypesTests, test_standardCssProps } from "../shared/Flex.types.test-shared";
+
+describe("v6: Flex.types", () => {
+  runCommonTypesTests<FlexGridProps>({
+    createFlexGridProps: (base) => ({
+      ...base,
       item: true,
       zeroMinWidth: true,
-      gap: 2,
       xs: 12,
       sm: 6,
       md: 4,
       lg: 3,
       xl: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
+    }),
+  });
+
+  it("should support FlexGrid2Props and reject legacy props", () => {
     const flexGrid2Props: FlexGrid2Props = {
-      alignItems: "center",
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
+      ...test_standardCssProps,
       // @ts-expect-error
       item: true,
       // @ts-expect-error
       zeroMinWidth: true,
-      gap: 2,
       // @ts-expect-error
       xs: 12,
       // @ts-expect-error
@@ -58,17 +33,29 @@ describe("Flex.types", () => {
       lg: 3,
       // @ts-expect-error
       xl: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
     };
 
-    expect(flexBoxProps).toBeDefined();
-    expect(flexGridProps).toBeDefined();
     expect(flexGrid2Props).toBeDefined();
+  });
+
+  it("should support legacy Grid props on FlexGridProps", () => {
+    const flexBoxProps: FlexBoxProps = {
+      ...test_standardCssProps,
+    } as FlexBoxProps;
+
+    const _legacyFlexGridProps: FlexGridProps = {
+      ...test_standardCssProps,
+      item: true,
+      zeroMinWidth: true,
+      xs: 12,
+      sm: 6,
+      md: 4,
+      lg: 3,
+      xl: 2,
+    } as FlexGridProps;
+
+    expect(flexBoxProps).toBeDefined();
+    expect(_legacyFlexGridProps).toBeDefined();
   });
 
   it("should be typesafe against invalid x/y row values", () => {
@@ -236,44 +223,6 @@ describe("Flex.types", () => {
     ]) {
       expect(value).not.toBeUndefined();
     }
-  });
-
-  it("should support responsive style props", () => {
-    const flexBoxProps: FlexBoxProps = {
-      alignItems: ["center", "flex-start"],
-      row: true,
-      justifyContent: { xs: "center", sm: "flex-start" },
-      flexWrap: "nowrap",
-      gap: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-    const flexGridProps: FlexGridProps = {
-      alignItems: ["center", "flex-start"],
-      flexDirection: "row",
-      row: true,
-      justifyContent: "center",
-      flexWrap: "nowrap",
-      gap: 2,
-      xs: 12,
-      sm: 6,
-      md: 4,
-      lg: 3,
-      xl: 2,
-      sx: {
-        border: "1px solid black",
-        borderRadius: 1,
-        bgcolor: "background.paper",
-        p: 2,
-      },
-    };
-
-    expect(flexBoxProps).toBeDefined();
-    expect(flexGridProps).toBeDefined();
   });
 
   it("should allow explicit usage of orientation-based props", () => {

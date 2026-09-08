@@ -23,7 +23,7 @@ export interface FlexGridTypeMap<
   P = {},
   D extends React.ElementType = "div",
 > {
-  props: P & GridOwnProps & FlexGridOrientationProps<O>;
+  props: P & Omit<GridOwnProps, "wrap"> & FlexGridOrientationProps<O>;
   defaultComponent: D;
 }
 

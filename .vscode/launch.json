@@ -62,6 +62,18 @@
       }
     },
     {
+      "name": "Demo: v9 Server",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}/demos/v9",
+      "request": "launch",
+      "command": "yarn install && yarn dev",
+      "serverReadyAction": {
+        "pattern": "webpack compiled|Local:.*http://localhost:3008",
+        "uriFormat": "http://localhost:3008",
+        "action": "openExternally"
+      }
+    },
+    {
       "name": "Docs: Development Server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
@@ -102,6 +114,13 @@
       "command": "yarn test:unit --watch"
     },
     {
+      "name": "Test: TypeScript Types",
+      "type": "node-terminal",
+      "cwd": "${workspaceFolder}",
+      "request": "launch",
+      "command": "yarn typecheck"
+    },
+    {
       "type": "node",
       "name": "vscode-jest-tests.v2.mui-flexy",
       "request": "launch",
@@ -131,7 +150,8 @@
       "configurations": [
         "Demo: v5 Server",
         "Demo: v6 Server",
-        "Demo: v7 Server"
+        "Demo: v7 Server",
+        "Demo: v9 Server"
       ],
       "stopAll": true
     }

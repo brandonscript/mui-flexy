@@ -10,6 +10,7 @@ const DEMO_CONFIGS = [
   { name: "v5", port: 3005, url: "http://localhost:3005" },
   { name: "v6", port: 3006, url: "http://localhost:3006" },
   { name: "v7", port: 3007, url: "http://localhost:3007" },
+  { name: "v9", port: 3008, url: "http://localhost:3008" },
 ];
 
 test.describe("Console validation tests", () => {

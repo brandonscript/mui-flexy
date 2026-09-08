@@ -284,8 +284,19 @@ describe("FlexBoxProps<T> type", () => {
     };
 
     // @ts-expect-error
-    const FlexRow = () => <FlexBox column {...(flexRowProps as FlexBoxProps<"row">)} />;
-    expect(() => FlexRow()).not.toThrow();
+    const FlexRowReject = () => <FlexBox column {...(flexRowProps as FlexBoxProps<"row">)} />;
+    expect(() => FlexRowReject()).not.toThrow();
+
+    const flexRowRowProps: FlexBoxRowProps = {
+      // @ts-expect-error
+      column: true,
+      x: "left",
+      y: "stretch",
+    };
+
+    // @ts-expect-error
+    const FlexRowRejectTyped = () => <FlexBox column {...(flexRowRowProps as FlexBoxRowProps)} />;
+    expect(() => FlexRowRejectTyped()).not.toThrow();
   });
 
   it("should accept correctly cast props for column", () => {
@@ -311,8 +322,19 @@ describe("FlexBoxProps<T> type", () => {
     };
 
     // @ts-expect-error
-    const FlexColumn = () => <FlexBox row {...(flexColumnProps as FlexBoxProps<"column">)} />;
-    expect(() => FlexColumn()).not.toThrow();
+    const FlexColumnReject = () => <FlexBox row {...(flexColumnProps as FlexBoxProps<"column">)} />;
+    expect(() => FlexColumnReject()).not.toThrow();
+
+    const flexColumnColumnProps: FlexBoxColumnProps = {
+      // @ts-expect-error
+      column: false,
+      x: "stretch",
+      y: "top",
+    };
+
+    // @ts-expect-error
+    const FlexColumnRejectTyped = () => <FlexBox row {...(flexColumnColumnProps as FlexBoxColumnProps)} />;
+    expect(() => FlexColumnRejectTyped()).not.toThrow();
   });
 });
 

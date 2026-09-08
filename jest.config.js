@@ -38,6 +38,7 @@ export default {
     "^@mui-flexy/v5$": "<rootDir>/packages/v5/src",
     "^@mui-flexy/v6$": "<rootDir>/packages/v6/src",
     "^@mui-flexy/v7$": "<rootDir>/packages/v7/src",
+    "^@mui-flexy/v9$": "<rootDir>/packages/v9/src",
   },
   projects: [
     {
@@ -111,6 +112,27 @@ export default {
         "^@mui-flexy/core$": "<rootDir>/packages/core/src",
         "^@mui-flexy/v7$": "<rootDir>/packages/v7/src",
         ...mapModules("v7"),
+      },
+    },
+    {
+      displayName: "v9-tests",
+      testMatch: ["<rootDir>/tests/unit/v9/**/*.test.{ts,tsx}"],
+      preset: "ts-jest",
+      testEnvironment: "jsdom",
+      setupFilesAfterEnv: ["<rootDir>/jest-setup.ts"],
+      transform: {
+        [TS_TRANSFORM_PATTERN]: [
+          "ts-jest",
+          {
+            tsconfig: "<rootDir>/tests/unit/v9/tsconfig.json",
+            useESM: false,
+          },
+        ],
+      },
+      moduleNameMapper: {
+        "^@mui-flexy/core$": "<rootDir>/packages/core/src",
+        "^@mui-flexy/v9$": "<rootDir>/packages/v9/src",
+        ...mapModules("v9"),
       },
     },
   ],

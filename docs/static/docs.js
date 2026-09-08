@@ -388,6 +388,12 @@ var versions = [
         label: "MUI v7",
         version: "7",
         packageName: "@mui-flexy/v7"
+    },
+    {
+        key: "v9",
+        label: "MUI v9",
+        version: "9",
+        packageName: "@mui-flexy/v9"
     }
 ];
 // Shared loading component to avoid visual jumps
@@ -884,7 +890,7 @@ var VersionApp = function(param) {
         y: "center",
         row: true,
         column: false,
-        nowrap: false,
+        wrap: false,
         reverse: false
     }), 2), flexBoxProps = _useState2[0], setFlexBoxProps = _useState2[1];
     var _useState3 = _sliced_to_array(useState({
@@ -956,7 +962,7 @@ var VersionApp = function(param) {
         if (flexBoxProps.y !== "center") propsArray.push('y="'.concat(flexBoxProps.y, '"'));
         if (flexBoxProps.row) propsArray.push("row");
         if (flexBoxProps.column) propsArray.push("column");
-        if (flexBoxProps.nowrap) propsArray.push("nowrap");
+        if (flexBoxProps.wrap) propsArray.push("wrap");
         if (flexBoxProps.reverse) propsArray.push("reverse");
         var propsString = propsArray.length > 0 ? " ".concat(propsArray.join(" ")) : "";
         return "<FlexBox".concat(propsString, ">\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : rowEmoji, "</span>\n  <span>").concat(isColumn ? columnEmoji : "🚤", "</span>\n</FlexBox>");
@@ -964,7 +970,7 @@ var VersionApp = function(param) {
     var generateFlexGridCode = function() {
         var gridComponent = selectedTab === 2 ? "FlexGrid2" : "FlexGrid";
         var containerProps = flexGridProps.useTemplate ? 'sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gridGap: '.concat(flexGridProps.spacing, " }}") : "container spacing={".concat(flexGridProps.spacing, "}");
-        var baseItemProps = selectedTab === 2 || selectedTab === 1 && version === "v7" ? "size={4}" : "item xs={4}";
+        var baseItemProps = selectedTab === 2 || selectedTab === 1 && (version === "v7" || version === "v9") ? "size={4}" : "item xs={4}";
         // Add x and y props to the item props
         var itemPropsArray = [
             baseItemProps
@@ -994,7 +1000,7 @@ var VersionApp = function(param) {
                         ]
                     })
                 }, i);
-            } else if (version === "v7" && selectedTab === 1) {
+            } else if ((version === "v7" || version === "v9") && selectedTab === 1) {
                 return /*#__PURE__*/ jsx(FlexGridDemo, {
                     size: itemSize,
                     x: flexGridItemProps.x,
@@ -1458,16 +1464,16 @@ var VersionApp = function(param) {
                                             children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
                                                 control: /*#__PURE__*/ jsx(Material.Switch, {
                                                     size: "small",
-                                                    checked: Boolean(flexBoxProps.nowrap),
+                                                    checked: Boolean(flexBoxProps.wrap),
                                                     onChange: function(e) {
                                                         return setFlexBoxProps(function(prev) {
                                                             return _object_spread_props(_object_spread({}, prev), {
-                                                                nowrap: e.target.checked
+                                                                wrap: e.target.checked
                                                             });
                                                         });
                                                     }
                                                 }),
-                                                label: "nowrap",
+                                                label: "wrap",
                                                 sx: {
                                                     "& .MuiFormControlLabel-label": {
                                                         fontSize: "0.875rem"
@@ -1518,7 +1524,7 @@ var VersionApp = function(param) {
                                     y: flexBoxProps.y,
                                     row: flexBoxProps.row,
                                     column: flexBoxProps.column,
-                                    nowrap: flexBoxProps.nowrap,
+                                    wrap: flexBoxProps.wrap,
                                     reverse: flexBoxProps.reverse,
                                     children: [
                                         /*#__PURE__*/ jsx("span", {
@@ -2215,7 +2221,8 @@ var preloadAllVersions = function() {
                     versionsList = [
                         "v5",
                         "v6",
-                        "v7"
+                        "v7",
+                        "v9"
                     ];
                     // Start loading all versions simultaneously
                     preloadPromises = versionsList.map(function(version) {

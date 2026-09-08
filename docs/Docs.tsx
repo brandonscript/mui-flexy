@@ -117,6 +117,7 @@ const versions = [
   { key: "v5", label: "MUI v5", version: "5", packageName: "@mui-flexy/v5" },
   { key: "v6", label: "MUI v6", version: "6", packageName: "@mui-flexy/v6" },
   { key: "v7", label: "MUI v7", version: "7", packageName: "@mui-flexy/v7" },
+  { key: "v9", label: "MUI v9", version: "9", packageName: "@mui-flexy/v9" },
 ];
 
 // Shared loading component to avoid visual jumps
@@ -262,7 +263,7 @@ const VersionContent = ({ version }: { version: string }) => {
               CssBaseline: Material.CssBaseline || Material.default?.CssBaseline,
             };
           } else {
-            // v6 and v7 use @mui/system for styling
+            // v6, v7, and v9 use @mui/system for styling
             const SystemModule = await import(`@mui/system_${version}`);
             const MaterialModule = Material.default || Material;
             const SystemModuleResolved = SystemModule.default || SystemModule;
@@ -438,7 +439,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
     y: "center",
     row: true,
     column: false,
-    nowrap: false,
+    wrap: false,
     reverse: false,
   });
 
@@ -498,7 +499,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
     if (flexBoxProps.y !== "center") propsArray.push(`y="${flexBoxProps.y}"`);
     if (flexBoxProps.row) propsArray.push("row");
     if (flexBoxProps.column) propsArray.push("column");
-    if (flexBoxProps.nowrap) propsArray.push("nowrap");
+    if (flexBoxProps.wrap) propsArray.push("wrap");
     if (flexBoxProps.reverse) propsArray.push("reverse");
 
     const propsString = propsArray.length > 0 ? ` ${propsArray.join(" ")}` : "";
@@ -511,7 +512,8 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
       ? `sx={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gridGap: ${flexGridProps.spacing} }}`
       : `container spacing={${flexGridProps.spacing}}`;
 
-    const baseItemProps = selectedTab === 2 || (selectedTab === 1 && version === "v7") ? `size={4}` : `item xs={4}`;
+    const baseItemProps =
+      selectedTab === 2 || (selectedTab === 1 && (version === "v7" || version === "v9")) ? `size={4}` : `item xs={4}`;
 
     // Add x and y props to the item props
     const itemPropsArray = [baseItemProps];
@@ -545,8 +547,8 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
           </FlexGrid2Demo>
         );
       }
-      // For v7 and FlexGrid tab (index 1) - uses new Grid2 API with size prop
-      else if (version === "v7" && selectedTab === 1) {
+      // For v7/v9 and FlexGrid tab (index 1) - uses new Grid2 API with size prop
+      else if ((version === "v7" || version === "v9") && selectedTab === 1) {
         return (
           <FlexGridDemo key={i} size={itemSize} x={flexGridItemProps.x} y={flexGridItemProps.y}>
             <div className="grid-item">Grid {i + 1}</div>
@@ -864,11 +866,11 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                     control={
                       <Material.Switch
                         size="small"
-                        checked={Boolean(flexBoxProps.nowrap)}
-                        onChange={(e: any) => setFlexBoxProps((prev) => ({ ...prev, nowrap: e.target.checked }))}
+                        checked={Boolean(flexBoxProps.wrap)}
+                        onChange={(e: any) => setFlexBoxProps((prev) => ({ ...prev, wrap: e.target.checked }))}
                       />
                     }
-                    label="nowrap"
+                    label="wrap"
                     sx={{
                       "& .MuiFormControlLabel-label": {
                         fontSize: "0.875rem",
@@ -911,7 +913,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
                 y={flexBoxProps.y}
                 row={flexBoxProps.row}
                 column={flexBoxProps.column}
-                nowrap={flexBoxProps.nowrap}
+                wrap={flexBoxProps.wrap}
                 reverse={flexBoxProps.reverse}
               >
                 <span>{isColumn ? columnEmoji : rowEmoji}</span>
@@ -1421,7 +1423,7 @@ const VersionApp = ({ version, libraries }: { version: string; libraries: any })
 
 // Preload all versions function
 const preloadAllVersions = async (): Promise<void> => {
-  const versionsList = ["v5", "v6", "v7"];
+  const versionsList = ["v5", "v6", "v7", "v9"];
 
   // Start loading all versions simultaneously
   const preloadPromises = versionsList.map(async (version) => {
@@ -1450,7 +1452,7 @@ const preloadAllVersions = async (): Promise<void> => {
           CssBaseline: Material.CssBaseline || Material.default?.CssBaseline,
         };
       } else {
-        // v6 and v7 use @mui/system for styling
+        // v6, v7, and v9 use @mui/system for styling
         const SystemModule = await import(`@mui/system_${version}`);
         const MaterialModule = Material.default || Material;
         const SystemModuleResolved = SystemModule.default || SystemModule;

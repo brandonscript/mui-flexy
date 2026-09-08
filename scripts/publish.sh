@@ -64,7 +64,7 @@ trap cleanup_on_exit ERR INT TERM
 
 get_package_dirs() {
   # Get specific package directories (core, v5, v6, v7)
-  for dir in packages/core packages/v5 packages/v6 packages/v7; do
+  for dir in packages/core packages/v5 packages/v6 packages/v7 packages/v9; do
     if [[ -f "$dir/package.json" ]]; then
       echo "$dir"
     fi
@@ -84,8 +84,13 @@ get_package_info() {
 }
 
 check_npm_auth() {
+  # Trusted publishing authenticates only during `npm publish`; npm whoami will fail.
+  if [[ "${NPM_TRUSTED_PUBLISHING:-}" == "true" ]]; then
+    echo -e "${GREEN}✓ Using npm trusted publishing (OIDC)${NC}"
+    return 0
+  fi
   if ! npm whoami &>/dev/null; then
-    echo -e "${RED}Error: Not authenticated with npm. Please run 'npm login' first.${NC}"
+    echo -e "${RED}Error: Not authenticated with npm. Please run 'npm login' first, or publish via GitHub Actions trusted publishing.${NC}"
     exit 1
   fi
   echo -e "${GREEN}✓ Authenticated as $(npm whoami)${NC}"
@@ -102,6 +107,7 @@ update_workspace_dependencies() {
     "@mui-flexy/v5"
     "@mui-flexy/v6"
     "@mui-flexy/v7"
+    "@mui-flexy/v9"
   )
   
   # Get only publishable package directories to update
@@ -110,6 +116,7 @@ update_workspace_dependencies() {
     "packages/v5"
     "packages/v6"
     "packages/v7"
+    "packages/v9"
   )
   
   for package_dir in "${package_dirs[@]}"; do
@@ -155,6 +162,7 @@ revert_workspace_dependencies() {
     "packages/v5"
     "packages/v6" 
     "packages/v7"
+    "packages/v9"
   )
   
   for package_dir in "${consumer_packages[@]}"; do

@@ -27,3 +27,11 @@ declare module "@mui/material_v7" {
 declare module "@mui/system_v7" {
   export * from "@mui/system";
 }
+
+declare module "@mui/material_v9" {
+  export * from "@mui/material";
+}
+
+declare module "@mui/system_v9" {
+  export * from "@mui/system";
+}

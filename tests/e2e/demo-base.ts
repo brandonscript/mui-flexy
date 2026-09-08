@@ -141,7 +141,7 @@ export class DemoBasePage {
     };
 
     // Check for version-specific headers
-    if (this.version === "6" || this.version === "7") {
+    if (this.version === "6" || this.version === "7" || this.version === "9") {
       headers.grid2 = await this.page.locator(`h2:has-text("Grid2 (@mui v${this.version}+")`).count();
     }
 
