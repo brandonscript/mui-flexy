@@ -41,5 +41,12 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "typescript": ">=5.9.0-dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brandonscript/mui-flexy.git"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

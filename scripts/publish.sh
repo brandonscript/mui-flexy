@@ -84,8 +84,13 @@ get_package_info() {
 }
 
 check_npm_auth() {
+  # Trusted publishing authenticates only during `npm publish`; npm whoami will fail.
+  if [[ "${NPM_TRUSTED_PUBLISHING:-}" == "true" ]]; then
+    echo -e "${GREEN}✓ Using npm trusted publishing (OIDC)${NC}"
+    return 0
+  fi
   if ! npm whoami &>/dev/null; then
-    echo -e "${RED}Error: Not authenticated with npm. Please run 'npm login' first.${NC}"
+    echo -e "${RED}Error: Not authenticated with npm. Please run 'npm login' first, or publish via GitHub Actions trusted publishing.${NC}"
     exit 1
   fi
   echo -e "${GREEN}✓ Authenticated as $(npm whoami)${NC}"
