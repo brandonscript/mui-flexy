@@ -189,9 +189,9 @@ revert_workspace_dependencies() {
   fi
 }
 
-build_all() {
-  echo -e "${YELLOW}Building all packages...${NC}"
-  yarn build:all || {
+build_packages() {
+  echo -e "${YELLOW}Building packages...${NC}"
+  yarn build:packages || {
     echo -e "${RED}Error: Build failed.${NC}"
     exit 1
   }
@@ -243,14 +243,18 @@ main() {
   check_npm_auth
   echo ""
 
-  # Get current version and convert workspace dependencies
   current_version=$(jq -r '.version' package.json)
-  
-  # Backup yarn.lock before making changes
+
+  # Build with workspace:* first. Converting to ^version before install/build
+  # makes Yarn try to fetch packages that are not on npm yet.
+  build_packages
+  echo ""
+
+  # Backup yarn.lock before rewriting published dependency ranges
   cp yarn.lock yarn.lock.backup
-  
+
   update_workspace_dependencies "$current_version"
-  
+
   # Copy README.md to each package directory
   echo -e "${YELLOW}Copying README.md to package directories...${NC}"
   for package_dir in $(get_package_dirs); do
@@ -259,11 +263,6 @@ main() {
       echo "  Copied README.md to $package_dir"
     fi
   done
-  echo ""
-
-  echo -e "${YELLOW}Building all packages...${NC}"
-  # Build all packages (quietly)
-  build_all > /dev/null 2>&1
   echo ""
 
   # Get all packages to publish

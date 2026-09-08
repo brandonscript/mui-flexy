@@ -58,3 +58,6 @@ jobs:
         run: ./scripts/publish.sh
         env:
           NPM_TRUSTED_PUBLISHING: "true"
+          # setup-node always injects this when registry-url is set; an empty
+          # token blocks OIDC trusted publishing.
+          NODE_AUTH_TOKEN: ""
