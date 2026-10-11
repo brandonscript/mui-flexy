@@ -1,10 +1,10 @@
-import { jsx } from 'react/jsx-runtime';
+import { jsx, jsxs } from 'react/jsx-runtime';
 import _MuiBox from '@mui/material/Box';
+import { unstable_extendSxProp, unstable_createGetCssVar, createSpacing as createSpacing$1, useTheme as useTheme$3 } from '@mui/system';
+import { __unsafe_useEmotionCache, ClassNames, Global, ThemeContext } from '@emotion/react';
 import * as React from 'react';
-import { forwardRef } from 'react';
+import { cloneElement, useContext, createContext, useMemo, forwardRef } from 'react';
 import Grid from '@mui/material/Grid';
-import { createSpacing as createSpacing$1, unstable_createGetCssVar, useTheme as useTheme$3 } from '@mui/system';
-import { ThemeContext } from '@emotion/react';
 import emStyled from '@emotion/styled';
 
 const stripUndefined = (obj)=>{
@@ -412,12 +412,11 @@ const resolveBoolDirection = (row, column, reverse, fallback = "row")=>{
     }
 };
 const mapFlexProps = (props, ref, componentName = "Box")=>{
-    const { x, y, row, column, flexDirection, direction, reverse, wrap, agnostic: _agnostic, ...rest } = props;
+    const { x, y, row, column, flexDirection, direction, reverse, wrap, agnostic: _agnostic, styling: _styling, ...rest } = props;
     // If direction is explicitly provided, it takes precedence over row/column/flexDirection
     const resolvedDirection = direction !== undefined && direction !== null ? resolveStringDirection(direction, reverse) : resolveBoolDirection(row, column, reverse, flexDirection);
     // Map wrap to flexWrap (supports boolean, string, and responsive values)
     const flexWrap = resolveWrapValue(wrap);
-    // TODO: Add unique classnames for each variant of the flex component
     const className = `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`.trim();
     const flexProps = {
         display: rest.display || "flex",
@@ -498,15 +497,298 @@ const verifyGridSizeProps = (props, gridVersion)=>{
     return props;
 };
 
+const globals = [
+    "initial",
+    "inherit",
+    "unset",
+    "revert",
+    "revert-layer"
+];
+const flexClassValues = {
+    display: [
+        "flex",
+        "inline-flex",
+        "none",
+        "block",
+        "inline",
+        "inline-block",
+        "grid",
+        "inline-grid",
+        "contents",
+        ...globals
+    ],
+    flexDirection: [
+        "row",
+        "row-reverse",
+        "column",
+        "column-reverse",
+        ...globals
+    ],
+    justifyContent: [
+        "flex-start",
+        "flex-end",
+        "center",
+        "space-between",
+        "space-around",
+        "space-evenly",
+        ...globals
+    ],
+    alignItems: [
+        "flex-start",
+        "flex-end",
+        "center",
+        "stretch",
+        "baseline",
+        ...globals
+    ],
+    flexWrap: [
+        "wrap",
+        "nowrap",
+        "wrap-reverse",
+        ...globals
+    ]
+};
+const properties$1 = Object.keys(flexClassValues);
+const labels = {
+    display: "display",
+    flexDirection: "direction",
+    justifyContent: "justify",
+    alignItems: "align",
+    flexWrap: "wrap"
+};
+const inputs = [
+    "row",
+    "column",
+    "reverse",
+    "direction",
+    "flexDirection",
+    "x",
+    "y",
+    "wrap",
+    "display"
+];
+const token = (value)=>value.replace(/[^a-zA-Z0-9_-]/g, (char)=>`_${char.charCodeAt(0).toString(16)}_`);
+function getFlexClassConfig(theme) {
+    const queries = theme.breakpoints.keys.map((key)=>({
+            key,
+            query: theme.breakpoints.up(key)
+        }));
+    const signature = JSON.stringify(queries);
+    // Two independent 32-bit accumulators keep names short and deterministic on server/client.
+    let a = 2166136261;
+    let b = 5381;
+    for(let i = 0; i < signature.length; i++){
+        a = Math.imul(a ^ signature.charCodeAt(i), 16777619);
+        b = Math.imul(b, 33) ^ signature.charCodeAt(i);
+    }
+    return {
+        queries,
+        signature,
+        namespace: `${(a >>> 0).toString(36)}${(b >>> 0).toString(36)}`
+    };
+}
+function classFor(property, value, config, key) {
+    return `MuiFlex-${labels[property]}-${value}${key === undefined ? "" : `-${config.namespace}-${token(key)}`}`;
+}
+/** Finite property rules, never the Cartesian product of layout permutations. */ function createFlexClassStyles(config, includeBase = true) {
+    const styles = {};
+    const rules = (key)=>{
+        const result = {};
+        for (const property of properties$1){
+            for (const value of flexClassValues[property]){
+                // Base sheets from other Emotion caches can be inserted later in the document.
+                // Responsive rules must beat those base rules regardless of insertion order.
+                const root = key === undefined ? ".MuiFlex-root" : ".MuiFlex-root.MuiFlex-root";
+                result[`${root}.${classFor(property, value, config, key)}`] = {
+                    [property]: value
+                };
+            }
+        }
+        return result;
+    };
+    if (includeBase) Object.assign(styles, rules());
+    for (const { key, query } of config.queries){
+        styles[query] = {
+            ...styles[query],
+            ...rules(key)
+        };
+    }
+    return styles;
+}
+const isResponsive = (value)=>value !== null && typeof value === "object";
+/** Resolve each breakpoint through the same scalar mapper used by system mode. */ function mapFlexClassProps(props, config, theme, ref, componentName = "Box") {
+    const evaluated = {
+        ...props
+    };
+    for (const input of inputs){
+        const value = evaluated[input];
+        if (typeof value === "function") evaluated[input] = value(theme);
+    }
+    if (typeof evaluated.className === "function") evaluated.className = evaluated.className(theme);
+    const state = {};
+    for (const input of inputs){
+        const value = evaluated[input];
+        if (!isResponsive(value)) state[input] = value;
+    }
+    const snapshots = [];
+    const resolve = ()=>{
+        const mapped = mapFlexProps(state);
+        return Object.fromEntries(properties$1.map((property)=>[
+                property,
+                mapped[property]
+            ]));
+    };
+    snapshots.push({
+        layout: resolve()
+    });
+    config.queries.forEach(({ key, query }, index)=>{
+        let changed = false;
+        for (const input of inputs){
+            const value = evaluated[input];
+            const next = Array.isArray(value) ? value[index] : isResponsive(value) ? value[key] : undefined;
+            // Null entries are gaps: previous breakpoint values continue to apply.
+            if (next !== null && next !== undefined) {
+                state[input] = next;
+                changed = true;
+            }
+        }
+        if (changed) {
+            const snapshot = {
+                key,
+                layout: resolve()
+            };
+            // A zero-width first breakpoint can use the same classes as scalar props.
+            if (index === 0 && /min-width:\s*0(?:px|em|rem)\)/.test(query)) snapshots[0] = {
+                layout: snapshot.layout
+            };
+            else snapshots.push(snapshot);
+        }
+    });
+    // Use the mapper to preserve forwarding/stripping behavior, then consume layout styles.
+    const mapped = mapFlexProps({
+        ...evaluated,
+        ...state
+    }, ref, componentName);
+    const classes = [
+        mapped.className,
+        "MuiFlex-classes"
+    ];
+    const fallback = {};
+    for (const property of properties$1){
+        delete mapped[property];
+        const values = snapshots.map(({ layout })=>layout[property]);
+        const supported = values.every((value)=>value === undefined || typeof value === "string" && flexClassValues[property].includes(value));
+        let previous;
+        for (const { key, layout } of snapshots){
+            const current = layout[property];
+            if (current === previous) continue;
+            // Clear a previous axis alignment when a direction change leaves it unspecified.
+            const value = current === undefined ? "initial" : current;
+            if (supported) classes.push(classFor(property, value, config, key));
+            else if (key === undefined) fallback[property] = value;
+            else {
+                const query = config.queries.find((entry)=>entry.key === key).query;
+                fallback[query] = {
+                    ...fallback[query],
+                    [property]: value
+                };
+            }
+            previous = current;
+        }
+    }
+    mapped.className = classes.join(" ");
+    return {
+        mapped,
+        fallback
+    };
+}
+
+const FlexyContext = /*#__PURE__*/ createContext(undefined);
+/** Version adapters supply their own MUI theme to avoid crossing theme contexts. */ function FlexyStyleProvider({ children, styling = "system", theme }) {
+    const parent = useContext(FlexyContext);
+    const cache = __unsafe_useEmotionCache();
+    const config = useMemo(()=>getFlexClassConfig(theme), [
+        theme
+    ]);
+    const sharesCache = parent !== undefined && parent.cache === cache;
+    const styles = useMemo(()=>createFlexClassStyles(config, !sharesCache), [
+        config,
+        sharesCache
+    ]);
+    const value = useMemo(()=>({
+            styling,
+            theme,
+            config,
+            cache
+        }), [
+        styling,
+        theme,
+        config,
+        cache
+    ]);
+    const inheritedStyles = parent?.config.signature === config.signature && parent.cache === cache;
+    return /*#__PURE__*/ jsxs(FlexyContext.Provider, {
+        value: value,
+        children: [
+            !inheritedStyles && /*#__PURE__*/ jsx(Global, {
+                styles: styles
+            }),
+            children
+        ]
+    });
+}
+/** The version-specific normalizer moves MUI system props into sx. */ function useFlexProps(props, ref, componentName, normalize) {
+    const context = useContext(FlexyContext);
+    const mode = props.styling ?? context?.styling ?? "system";
+    if (mode === "system") return mapFlexProps(props, ref, componentName);
+    if (!context) throw new Error('Mui Flexy: styling="classes" requires a FlexyProvider inside your ThemeProvider.');
+    const { mapped, fallback } = mapFlexClassProps(props, context.config, context.theme, ref, componentName);
+    const normalized = normalize(mapped);
+    const sx = normalized.sx;
+    const entries = [
+        fallback,
+        ...Array.isArray(sx) ? sx : sx ? [
+            sx
+        ] : []
+    ];
+    // Shared utility selectors beat Grid defaults; explicit sx beats both. No !important.
+    normalized.sx = entries.filter(Boolean).map((entry)=>(theme)=>({
+                "&.MuiFlex-root.MuiFlex-root.MuiFlex-root": theme.unstable_sx(entry)
+            }));
+    return normalized;
+}
+/** MUI styled wrappers may consume sx before forwarding props to Flexy. Raise their
+ * registered styles as well, so their sx declarations retain normal override priority.
+ * ClassNames registers each distinct style once in the active Emotion cache.
+ */ function FlexyClassOverrides({ children }) {
+    const cache = __unsafe_useEmotionCache();
+    const names = (children.props.className ?? "").split(/\s+/);
+    if (!names.includes("MuiFlex-classes") || !cache) return children;
+    const inherited = names.filter((name)=>cache.registered[name] !== undefined);
+    if (!inherited.length) return children;
+    const cssText = inherited.map((name)=>cache.registered[name]).join(";");
+    const remaining = names.filter((name)=>!inherited.includes(name));
+    return /*#__PURE__*/ jsx(ClassNames, {
+        children: ({ css })=>/*#__PURE__*/ cloneElement(children, {
+                className: [
+                    ...remaining,
+                    css(`&.MuiFlex-root.MuiFlex-root.MuiFlex-root{${cssText}}`)
+                ].join(" ")
+            })
+    });
+}
+
 // PRAGMA: Box has a default export in some MUI versions, so we need to check for it.
 // It also tends to conflict with other `Box` components in the same project.
 // @ts-ignore
 const MuiBox = _MuiBox?.default ?? _MuiBox;
-const createFlexBox = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(MuiBox, {
-            ...mapFlexProps({
-                ...defaultProps,
-                ...props
-            }, ref, "Box")
+const createFlexBox = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(FlexyClassOverrides, {
+            children: /*#__PURE__*/ jsx(MuiBox, {
+                ...useFlexProps({
+                    ...defaultProps,
+                    ...props
+                }, ref, "Box", normalizeFlexProps$2)
+            })
         }));
 const FlexBox = createFlexBox();
 const FlexRowBox = createFlexBox({
@@ -515,12 +797,15 @@ const FlexRowBox = createFlexBox({
 const FlexColumnBox = createFlexBox({
     column: true
 });
+const normalizeFlexProps$2 = (props)=>unstable_extendSxProp(props);
 
-const createFlexGrid = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(Grid, {
-            ...mapFlexProps(verifyGridSizeProps({
-                ...defaultProps,
-                ...props
-            }, "legacy"), ref, "Grid")
+const createFlexGrid = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(FlexyClassOverrides, {
+            children: /*#__PURE__*/ jsx(Grid, {
+                ...useFlexProps(verifyGridSizeProps({
+                    ...defaultProps,
+                    ...props
+                }, "legacy"), ref, "Grid", normalizeFlexProps$1)
+            })
         }));
 const FlexGrid = createFlexGrid();
 const FlexGridRow = createFlexGrid({
@@ -529,6 +814,7 @@ const FlexGridRow = createFlexGrid({
 const FlexGridColumn = createFlexGrid({
     column: true
 });
+const normalizeFlexProps$1 = (props)=>unstable_extendSxProp(props);
 
 function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e)){var o=e.length;for(t=0;t<o;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);}else for(f in e)e[f]&&(n&&(n+=" "),n+=f);return n}function clsx(){for(var e,t,f=0,n="",o=arguments.length;f<o;f++)(e=arguments[f])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}
 
@@ -1003,8 +1289,8 @@ function requireReactIs_production () {
 	  REACT_PORTAL_TYPE = Symbol.for("react.portal"),
 	  REACT_FRAGMENT_TYPE = Symbol.for("react.fragment"),
 	  REACT_STRICT_MODE_TYPE = Symbol.for("react.strict_mode"),
-	  REACT_PROFILER_TYPE = Symbol.for("react.profiler");
-	var REACT_CONSUMER_TYPE = Symbol.for("react.consumer"),
+	  REACT_PROFILER_TYPE = Symbol.for("react.profiler"),
+	  REACT_CONSUMER_TYPE = Symbol.for("react.consumer"),
 	  REACT_CONTEXT_TYPE = Symbol.for("react.context"),
 	  REACT_FORWARD_REF_TYPE = Symbol.for("react.forward_ref"),
 	  REACT_SUSPENSE_TYPE = Symbol.for("react.suspense"),
@@ -5186,11 +5472,13 @@ const Grid2 = createGrid({
   useTheme
 });
 
-const createFlexGrid2 = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(Grid2, {
-            ...mapFlexProps(verifyGridSizeProps({
-                ...defaultProps,
-                ...props
-            }, "new"), ref, "Grid2")
+const createFlexGrid2 = (defaultProps = {})=>/*#__PURE__*/ forwardRef((props, ref)=>/*#__PURE__*/ jsx(FlexyClassOverrides, {
+            children: /*#__PURE__*/ jsx(Grid2, {
+                ...useFlexProps(verifyGridSizeProps({
+                    ...defaultProps,
+                    ...props
+                }, "new"), ref, "Grid2", normalizeFlexProps)
+            })
         }));
 const FlexGrid2Row = createFlexGrid2({
     row: true
@@ -5199,5 +5487,14 @@ const FlexGrid2Column = createFlexGrid2({
     column: true
 });
 const FlexGrid2 = createFlexGrid2();
+const normalizeFlexProps = (props)=>unstable_extendSxProp(props);
 
-export { FlexBox, FlexColumnBox, FlexGrid, FlexGrid2, FlexGrid2Column, FlexGrid2Row, FlexGridColumn, FlexGridRow, FlexRowBox };
+function FlexyProvider(props) {
+    const theme = useTheme();
+    return /*#__PURE__*/ jsx(FlexyStyleProvider, {
+        ...props,
+        theme: theme
+    });
+}
+
+export { FlexBox, FlexColumnBox, FlexGrid, FlexGrid2, FlexGrid2Column, FlexGrid2Row, FlexGridColumn, FlexGridRow, FlexRowBox, FlexyProvider };

@@ -9,27 +9,27 @@ set -e
 
 # Run Jest tests (all unit tests)
 echo "Running Jest tests..."
-yarn jest --silent --verbose=false --reporters=summary --passWithNoTests
+pnpm exec jest --silent --verbose=false --reporters=summary --passWithNoTests
 
 # Run type checking
 echo ""
 echo "Running type checking..."
-yarn run typecheck
+pnpm run typecheck
 
 # Run linting
 echo ""
 echo "Running linting..."
-yarn run lint
+pnpm run lint
 
 # Build all packages
 echo ""
 echo "Building all packages..."
-yarn --silent run build:all
+pnpm --silent run build:all
 
 # Run Playwright tests (all e2e tests)
 echo ""
 echo "Running Playwright tests..."
-npx playwright test --quiet --workers $max_cpus
+pnpm exec playwright test --quiet --workers $max_cpus
 
 # Auto-add package dist folders to git index immediately after build
 git add packages/core/dist/ || true

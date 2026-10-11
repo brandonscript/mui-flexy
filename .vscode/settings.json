@@ -26,8 +26,8 @@
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
     "**/node_modules": true,
-    "**/.yarn": true,
-    "**/yarn-error.log": true,
+    "**/.pnpm-store": true,
+    "**/pnpm-debug.log": true,
     "**/test-results": true,
     "**/playwright-report": true,
     "demos": true,
@@ -38,12 +38,12 @@
   "search.exclude": {
     "**/node_modules": true,
     "**/dist": true,
-    "**/.yarn": true,
-    "**/yarn-error.log": true,
+    "**/.pnpm-store": true,
+    "**/pnpm-debug.log": true,
     "**/test-results": true,
     "**/playwright-report": true
   },
-  // Jest extension: use local binary so PATH/nvm/yarn aren't required
+  // Jest extension: use local binary so PATH/nvm/pnpm aren't required
   "jest.jestCommandLine": "./node_modules/.bin/jest",
   "jest.pathToConfig": "jest.config.js",
   "jest.rootPath": ".",

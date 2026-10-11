@@ -2,8 +2,9 @@ import type { BoxProps } from "@mui/material/Box";
 import _MuiBox from "@mui/material/Box";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import type { Theme as MaterialTheme } from "@mui/material/styles";
+import { unstable_extendSxProp as extendSxProp } from "@mui/system";
 import type { FlexOrientation } from "@mui-flexy/core";
-import { mapFlexProps } from "@mui-flexy/core";
+import { FlexyClassOverrides, useFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
 import type {
@@ -35,10 +36,19 @@ const createFlexBox = <
   defaultProps: FlexBoxProps<O, D, P> = {} as FlexBoxProps<O, D, P>,
 ) =>
   forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => {
-    return <MuiBox {...mapFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box")} />;
+    return (
+      <FlexyClassOverrides>
+        <MuiBox
+          {...useFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box", normalizeFlexProps)}
+        />
+      </FlexyClassOverrides>
+    );
   }) as R;
 export const FlexBox = createFlexBox();
 export const FlexRowBox = createFlexBox<"row">({ row: true });
 export const FlexColumnBox = createFlexBox<"column">({ column: true });
 
 export default FlexBox;
+
+const normalizeFlexProps = (props: Record<string, unknown>) =>
+  extendSxProp(props as Parameters<typeof extendSxProp>[0]) as Record<string, unknown>;

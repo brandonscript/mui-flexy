@@ -4,8 +4,9 @@
     {
       "label": "Core package build:watch",
       "type": "shell",
-      "command": "yarn",
+      "command": "pnpm",
       "args": [
+        "run",
         "build:watch"
       ],
       "options": {
@@ -34,7 +35,7 @@
         },
         "background": {
           "activeOnStart": true,
-          "beginsPattern": "^\\[nodemon\\] starting|^yarn run|^\\$ yarn build",
+          "beginsPattern": "^\\[nodemon\\] starting|^> .*build|^\\$ pnpm build",
           "endsPattern": "^\\[nodemon\\] clean exit - waiting for changes before restart$|^\\[nodemon\\] watching"
         }
       },

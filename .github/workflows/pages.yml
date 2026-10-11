@@ -21,23 +21,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24"
-          cache: "yarn"
-
-      - name: Enable corepack
-        run: corepack enable
+          cache: "pnpm"
+          cache-dependency-path: pnpm-lock.yaml
 
       - name: Install dependencies
-        run: yarn install --immutable
+        run: pnpm install --frozen-lockfile
 
       - name: Build packages
-        run: yarn build:packages
+        run: pnpm run build:packages
 
       - name: Build documentation
-        run: yarn build:docs
+        run: pnpm run build:docs
         env:
           BASEPATH: "/mui-flexy"
 

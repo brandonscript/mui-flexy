@@ -1,7 +1,8 @@
 import type { Grid2Props } from "@mui/material/Grid2";
 import Grid2 from "@mui/material/Grid2";
 import type { OverridableComponent } from "@mui/material/OverridableComponent";
-import { type FlexOrientation, mapFlexProps, verifyGridSizeProps } from "@mui-flexy/core";
+import { unstable_extendSxProp as extendSxProp } from "@mui/system";
+import { type FlexOrientation, FlexyClassOverrides, useFlexProps, verifyGridSizeProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
 import type { FlexGrid2ColumnProps, FlexGrid2Props, FlexGrid2RowProps, FlexGrid2TypeMap } from "./FlexGrid2.types";
@@ -16,16 +17,22 @@ export const createFlexGrid2 = <
   defaultProps: FlexGrid2Props<O, D, P> = {} as FlexGrid2Props<O, D, P>,
 ) =>
   forwardRef<Grid2Props["ref"], FlexGrid2Props<O, D, P>>((props, ref) => (
-    <Grid2
-      {...mapFlexProps<FlexGrid2Props<O, D, P>, Grid2Props>(
-        verifyGridSizeProps({ ...defaultProps, ...props } as FlexGrid2Props<O, D, P>, "new"),
-        ref,
-        "Grid2",
-      )}
-    />
+    <FlexyClassOverrides>
+      <Grid2
+        {...useFlexProps<FlexGrid2Props<O, D, P>, Grid2Props>(
+          verifyGridSizeProps({ ...defaultProps, ...props } as FlexGrid2Props<O, D, P>, "new"),
+          ref,
+          "Grid2",
+          normalizeFlexProps,
+        )}
+      />
+    </FlexyClassOverrides>
   )) as OverridableComponent<FlexGrid2TypeMap<O, P, D>>;
 
 export const FlexGrid2Row = createFlexGrid2<"row">({ row: true });
 export const FlexGrid2Column = createFlexGrid2<"column">({ column: true });
 export const FlexGrid2 = createFlexGrid2();
 export default FlexGrid2;
+
+const normalizeFlexProps = (props: Record<string, unknown>) =>
+  extendSxProp(props as Parameters<typeof extendSxProp>[0]) as Record<string, unknown>;

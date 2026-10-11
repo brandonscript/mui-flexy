@@ -8,18 +8,18 @@ This directory contains the documentation for mui-flexy, showcasing all supporte
 
 ```bash
 # From the root directory
-yarn dev:docs
+pnpm run docs:dev
 
 # Or from the docs directory
-yarn install
-yarn build
+pnpm install
+pnpm build
 ```
 
 ### Using Rollup (recommended for production)
 
 ```bash
 # From the root directory
-yarn build:docs
+pnpm build:docs
 ```
 
 ## Development and Serving
@@ -28,20 +28,20 @@ yarn build:docs
 
 ```bash
 # From the root directory
-yarn dev:docs
+pnpm run docs:dev
 
 # Or from the docs directory
-yarn dev
+pnpm dev
 ```
 
 ### Serving built documentation
 
 ```bash
 # From the root directory
-yarn docs
+pnpm run docs:serve
 
 # Or from the docs directory
-yarn serve
+pnpm serve
 ```
 
 ## Documentation Structure

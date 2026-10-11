@@ -75,7 +75,7 @@ export default defineConfig({
   /* Run the docs static server before starting the tests */
   webServer: {
     cwd: "docs",
-    command: "yarn dev",
+    command: "pnpm dev",
     url: "http://localhost:3003",
     reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
     timeout: 60000, // Timeout for server startup

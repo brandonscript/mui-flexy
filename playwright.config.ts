@@ -106,7 +106,7 @@ export default defineConfig({
   webServer: [
     {
       cwd: "demos/v5",
-      command: "yarn dev",
+      command: "pnpm dev",
       url: "http://127.0.0.1:3005",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
       timeout: 60000, // Reduced timeout for faster feedback
@@ -118,7 +118,7 @@ export default defineConfig({
     },
     {
       cwd: "demos/v6",
-      command: "yarn dev",
+      command: "pnpm dev",
       url: "http://127.0.0.1:3006",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
       timeout: 60000,
@@ -129,7 +129,7 @@ export default defineConfig({
     },
     {
       cwd: "demos/v7",
-      command: "yarn dev",
+      command: "pnpm dev",
       url: "http://127.0.0.1:3007",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
       timeout: 60000,
@@ -140,7 +140,7 @@ export default defineConfig({
     },
     {
       cwd: "demos/v9",
-      command: "yarn dev",
+      command: "pnpm dev",
       url: "http://127.0.0.1:3008",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
       timeout: 60000,

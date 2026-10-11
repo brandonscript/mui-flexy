@@ -133,7 +133,7 @@ update_workspace_dependencies() {
           jq --arg pkg "$workspace_pkg" --arg version "^$new_version" \
             '.dependencies[$pkg] = $version' "$package_json" > "$package_json.tmp" && \
             mv "$package_json.tmp" "$package_json" && \
-            yarn exec prettier --write "$package_json" || {
+            pnpm exec prettier --write "$package_json" || {
             echo -e "${RED}Error: Failed to update $workspace_pkg dependency in $package_json${NC}"
             exit 1
           }
@@ -174,7 +174,7 @@ revert_workspace_dependencies() {
         echo "  Resetting @mui-flexy/core dependency to workspace:* in $package_json"
         jq '.dependencies."@mui-flexy/core" = "workspace:*"' "$package_json" > "$package_json.tmp" && \
           mv "$package_json.tmp" "$package_json" && \
-          yarn exec prettier --write "$package_json" || {
+          pnpm exec prettier --write "$package_json" || {
           echo -e "${RED}Warning: Failed to revert @mui-flexy/core dependency in $package_json${NC}"
           # Don't exit - continue with other packages
         }
@@ -182,16 +182,16 @@ revert_workspace_dependencies() {
     fi
   done
   
-  # Restore yarn.lock to original state
-  if [[ -f yarn.lock.backup ]]; then
-    echo "  Restoring yarn.lock from backup"
-    mv yarn.lock.backup yarn.lock
+  # Restore pnpm-lock.yaml to original state
+  if [[ -f pnpm-lock.yaml.backup ]]; then
+    echo "  Restoring pnpm-lock.yaml from backup"
+    mv pnpm-lock.yaml.backup pnpm-lock.yaml
   fi
 }
 
 build_packages() {
   echo -e "${YELLOW}Building packages...${NC}"
-  yarn build:packages || {
+  pnpm build:packages || {
     echo -e "${RED}Error: Build failed.${NC}"
     exit 1
   }
@@ -245,19 +245,21 @@ main() {
     echo ""
   fi
 
-  # Check authentication
-  check_npm_auth
+  # Local packaging checks do not require registry credentials.
+  if [[ "$DRY_RUN" != "true" ]]; then
+    check_npm_auth
+  fi
   echo ""
 
   current_version=$(jq -r '.version' package.json)
 
   # Build with workspace:* first. Converting to ^version before install/build
-  # makes Yarn try to fetch packages that are not on npm yet.
+  # makes pnpm try to fetch packages that are not on npm yet.
   build_packages
   echo ""
 
-  # Backup yarn.lock before rewriting published dependency ranges
-  cp yarn.lock yarn.lock.backup
+  # Backup pnpm-lock.yaml before rewriting published dependency ranges
+  cp pnpm-lock.yaml pnpm-lock.yaml.backup
 
   update_workspace_dependencies "$current_version"
 
@@ -318,12 +320,13 @@ main() {
 
     if [[ "$DRY_RUN" == "true" ]]; then
       echo -e "${PURPLE}[DRY-RUN] Would publish $name@$version${NC}"
-      ((published_count++))
+      (cd "$package_dir" && npm pack --dry-run) || return 1
+      ((published_count+=1))
     else
       if publish_package "$package_dir" "$name" "$version"; then
-        ((published_count++))
+        ((published_count+=1))
       else
-        ((failed_count++))
+        ((failed_count+=1))
         echo -e "${RED}Stopping after failure publishing $name@$version${NC}"
         break
       fi
@@ -339,7 +342,7 @@ main() {
     trap - ERR INT TERM
     revert_workspace_dependencies
     cleanup_readme_files
-    yarn > /dev/null 2>&1
+    pnpm install --frozen-lockfile > /dev/null 2>&1
     exit 0
   else
     if [[ $failed_count -gt 0 ]]; then
@@ -349,7 +352,7 @@ main() {
       trap - ERR INT TERM
       revert_workspace_dependencies
       cleanup_readme_files
-      yarn > /dev/null 2>&1
+      pnpm install --frozen-lockfile > /dev/null 2>&1
       exit 1
     else
       echo -e "${GREEN}✓ Successfully published: $published_count${NC}"
@@ -363,7 +366,7 @@ main() {
   
   revert_workspace_dependencies
   cleanup_readme_files
-  yarn > /dev/null 2>&1
+  pnpm install --frozen-lockfile > /dev/null 2>&1
 }
 
 # Run main function

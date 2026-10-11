@@ -242,7 +242,7 @@ update_package_version() {
     # Update version and format with prettier
     jq --arg new_version "$new_version" '.version = $new_version' "$package_json" > "$package_json.tmp" && \
       mv "$package_json.tmp" "$package_json" && \
-      yarn exec prettier --write "$package_json" || {
+      pnpm exec prettier --write "$package_json" || {
       echo "Error: Failed to update version to $new_version in $package_json."
       exit 1
     }
@@ -267,7 +267,7 @@ update_readme_version_badge() {
     rm -f "${readme_file}.bak"
     
     # Format the README file
-    yarn exec prettier --write "$readme_file" || {
+    pnpm exec prettier --write "$readme_file" || {
       echo "Error: Failed to format $readme_file with prettier."
       exit 1
     }
@@ -312,7 +312,7 @@ update_workspace_dependencies() {
       
       # Format the package.json file if it was updated
       if [[ "$updated" == true ]]; then
-        yarn exec prettier --write "$package_json" || {
+        pnpm exec prettier --write "$package_json" || {
           echo "Error: Failed to format $package_json with prettier."
           exit 1
         }
@@ -443,7 +443,7 @@ echo "Updating version $current_version --> $new_version across all packages"
 echo "  Updating ./package.json"
 jq --arg new_version "$new_version" '.version = $new_version' package.json > tmp.json && \
   mv tmp.json package.json && \
-  yarn exec prettier --write package.json || {
+  pnpm exec prettier --write package.json || {
   echo "Error: Failed to update version to $new_version in package.json."
   exit 1
 }
@@ -478,7 +478,7 @@ fi
 if [[ "$BUILD_FLAG" == true ]]; then
   echo ""
   echo "Building the project..."
-  yarn build:all >/dev/null || {
+  pnpm build:all >/dev/null || {
     echo "Error: Build failed."
     exit 1
   }
@@ -556,5 +556,5 @@ for package_dir in "${PACKAGE_DIRS[@]}"; do
 done
 
 # Re-run formatting/linting fixes on package.json files
-yarn exec eslint --fix .
-yarn exec prettier --write .
+pnpm exec eslint --fix .
+pnpm exec prettier --write .

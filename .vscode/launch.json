@@ -23,14 +23,14 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/packages/core",
       "request": "launch",
-      "command": "yarn test --watch"
+      "command": "pnpm run test --watch"
     },
     {
       "name": "Demo: v5 Server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demos/v5",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3005",
         "uriFormat": "http://localhost:3005",
@@ -42,7 +42,7 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demos/v6",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3006",
         "uriFormat": "http://localhost:3006",
@@ -54,7 +54,7 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demos/v7",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3007",
         "uriFormat": "http://localhost:3007",
@@ -66,7 +66,7 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/demos/v9",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3008",
         "uriFormat": "http://localhost:3008",
@@ -78,7 +78,7 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn docs:dev",
+      "command": "pnpm run docs:dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3003",
         "uriFormat": "http://localhost:3003",
@@ -90,35 +90,35 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn build:docs && yarn docs"
+      "command": "pnpm run build:docs && pnpm run docs:serve"
     },
     {
       "name": "Build: All Packages",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn build"
+      "command": "pnpm run build"
     },
     {
       "name": "Test: All Packages",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn test"
+      "command": "pnpm run test"
     },
     {
       "name": "Test: Unit Tests (Watch Mode)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn test:unit --watch"
+      "command": "pnpm run test:unit --watch"
     },
     {
       "name": "Test: TypeScript Types",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn typecheck"
+      "command": "pnpm run typecheck"
     },
     {
       "type": "node",

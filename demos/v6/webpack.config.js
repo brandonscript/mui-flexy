@@ -21,6 +21,11 @@ module.exports = {
   resolve: {
     extensions: [".tsx", ".ts", ".js", ".json"],
     alias: {
+      // React and Emotion contexts must be shared across workspace source imports.
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+      "@emotion/react": path.resolve(__dirname, "node_modules/@emotion/react"),
+      "@emotion/styled": path.resolve(__dirname, "node_modules/@emotion/styled"),
       "@mui-flexy/core": path.resolve(__dirname, "../../packages/core/src"),
       "@mui-flexy/v6": path.resolve(__dirname, "../../packages/v6/src"),
     },

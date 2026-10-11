@@ -1,16 +1,16 @@
 {
   "name": "mui-flexy-docs",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Documentation for mui-flexy",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "yarn install && yarn clean && yarn dlx rollup -c rollup.docs.mjs",
+    "build": "pnpm run clean && pnpm exec rollup -c rollup.docs.mjs",
     "dev": "node dev-server.js",
     "dev:basepath": "BASEPATH=/mui-flexy node dev-server.js",
-    "serve:killall": "yarn dlx kill-port 3003",
-    "serve": "yarn serve:killall > /dev/null 2>&1 && yarn dlx serve -s . -p 3003 --no-clipboard",
-    "serve:basepath": "yarn serve:killall > /dev/null 2>&1 && BASEPATH=/mui-flexy yarn dlx serve -s . -p 3003 --no-clipboard",
+    "serve:killall": "pnpm exec kill-port 3003",
+    "serve": "pnpm run serve:killall > /dev/null 2>&1 && pnpm exec serve -s . -p 3003 --no-clipboard",
+    "serve:basepath": "pnpm run serve:killall > /dev/null 2>&1 && BASEPATH=/mui-flexy pnpm exec serve -s . -p 3003 --no-clipboard",
     "clean": "rm -rf static && mkdir -p static"
   },
   "dependencies": {
@@ -51,6 +51,7 @@
     "typescript": "^5.6.3",
     "webpack": "^5.99.5",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0"
+    "webpack-dev-server": "^5.1.0",
+    "kill-port": "^2.0.1"
   }
 }

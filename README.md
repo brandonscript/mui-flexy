@@ -125,7 +125,7 @@ npm install @mui-flexy/v6
 npm install @mui-flexy/v5
 
 # or...
-yarn add @mui-flexy/v{5,6,7,9}
+pnpm add @mui-flexy/v{5,6,7,9}
 pnpm add @mui-flexy/v{5,6,7,9}
 ```
 
@@ -134,7 +134,7 @@ pnpm add @mui-flexy/v{5,6,7,9}
 Make sure you have `@mui/material` and its dependencies installed, as well as React:
 
 ```shell
-yarn add @mui/material @emotion/react @emotion/styled react react-dom
+pnpm add @mui/material @emotion/react @emotion/styled react react-dom
 # or
 npm install @mui/material @emotion/react @emotion/styled react react-dom
 ```
@@ -212,7 +212,7 @@ import { FlexBox, FlexGrid } from "@mui-flexy/v9";
   <Typography>Hello, Bajor</Typography>
 </Box>;
 
-// Use a styled component (to prevent re-creating the flexbox styles for every instance):
+// Use a styled component to reuse the complete layout style:
 const CenteredFlexBox = styled(Box)({
   display: "flex",
   justifyContent: "center",
@@ -476,6 +476,92 @@ const SpanFlex = <FlexBox component="span" x="center" y="center" />;
 const TypographyFlex = <FlexBox component={Typography} x="center" y="center" variant="subtitle1" />;
 ```
 
+## Shared layout classes
+
+Flexy's default `styling="system"` mode uses MUI's existing styling path. To reuse
+layout rules independently of each element's other styles, enable `styling="classes"`:
+
+```tsx
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { FlexBox, FlexyProvider } from "@mui-flexy/v7";
+
+const theme = createTheme();
+
+<ThemeProvider theme={theme}>
+  <FlexyProvider styling="classes">
+    <FlexBox x="center" y="top" sx={{ color: "red" }} />
+    <FlexBox x="center" y="top" sx={{ color: "blue" }} />
+    <FlexBox styling="system" x="center" y="top" />
+  </FlexyProvider>
+</ThemeProvider>;
+```
+
+The first two boxes share `MuiFlex-justify-center` and `MuiFlex-align-flex-start`,
+along with `MuiFlex-display-flex` and `MuiFlex-direction-row`. Existing MUI root
+classes and a `MuiFlex-classes` marker remain present. There is one utility rule
+per property/value, rather than one rule per combination. Unrelated `sx` values
+can still produce different MUI classes, but the shared layout declarations are
+not bundled into those classes.
+
+`FlexyProvider` and the `styling` prop are available in the v5, v6, v7, and v9
+packages, including fixed row/column variants and v6's `FlexGrid2`. Providers
+default to `"system"`; a component's `styling` prop overrides that default in
+either direction. Class mode requires a provider even when enabled on a single
+component. The provider installs the stylesheet automatically; no CSS import is
+required.
+
+### Responsive layout and themes
+
+Responsive objects and arrays use the provider's theme breakpoint order and
+media queries, including custom breakpoint names and units. Missing or null
+entries keep the previous value. Direction changes recalculate horizontal and
+vertical alignment at each breakpoint:
+
+```tsx
+<FlexBox direction={{ xs: "row", md: "column" }} x="center" y="top" wrap={{ xs: true, md: false }} />
+```
+
+Scalar classes have stable names. Responsive classes add a deterministic
+breakpoint-configuration identifier and breakpoint name, so themes with different
+breakpoint values can coexist. Treat that identifier as opaque. Place a
+`FlexyProvider` inside each nested `ThemeProvider` that changes the theme, and
+inside each separate Emotion `CacheProvider`. Equivalent nested Flexy providers
+reuse their ancestor's stylesheet. Each independent provider tree owns its
+stylesheet lifecycle; unrelated sibling providers should usually be replaced by
+one shared ancestor.
+
+Styles use Emotion's existing cache and server-rendering path. Keep the same
+theme/breakpoint configuration on the server and client, and use your application's
+normal Emotion SSR setup.
+
+### Styling and overrides
+
+Class mode covers display, direction, reverse, horizontal/vertical alignment, and
+wrap. Spacing, Grid sizing, other system props, and arbitrary `sx` remain on MUI's
+styling path. Theme callbacks for display/direction are evaluated against the
+provider's theme. Values outside the finite utility vocabulary, such as
+`display="flow-root"`, fall back to MUI for that property while other layout
+properties retain shared classes.
+
+Explicit `sx` and inline `style` override shared layout rules. Objects, arrays,
+theme callbacks, responsive `sx`, and `styled(FlexBox)` composition are supported.
+Emotion styles supplied through `styled()` also take priority over shared layout
+rules in class mode. External CSS that overrides layout needs sufficient
+specificity; for example:
+
+```css
+.MuiFlex-root.my-layout {
+  justify-content: flex-end;
+}
+```
+
+Load an equally specific external rule after the shared stylesheet, or add another
+class selector. Avoid depending on the order of names in `className`.
+
+A standalone class-mode demo is available at `/?classes` on each version's demo
+server. Its "Render 300 boxes" button demonstrates layout-rule reuse with varied
+`sx` styling.
+
 ## `styled()` support
 
 mui-flexy supports the `styled()` function from `@mui/material/styles` to create styled components:
@@ -526,3 +612,17 @@ const SquircleishBox = styled(FlexBox)(({ theme }) =>
   }),
 );
 ```
+
+## Development
+
+Use Node.js 20 or newer and the pnpm version pinned in `package.json`. With Corepack installed, run `corepack enable`; otherwise install the pinned pnpm version with `npm install -g pnpm@12.11.2`.
+
+```sh
+pnpm install --frozen-lockfile
+pnpm run test:unit
+pnpm run test:types
+pnpm run build:all
+pnpm run demo:v7
+```
+
+Install dependencies once from the repository root. Builds and demo commands use the installed, locked tools. `pnpm-workspace.yaml` defines the packages, demos, and docs; `pnpm-lock.yaml` is the shared lockfile. CI installs with `--frozen-lockfile`.

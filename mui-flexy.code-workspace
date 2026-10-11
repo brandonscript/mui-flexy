@@ -97,7 +97,7 @@
     },
     "search.exclude": {
       "**/node_modules": true,
-      "**/.yarn": true,
+      "**/.pnpm-store": true,
       "**/lib": true,
       "**/build": true
     },
