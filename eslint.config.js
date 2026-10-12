@@ -32,7 +32,7 @@ export default tseslint.config(
       "**/dist/**",
       "**/build/**",
       "**/docs/static/**",
-      "**/demos/*/dist/**",
+      "**/fixtures/*/dist/**",
       "*.json",
       "*.code-workspace",
       // Additional generated files
@@ -153,10 +153,10 @@ export default tseslint.config(
       "import-x/no-duplicates": "error",
     },
   },
-  // Special configuration for demo apps - allow explicit any and enable import sorting
+  // Special configuration for test fixtures - allow explicit any and enable import sorting
   {
-    files: ["demos/**/*.{js,jsx,ts,tsx}"],
-    ignores: ["demos/*/dist/**"],
+    files: ["fixtures/**/*.{js,jsx,ts,tsx}"],
+    ignores: ["fixtures/*/dist/**"],
     plugins: {
       "import-x": importPlugin,
       "simple-import-sort": sisPlugin,

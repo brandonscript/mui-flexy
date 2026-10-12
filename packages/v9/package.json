@@ -1,6 +1,6 @@
 {
   "name": "@mui-flexy/v9",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "A flexbox convenience component for Material UI v9 Box and Grid with handy shorthand props",
   "type": "module",
   "main": "dist/index.js",
@@ -17,9 +17,9 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
+    "build": "pnpm run clean && pnpm exec rollup -c rollup.config.mjs && pnpm exec tsc -p tsconfig.dist.json",
     "clean": "rm -rf dist && mkdir dist",
-    "typecheck": "yarn tsc --noEmit"
+    "typecheck": "pnpm exec tsc --noEmit"
   },
   "peerDependencies": {
     "@emotion/react": "^11",
@@ -41,7 +41,8 @@
     "@types/react": "^18.3.20",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "@emotion/cache": "^11.14.0"
   },
   "repository": {
     "type": "git",

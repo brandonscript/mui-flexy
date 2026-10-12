@@ -4,7 +4,7 @@ import type { OverridableComponent } from "@mui/material/OverridableComponent";
 import type { Theme as MaterialTheme } from "@mui/material/styles";
 import { unstable_extendSxProp as extendSxProp } from "@mui/system";
 import type { FlexOrientation } from "@mui-flexy/core";
-import { mapFlexProps } from "@mui-flexy/core";
+import { FlexyClassOverrides, useFlexProps } from "@mui-flexy/core";
 import { forwardRef } from "react";
 
 import type {
@@ -37,11 +37,18 @@ const createFlexBox = <
 ) =>
   forwardRef<BoxProps["ref"], FlexBoxProps<O, D, P>>((props, ref) => {
     // MUI v9 removed system props from Box; fold them into sx instead.
-    const mapped = mapFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box");
-    return <MuiBox {...extendSxProp(mapped as Parameters<typeof extendSxProp>[0])} />;
+    const mapped = useFlexProps({ ...defaultProps, ...props } as FlexBoxProps<O, D, P>, ref, "Box", normalizeFlexProps);
+    return (
+      <FlexyClassOverrides>
+        <MuiBox {...extendSxProp(mapped as Parameters<typeof extendSxProp>[0])} />
+      </FlexyClassOverrides>
+    );
   }) as R;
 export const FlexBox = createFlexBox();
 export const FlexRowBox = createFlexBox<"row">({ row: true });
 export const FlexColumnBox = createFlexBox<"column">({ column: true });
 
 export default FlexBox;
+
+const normalizeFlexProps = (props: Record<string, unknown>) =>
+  extendSxProp(props as Parameters<typeof extendSxProp>[0]) as Record<string, unknown>;

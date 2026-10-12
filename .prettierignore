@@ -2,10 +2,12 @@ dist
 eslint.config.js
 package-lock.json
 tsconfig.*
-yarn-error.log
+pnpm-debug.log
 *.code-workspace
 # *.js
 *.cjs
 *.mjs
 *.html
 .*
+
+pnpm-lock.yaml

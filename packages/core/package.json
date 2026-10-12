@@ -1,6 +1,6 @@
 {
   "name": "@mui-flexy/core",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Core utilities and types for mui-flexy",
   "type": "module",
   "main": "dist/index.js",
@@ -17,11 +17,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn clean && yarn dlx rollup -c rollup.config.mjs && yarn tsc -p tsconfig.dist.json",
-    "build:watch": "nodemon --watch src --ext ts --exec 'yarn build' --delay 1000ms",
+    "build": "pnpm run clean && pnpm exec rollup -c rollup.config.mjs && pnpm exec tsc -p tsconfig.dist.json",
+    "build:watch": "nodemon --watch src --ext ts --exec 'pnpm run build' --delay 1000ms",
     "clean": "rm -rf dist && mkdir dist",
-    "test": "cd ../.. && yarn test:core",
-    "typecheck": "yarn tsc --noEmit"
+    "test": "pnpm --dir ../.. run test:unit:core",
+    "typecheck": "pnpm exec tsc --noEmit"
   },
   "peerDependencies": {
     "@emotion/react": "^11",

@@ -23,14 +23,14 @@
       "type": "node-terminal",
       "cwd": "${workspaceFolder}/packages/core",
       "request": "launch",
-      "command": "yarn test --watch"
+      "command": "pnpm run test --watch"
     },
     {
-      "name": "Demo: v5 Server",
+      "name": "Fixture: v5 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v5",
+      "cwd": "${workspaceFolder}/fixtures/v5",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3005",
         "uriFormat": "http://localhost:3005",
@@ -38,11 +38,11 @@
       }
     },
     {
-      "name": "Demo: v6 Server",
+      "name": "Fixture: v6 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v6",
+      "cwd": "${workspaceFolder}/fixtures/v6",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3006",
         "uriFormat": "http://localhost:3006",
@@ -50,11 +50,11 @@
       }
     },
     {
-      "name": "Demo: v7 Server",
+      "name": "Fixture: v7 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v7",
+      "cwd": "${workspaceFolder}/fixtures/v7",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3007",
         "uriFormat": "http://localhost:3007",
@@ -62,11 +62,11 @@
       }
     },
     {
-      "name": "Demo: v9 Server",
+      "name": "Fixture: v9 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v9",
+      "cwd": "${workspaceFolder}/fixtures/v9",
       "request": "launch",
-      "command": "yarn install && yarn dev",
+      "command": "pnpm run dev",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3008",
         "uriFormat": "http://localhost:3008",
@@ -74,11 +74,11 @@
       }
     },
     {
-      "name": "Docs: Development Server",
+      "name": "Demo & docs: Development Server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn docs:dev",
+      "command": "pnpm run demo",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3003",
         "uriFormat": "http://localhost:3003",
@@ -86,39 +86,39 @@
       }
     },
     {
-      "name": "Docs: Build and Serve",
+      "name": "Demo & docs: Build and Serve",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn build:docs && yarn docs"
+      "command": "pnpm run build:docs && pnpm run docs:serve"
     },
     {
       "name": "Build: All Packages",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn build"
+      "command": "pnpm run build"
     },
     {
       "name": "Test: All Packages",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn test"
+      "command": "pnpm run test"
     },
     {
       "name": "Test: Unit Tests (Watch Mode)",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn test:unit --watch"
+      "command": "pnpm run test:unit --watch"
     },
     {
       "name": "Test: TypeScript Types",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "yarn typecheck"
+      "command": "pnpm run typecheck"
     },
     {
       "type": "node",
@@ -146,12 +146,12 @@
   ],
   "compounds": [
     {
-      "name": "Demo: All",
+      "name": "Fixture: All",
       "configurations": [
-        "Demo: v5 Server",
-        "Demo: v6 Server",
-        "Demo: v7 Server",
-        "Demo: v9 Server"
+        "Fixture: v5 Server",
+        "Fixture: v6 Server",
+        "Fixture: v7 Server",
+        "Fixture: v9 Server"
       ],
       "stopAll": true
     }

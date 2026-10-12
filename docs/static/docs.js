@@ -563,9 +563,20 @@ var columnEmoji = "🏛";
 // Global cache for loaded libraries
 var libraryCache = {};
 var loadingPromises = {};
-// Lazy loading component for each version
+var readVersionFromUrl = function() {
+    var requested = new URLSearchParams(window.location.search).get("mui");
+    return versions.some(function(param) {
+        var key = param.key;
+        return key === requested;
+    }) ? requested : "v7";
+};
+var versionHref = function(version) {
+    var url = new URL(window.location.href);
+    url.searchParams.set("mui", version);
+    return "".concat(url.pathname).concat(url.search).concat(url.hash);
+};
 var VersionContent = function(param) {
-    var version = param.version;
+    var version = param.version, sandbox = param.sandbox, onSandboxChange = param.onSandboxChange;
     var _useState = _sliced_to_array(useState(libraryCache[version] || null), 2), libraries = _useState[0], setLibraries = _useState[1];
     var _useState1 = _sliced_to_array(useState(!libraryCache[version]), 2), loading = _useState1[0], setLoading = _useState1[1];
     var _useState2 = _sliced_to_array(useState(null), 2), error = _useState2[0], setError = _useState2[1];
@@ -630,7 +641,7 @@ var VersionContent = function(param) {
                             // Create loading promise and store it
                             loadingPromise = function() {
                                 return _async_to_generator(function() {
-                                    var Styles, _ref, Material, FlexComponents, _Material_default, _Material_default1, StylesModule, SystemModule, MaterialModule, SystemModuleResolved, simpleStyled, librariesData;
+                                    var _ref, Material, FlexComponents, MaterialModule, Styles, librariesData;
                                     return _ts_generator(this, function(_state) {
                                         switch(_state.label){
                                             case 0:
@@ -646,62 +657,19 @@ var VersionContent = function(param) {
                                                     _state.sent(),
                                                     2
                                                 ]), Material = _ref[0], FlexComponents = _ref[1];
-                                                if (!(version === "v5")) return [
-                                                    3,
-                                                    3
-                                                ];
-                                                return [
-                                                    4,
-                                                    import("@mui/styles_".concat(version))
-                                                ];
-                                            case 2:
-                                                StylesModule = _state.sent();
-                                                Styles = _object_spread_props(_object_spread({}, StylesModule.default || StylesModule), {
-                                                    createTheme: Material.createTheme || ((_Material_default = Material.default) === null || _Material_default === void 0 ? void 0 : _Material_default.createTheme),
-                                                    responsiveFontSizes: (StylesModule.default || StylesModule).responsiveFontSizes || function(theme) {
-                                                        return theme;
-                                                    },
-                                                    ThemeProvider: (StylesModule.default || StylesModule).ThemeProvider,
-                                                    CssBaseline: Material.CssBaseline || ((_Material_default1 = Material.default) === null || _Material_default1 === void 0 ? void 0 : _Material_default1.CssBaseline)
-                                                });
-                                                return [
-                                                    3,
-                                                    5
-                                                ];
-                                            case 3:
-                                                return [
-                                                    4,
-                                                    import("@mui/system_".concat(version))
-                                                ];
-                                            case 4:
-                                                SystemModule = _state.sent();
                                                 MaterialModule = Material.default || Material;
-                                                SystemModuleResolved = SystemModule.default || SystemModule;
-                                                // Create a simple styled function that just applies sx props
-                                                simpleStyled = function(Component) {
-                                                    return function(styles) {
-                                                        return function(props) {
-                                                            return /*#__PURE__*/ React.createElement(Component, _object_spread_props(_object_spread({}, props), {
-                                                                sx: _object_spread({}, styles, props.sx)
-                                                            }));
-                                                        };
-                                                    };
-                                                };
                                                 Styles = {
-                                                    styled: simpleStyled,
+                                                    styled: MaterialModule.styled,
                                                     createTheme: MaterialModule.createTheme,
-                                                    responsiveFontSizes: function(theme) {
-                                                        return theme;
-                                                    },
-                                                    ThemeProvider: SystemModuleResolved.ThemeProvider,
+                                                    responsiveFontSizes: MaterialModule.responsiveFontSizes,
+                                                    ThemeProvider: MaterialModule.ThemeProvider,
                                                     CssBaseline: MaterialModule.CssBaseline
                                                 };
-                                                _state.label = 5;
-                                            case 5:
                                                 librariesData = {
                                                     Material: Material.default || Material,
                                                     Styles: Styles,
                                                     FlexBox: FlexComponents.FlexBox,
+                                                    FlexyProvider: FlexComponents.FlexyProvider,
                                                     FlexGrid: FlexComponents.FlexGrid
                                                 };
                                                 // Only add FlexGrid2 for v6
@@ -876,33 +844,35 @@ var VersionContent = function(param) {
     }
     return /*#__PURE__*/ jsx(VersionApp, {
         version: version,
-        libraries: libraries
+        libraries: libraries,
+        sandbox: sandbox,
+        onSandboxChange: onSandboxChange
     });
 };
 // Main version-specific app component
 var VersionApp = function(param) {
-    var version = param.version, libraries = param.libraries;
-    var Material = libraries.Material, Styles = libraries.Styles, FlexBox = libraries.FlexBox, FlexGrid = libraries.FlexGrid, _libraries_FlexGrid2 = libraries.FlexGrid2, FlexGrid2 = _libraries_FlexGrid2 === void 0 ? null : _libraries_FlexGrid2;
-    var _useState = _sliced_to_array(useState(0), 2), selectedTab = _useState[0], setSelectedTab = _useState[1];
-    var _useState1 = _sliced_to_array(useState("row"), 2), direction = _useState1[0], setDirection = _useState1[1];
-    var _useState2 = _sliced_to_array(useState({
+    var version = param.version, libraries = param.libraries, sandbox = param.sandbox, onSandboxChange = param.onSandboxChange;
+    var Material = libraries.Material, Styles = libraries.Styles, FlexBox = libraries.FlexBox, FlexGrid = libraries.FlexGrid, FlexyProvider = libraries.FlexyProvider, _libraries_FlexGrid2 = libraries.FlexGrid2, FlexGrid2 = _libraries_FlexGrid2 === void 0 ? null : _libraries_FlexGrid2;
+    var selectedTab = sandbox === "box" ? 0 : version === "v6" ? 2 : 1;
+    var _useState = _sliced_to_array(useState("row"), 2), direction = _useState[0], setDirection = _useState[1];
+    var _useState1 = _sliced_to_array(useState({
         x: "center",
         y: "center",
         row: true,
         column: false,
         wrap: false,
         reverse: false
-    }), 2), flexBoxProps = _useState2[0], setFlexBoxProps = _useState2[1];
-    var _useState3 = _sliced_to_array(useState({
+    }), 2), flexBoxProps = _useState1[0], setFlexBoxProps = _useState1[1];
+    var _useState2 = _sliced_to_array(useState({
         rows: 2,
         columns: 3,
         spacing: 2,
         useTemplate: false
-    }), 2), flexGridProps = _useState3[0], setFlexGridProps = _useState3[1];
-    var _useState4 = _sliced_to_array(useState({
+    }), 2), flexGridProps = _useState2[0], setFlexGridProps = _useState2[1];
+    var _useState3 = _sliced_to_array(useState({
         x: "left",
         y: "stretch"
-    }), 2), flexGridItemProps = _useState4[0], setFlexGridItemProps = _useState4[1];
+    }), 2), flexGridItemProps = _useState3[0], setFlexGridItemProps = _useState3[1];
     // Update flexBoxProps when direction changes
     useEffect(function() {
         setFlexBoxProps(function(prev) {
@@ -914,21 +884,6 @@ var VersionApp = function(param) {
     }, [
         direction
     ]);
-    // Handle tab switching when version changes
-    useEffect(function() {
-        // Prevent infinite loops by checking if the tab switch is actually necessary
-        if (selectedTab === 2 && version !== "v6") {
-            // If user is on FlexGrid2 tab (index 2) and switches to v5/v7, go to FlexGrid tab (index 1)
-            console.log("Switching from FlexGrid2 tab to FlexGrid tab for ".concat(version));
-            setSelectedTab(1);
-        } else if (selectedTab === 1 && version === "v6") {
-            // If user is on FlexGrid tab (index 1) and switches to v6, go to FlexGrid2 tab (index 2)
-            console.log("Switching from FlexGrid tab to FlexGrid2 tab for ".concat(version));
-            setSelectedTab(2);
-        }
-    }, [
-        version
-    ]); // Only run when version changes, not when selectedTab changes
     // Determine current options based on direction
     var isColumn = direction === "column";
     var xOptions = isColumn ? xColumnOptions : xRowOptions;
@@ -1095,1120 +1050,1165 @@ var VersionApp = function(param) {
             "0px 44px 96px rgba(0, 0, 0, 0.08), 0px 22px 48px rgba(0, 0, 0, 0.12)"
         ]
     }));
-    return /*#__PURE__*/ jsxs(Styles.ThemeProvider, {
+    return /*#__PURE__*/ jsx(Styles.ThemeProvider, {
         theme: theme,
-        children: [
-            /*#__PURE__*/ jsx(Styles.CssBaseline, {}),
-            /*#__PURE__*/ jsx(Material.Container, {
-                maxWidth: "lg",
-                sx: {
-                    py: 4
-                },
-                children: /*#__PURE__*/ jsxs(Material.Box, {
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 4,
-                    children: [
-                        /*#__PURE__*/ jsxs(Material.Box, {
-                            children: [
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 2,
-                                    mb: 2,
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            component: "img",
-                                            src: "apple-touch-icon.png",
-                                            alt: "mui-flexy logo",
-                                            sx: {
-                                                width: 100,
-                                                height: 100
-                                            }
-                                        }),
-                                        /*#__PURE__*/ jsxs(Material.Typography, {
-                                            variant: "h4",
-                                            component: "h1",
-                                            children: [
-                                                currentVersion.label,
-                                                " + mui-flexy"
-                                            ]
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Typography, {
-                                    variant: "h6",
-                                    color: "text.secondary",
-                                    gutterBottom: true,
-                                    children: [
-                                        "Compatible with @mui/material v",
-                                        currentVersion.version
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsx(Material.Box, {
-                                    sx: {
-                                        mt: 1,
-                                        mb: 2,
-                                        p: 2,
-                                        backgroundColor: "#f5f5f5",
-                                        borderRadius: 1,
-                                        borderLeft: "4px solid #007FFF"
-                                    },
-                                    children: /*#__PURE__*/ jsxs(Material.Typography, {
-                                        variant: "body2",
+        children: /*#__PURE__*/ jsxs(FlexyProvider, {
+            styling: new URLSearchParams(window.location.search).get("styling") === "classes" ? "classes" : "system",
+            children: [
+                /*#__PURE__*/ jsx(Styles.CssBaseline, {}),
+                /*#__PURE__*/ jsx(Material.Container, {
+                    maxWidth: "lg",
+                    sx: {
+                        py: 4
+                    },
+                    children: /*#__PURE__*/ jsxs(Material.Box, {
+                        sx: {
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4
+                        },
+                        children: [
+                            /*#__PURE__*/ jsxs(Material.Box, {
+                                children: [
+                                    /*#__PURE__*/ jsxs(Material.Box, {
                                         sx: {
-                                            fontStyle: "italic",
-                                            color: "text.secondary"
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 2,
+                                            mb: 2
                                         },
                                         children: [
-                                            "Getting started? Check out the",
-                                            " ",
-                                            /*#__PURE__*/ jsxs(Material.Link, {
-                                                href: "https://github.com/brandonscript/mui-flexy#getting-started",
-                                                target: "_blank",
-                                                rel: "noopener noreferrer",
-                                                color: "primary",
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                component: "img",
+                                                src: "apple-touch-icon.png",
+                                                alt: "mui-flexy logo",
                                                 sx: {
-                                                    fontStyle: "normal",
-                                                    fontWeight: 600
-                                                },
+                                                    width: 100,
+                                                    height: 100
+                                                }
+                                            }),
+                                            /*#__PURE__*/ jsxs(Material.Typography, {
+                                                variant: "h4",
+                                                component: "h1",
                                                 children: [
-                                                    "README ",
-                                                    /*#__PURE__*/ jsx(HiOutlineExternalLink, {
-                                                        size: 16,
-                                                        style: {
-                                                            verticalAlign: "text-bottom"
-                                                        }
-                                                    })
+                                                    currentVersion.label,
+                                                    " + mui-flexy"
                                                 ]
                                             })
                                         ]
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Typography, {
+                                        variant: "h6",
+                                        color: "text.secondary",
+                                        gutterBottom: true,
+                                        children: [
+                                            "Compatible with @mui/material v",
+                                            currentVersion.version
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ jsx(Material.Box, {
+                                        sx: {
+                                            mt: 1,
+                                            mb: 2,
+                                            p: 2,
+                                            backgroundColor: "#f5f5f5",
+                                            borderRadius: 1,
+                                            borderLeft: "4px solid #007FFF"
+                                        },
+                                        children: /*#__PURE__*/ jsxs(Material.Typography, {
+                                            variant: "body2",
+                                            sx: {
+                                                fontStyle: "italic",
+                                                color: "text.secondary"
+                                            },
+                                            children: [
+                                                "Getting started? Check out the",
+                                                " ",
+                                                /*#__PURE__*/ jsxs(Material.Link, {
+                                                    href: "https://github.com/brandonscript/mui-flexy#getting-started",
+                                                    target: "_blank",
+                                                    rel: "noopener noreferrer",
+                                                    color: "primary",
+                                                    sx: {
+                                                        fontStyle: "normal",
+                                                        fontWeight: 600
+                                                    },
+                                                    children: [
+                                                        "README ",
+                                                        /*#__PURE__*/ jsx(HiOutlineExternalLink, {
+                                                            size: 16,
+                                                            style: {
+                                                                verticalAlign: "text-bottom"
+                                                            }
+                                                        })
+                                                    ]
+                                                })
+                                            ]
+                                        })
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Typography, {
+                                        variant: "body1",
+                                        component: "div",
+                                        sx: {
+                                            mt: 2
+                                        },
+                                        children: [
+                                            "mui-flexy extends MUI's Box and Grid components to allow you to easily align and distribute flexbox items in a space in a way that doesn't make you want to pull your hair out trying to remember whether to use",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "justify-content"
+                                            }),
+                                            " or ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "align-items"
+                                            }),
+                                            ". Using a simple and consistent x, y coordinate system, you can stop worrying about the CSS working group's choices and get on with your life of centering divs and building forms.",
+                                            /*#__PURE__*/ jsx("br", {}),
+                                            /*#__PURE__*/ jsx("br", {}),
+                                            "Simply use ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "<FlexBox />"
+                                            }),
+                                            " or",
+                                            " ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "<".concat(version === "v6" ? "FlexGrid2" : "FlexGrid", " />")
+                                            }),
+                                            " as you would Box or Grid. The default axis is ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "row"
+                                            }),
+                                            ", but for good hygiene, you might want to set",
+                                            " ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "row"
+                                            }),
+                                            " anyway. If you want a column, just pass a",
+                                            " ",
+                                            /*#__PURE__*/ jsx(DemoCode, {
+                                                inline: true,
+                                                children: "column"
+                                            }),
+                                            " prop."
+                                        ]
                                     })
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Typography, {
-                                    variant: "body1",
-                                    component: "div",
-                                    sx: {
-                                        mt: 2
+                                ]
+                            }),
+                            /*#__PURE__*/ jsx(Material.Box, {
+                                sx: {
+                                    borderBottom: 1,
+                                    borderColor: "divider"
+                                },
+                                children: /*#__PURE__*/ jsxs(Material.Tabs, {
+                                    value: selectedTab,
+                                    onChange: function(_, newValue) {
+                                        return onSandboxChange(newValue === 0 ? "box" : "grid");
                                     },
+                                    role: "tablist",
                                     children: [
-                                        "mui-flexy extends MUI's Box and Grid components to allow you to easily align and distribute flexbox items in a space in a way that doesn't make you want to pull your hair out trying to remember whether to use",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "justify-content"
+                                        /*#__PURE__*/ jsx(Material.Tab, {
+                                            label: "FlexBox",
+                                            role: "tab"
                                         }),
-                                        " or ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "align-items"
+                                        /*#__PURE__*/ jsx(Material.Tab, {
+                                            label: "FlexGrid",
+                                            role: "tab",
+                                            sx: {
+                                                display: version === "v6" ? "none" : "flex"
+                                            }
                                         }),
-                                        ". Using a simple and consistent x, y coordinate system, you can stop worrying about the CSS working group's choices and get on with your life of centering divs and building forms.",
-                                        /*#__PURE__*/ jsx("br", {}),
-                                        /*#__PURE__*/ jsx("br", {}),
-                                        "Simply use ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "<FlexBox />"
-                                        }),
-                                        " or",
-                                        " ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "<".concat(version === "v6" ? "FlexGrid2" : "FlexGrid", " />")
-                                        }),
-                                        " as you would Box or Grid. The default axis is ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "row"
-                                        }),
-                                        ", but for good hygiene, you might want to set",
-                                        " ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "row"
-                                        }),
-                                        " anyway. If you want a column, just pass a",
-                                        " ",
-                                        /*#__PURE__*/ jsx(DemoCode, {
-                                            inline: true,
-                                            children: "column"
-                                        }),
-                                        " prop."
+                                        /*#__PURE__*/ jsx(Material.Tab, {
+                                            label: "FlexGrid2",
+                                            role: "tab",
+                                            sx: {
+                                                display: version === "v6" ? "flex" : "none"
+                                            }
+                                        })
                                     ]
                                 })
-                            ]
-                        }),
-                        /*#__PURE__*/ jsx(Material.Box, {
-                            sx: {
-                                borderBottom: 1,
-                                borderColor: "divider"
-                            },
-                            children: /*#__PURE__*/ jsxs(Material.Tabs, {
-                                value: selectedTab,
-                                onChange: function(_, newValue) {
-                                    return setSelectedTab(newValue);
+                            }),
+                            selectedTab === 0 && /*#__PURE__*/ jsxs(Material.Paper, {
+                                elevation: 2,
+                                sx: {
+                                    p: 3
                                 },
-                                role: "tablist",
                                 children: [
-                                    /*#__PURE__*/ jsx(Material.Tab, {
-                                        label: "FlexBox",
-                                        role: "tab"
+                                    /*#__PURE__*/ jsx(Material.Typography, {
+                                        variant: "h5",
+                                        component: "h2",
+                                        gutterBottom: true,
+                                        children: FLEXBOX_TAB_TITLE
                                     }),
-                                    /*#__PURE__*/ jsx(Material.Tab, {
-                                        label: "FlexGrid",
-                                        role: "tab",
+                                    /*#__PURE__*/ jsxs(Material.Box, {
+                                        "data-testid": "sandbox-controls",
                                         sx: {
-                                            display: version === "v6" ? "none" : "flex"
-                                        }
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                            mb: 3,
+                                            alignItems: "flex-end"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "x-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "X alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "x-alignment-label",
+                                                            value: flexBoxProps.x,
+                                                            label: "X alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexBoxProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        x: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: xOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "y-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Y alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "y-alignment-label",
+                                                            value: flexBoxProps.y,
+                                                            label: "Y alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexBoxProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        y: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: yOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.FormLabel, {
+                                                            id: "direction-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem",
+                                                                mb: 0.5
+                                                            },
+                                                            children: "Direction"
+                                                        }),
+                                                        /*#__PURE__*/ jsxs(Material.RadioGroup, {
+                                                            row: true,
+                                                            "aria-labelledby": "direction-label",
+                                                            value: direction,
+                                                            sx: {
+                                                                gap: 0.5,
+                                                                alignItems: "center",
+                                                                minHeight: 38
+                                                            },
+                                                            children: [
+                                                                /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                                    control: /*#__PURE__*/ jsx(Material.Radio, {
+                                                                        size: "small",
+                                                                        checked: direction === "row",
+                                                                        onChange: function() {
+                                                                            console.log("Row radio clicked");
+                                                                            setDirection("row");
+                                                                        },
+                                                                        value: "row"
+                                                                    }),
+                                                                    label: "row",
+                                                                    sx: {
+                                                                        "& .MuiFormControlLabel-label": {
+                                                                            fontSize: "0.875rem"
+                                                                        },
+                                                                        margin: 0
+                                                                    }
+                                                                }),
+                                                                /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                                    control: /*#__PURE__*/ jsx(Material.Radio, {
+                                                                        size: "small",
+                                                                        checked: direction === "column",
+                                                                        onChange: function() {
+                                                                            console.log("Column radio clicked");
+                                                                            setDirection("column");
+                                                                        },
+                                                                        value: "column"
+                                                                    }),
+                                                                    label: "column",
+                                                                    sx: {
+                                                                        "& .MuiFormControlLabel-label": {
+                                                                            fontSize: "0.875rem"
+                                                                        },
+                                                                        margin: 0
+                                                                    }
+                                                                })
+                                                            ]
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    height: 38,
+                                                    display: "flex",
+                                                    alignItems: "center"
+                                                },
+                                                children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                    control: /*#__PURE__*/ jsx(Material.Switch, {
+                                                        size: "small",
+                                                        checked: Boolean(flexBoxProps.wrap),
+                                                        onChange: function(e) {
+                                                            return setFlexBoxProps(function(prev) {
+                                                                return _object_spread_props(_object_spread({}, prev), {
+                                                                    wrap: e.target.checked
+                                                                });
+                                                            });
+                                                        }
+                                                    }),
+                                                    label: "wrap",
+                                                    sx: {
+                                                        "& .MuiFormControlLabel-label": {
+                                                            fontSize: "0.875rem"
+                                                        },
+                                                        margin: 0,
+                                                        height: "100%",
+                                                        alignItems: "center"
+                                                    }
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    height: 38,
+                                                    display: "flex",
+                                                    alignItems: "center"
+                                                },
+                                                children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                    control: /*#__PURE__*/ jsx(Material.Switch, {
+                                                        size: "small",
+                                                        checked: Boolean(flexBoxProps.reverse),
+                                                        onChange: function(e) {
+                                                            return setFlexBoxProps(function(prev) {
+                                                                return _object_spread_props(_object_spread({}, prev), {
+                                                                    reverse: e.target.checked
+                                                                });
+                                                            });
+                                                        }
+                                                    }),
+                                                    label: "reverse",
+                                                    sx: {
+                                                        "& .MuiFormControlLabel-label": {
+                                                            fontSize: "0.875rem"
+                                                        },
+                                                        margin: 0,
+                                                        height: "100%",
+                                                        alignItems: "center"
+                                                    }
+                                                })
+                                            })
+                                        ]
                                     }),
-                                    /*#__PURE__*/ jsx(Material.Tab, {
-                                        label: "FlexGrid2",
-                                        role: "tab",
+                                    /*#__PURE__*/ jsx(DemoCode, {
+                                        code: generateFlexBoxCode()
+                                    }),
+                                    /*#__PURE__*/ jsxs(FlexBoxInner, {
+                                        "data-testid": "demo-flexbox",
+                                        x: flexBoxProps.x,
+                                        y: flexBoxProps.y,
+                                        row: flexBoxProps.row,
+                                        column: flexBoxProps.column,
+                                        wrap: flexBoxProps.wrap,
+                                        reverse: flexBoxProps.reverse,
+                                        children: [
+                                            /*#__PURE__*/ jsx("span", {
+                                                children: isColumn ? columnEmoji : rowEmoji
+                                            }),
+                                            /*#__PURE__*/ jsx("span", {
+                                                children: isColumn ? columnEmoji : rowEmoji
+                                            }),
+                                            /*#__PURE__*/ jsx("span", {
+                                                children: isColumn ? columnEmoji : rowEmoji
+                                            }),
+                                            /*#__PURE__*/ jsx("span", {
+                                                children: isColumn ? columnEmoji : "🚤"
+                                            })
+                                        ]
+                                    })
+                                ]
+                            }),
+                            selectedTab === 1 && version !== "v6" && /*#__PURE__*/ jsxs(Material.Paper, {
+                                elevation: 2,
+                                sx: {
+                                    p: 3
+                                },
+                                children: [
+                                    /*#__PURE__*/ jsx(Material.Typography, {
+                                        variant: "h5",
+                                        component: "h2",
+                                        gutterBottom: true,
+                                        children: FLEXGRID_TAB_TITLE
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Box, {
+                                        "data-testid": "grid-controls",
                                         sx: {
-                                            display: version === "v6" ? "flex" : "none"
-                                        }
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                            mb: 2,
+                                            alignItems: "flex-end"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "rows-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Rows"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "rows-label",
+                                                            value: flexGridProps.rows,
+                                                            label: "Rows",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        rows: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: Array.from({
+                                                                length: 5
+                                                            }, function(_, i) {
+                                                                return i + 1;
+                                                            }).map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "columns-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Columns"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "columns-label",
+                                                            value: flexGridProps.columns,
+                                                            label: "Columns",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        columns: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: Array.from({
+                                                                length: 5
+                                                            }, function(_, i) {
+                                                                return i + 1;
+                                                            }).map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "spacing-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Spacing"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "spacing-label",
+                                                            value: flexGridProps.spacing,
+                                                            label: "Spacing",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        spacing: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: [
+                                                                0,
+                                                                1,
+                                                                2,
+                                                                3,
+                                                                4,
+                                                                5
+                                                            ].map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    height: 32,
+                                                    display: "flex",
+                                                    alignItems: "center"
+                                                },
+                                                children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                    control: /*#__PURE__*/ jsx(Material.Switch, {
+                                                        size: "small",
+                                                        checked: flexGridProps.useTemplate,
+                                                        onChange: function(e) {
+                                                            return setFlexGridProps(function(prev) {
+                                                                return _object_spread_props(_object_spread({}, prev), {
+                                                                    useTemplate: e.target.checked
+                                                                });
+                                                            });
+                                                        }
+                                                    }),
+                                                    label: "Use grid template",
+                                                    sx: {
+                                                        "& .MuiFormControlLabel-label": {
+                                                            fontSize: "0.875rem"
+                                                        },
+                                                        margin: 0,
+                                                        height: "100%",
+                                                        alignItems: "center"
+                                                    }
+                                                })
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Box, {
+                                        "data-testid": "sandbox-controls",
+                                        sx: {
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                            mb: 3,
+                                            alignItems: "flex-end"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "x-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "X alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "x-alignment-label",
+                                                            value: flexGridItemProps.x,
+                                                            label: "X alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridItemProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        x: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: xRowOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "y-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Y alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "y-alignment-label",
+                                                            value: flexGridItemProps.y,
+                                                            label: "Y alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridItemProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        y: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: yRowOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ jsx(DemoCode, {
+                                        code: generateFlexGridCode()
+                                    }),
+                                    flexGridProps.useTemplate ? /*#__PURE__*/ jsx(FlexGridDemo, {
+                                        sx: {
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                                            gridGap: flexGridProps.spacing
+                                        },
+                                        children: renderFlexGridItems()
+                                    }) : /*#__PURE__*/ jsx(FlexGridDemo, {
+                                        container: true,
+                                        spacing: flexGridProps.spacing,
+                                        children: renderFlexGridItems()
+                                    })
+                                ]
+                            }),
+                            selectedTab === 2 && version === "v6" && FlexGrid2Demo && /*#__PURE__*/ jsxs(Material.Paper, {
+                                elevation: 2,
+                                sx: {
+                                    p: 3
+                                },
+                                children: [
+                                    /*#__PURE__*/ jsx(Material.Typography, {
+                                        variant: "h5",
+                                        component: "h2",
+                                        gutterBottom: true,
+                                        children: FLEXGRID2_TAB_TITLE
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Box, {
+                                        "data-testid": "grid-controls",
+                                        sx: {
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                            mb: 2,
+                                            alignItems: "flex-end"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "rows-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Rows"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "rows-label",
+                                                            value: flexGridProps.rows,
+                                                            label: "Rows",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        rows: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: Array.from({
+                                                                length: 5
+                                                            }, function(_, i) {
+                                                                return i + 1;
+                                                            }).map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "columns-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Columns"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "columns-label",
+                                                            value: flexGridProps.columns,
+                                                            label: "Columns",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        columns: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: Array.from({
+                                                                length: 5
+                                                            }, function(_, i) {
+                                                                return i + 1;
+                                                            }).map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 110
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "spacing-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Spacing"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "spacing-label",
+                                                            value: flexGridProps.spacing,
+                                                            label: "Spacing",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        spacing: Number(e.target.value)
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: [
+                                                                0,
+                                                                1,
+                                                                2,
+                                                                3,
+                                                                4,
+                                                                5
+                                                            ].map(function(num) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: num,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: num
+                                                                }, num);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    height: 32,
+                                                    display: "flex",
+                                                    alignItems: "center"
+                                                },
+                                                children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
+                                                    control: /*#__PURE__*/ jsx(Material.Switch, {
+                                                        size: "small",
+                                                        checked: flexGridProps.useTemplate,
+                                                        onChange: function(e) {
+                                                            return setFlexGridProps(function(prev) {
+                                                                return _object_spread_props(_object_spread({}, prev), {
+                                                                    useTemplate: e.target.checked
+                                                                });
+                                                            });
+                                                        }
+                                                    }),
+                                                    label: "Use grid template",
+                                                    sx: {
+                                                        "& .MuiFormControlLabel-label": {
+                                                            fontSize: "0.875rem"
+                                                        },
+                                                        margin: 0,
+                                                        height: "100%",
+                                                        alignItems: "center"
+                                                    }
+                                                })
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ jsxs(Material.Box, {
+                                        "data-testid": "sandbox-controls",
+                                        sx: {
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            gap: 2,
+                                            mb: 3,
+                                            alignItems: "flex-end"
+                                        },
+                                        children: [
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "x-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "X alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "x-alignment-label",
+                                                            value: flexGridItemProps.x,
+                                                            label: "X alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridItemProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        x: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: xRowOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            }),
+                                            /*#__PURE__*/ jsx(Material.Box, {
+                                                sx: {
+                                                    minWidth: 140
+                                                },
+                                                children: /*#__PURE__*/ jsxs(Material.FormControl, {
+                                                    fullWidth: true,
+                                                    size: "small",
+                                                    margin: "none",
+                                                    children: [
+                                                        /*#__PURE__*/ jsx(Material.InputLabel, {
+                                                            id: "y-alignment-label",
+                                                            sx: {
+                                                                fontSize: "0.875rem"
+                                                            },
+                                                            children: "Y alignment"
+                                                        }),
+                                                        /*#__PURE__*/ jsx(Material.Select, {
+                                                            labelId: "y-alignment-label",
+                                                            value: flexGridItemProps.y,
+                                                            label: "Y alignment",
+                                                            sx: {
+                                                                height: 32,
+                                                                "& .MuiSelect-select": {
+                                                                    padding: "6px 12px",
+                                                                    fontSize: "0.875rem"
+                                                                }
+                                                            },
+                                                            onChange: function(e) {
+                                                                return setFlexGridItemProps(function(prev) {
+                                                                    return _object_spread_props(_object_spread({}, prev), {
+                                                                        y: e.target.value
+                                                                    });
+                                                                });
+                                                            },
+                                                            children: yRowOptions.map(function(option) {
+                                                                return /*#__PURE__*/ jsx(Material.MenuItem, {
+                                                                    value: option.value,
+                                                                    dense: true,
+                                                                    sx: {
+                                                                        fontSize: "0.875rem",
+                                                                        minHeight: 32,
+                                                                        padding: "4px 12px"
+                                                                    },
+                                                                    children: option.label
+                                                                }, option.value);
+                                                            })
+                                                        })
+                                                    ]
+                                                })
+                                            })
+                                        ]
+                                    }),
+                                    /*#__PURE__*/ jsx(DemoCode, {
+                                        code: generateFlexGridCode()
+                                    }),
+                                    flexGridProps.useTemplate ? /*#__PURE__*/ jsx(FlexGrid2Demo, {
+                                        sx: {
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                                            gridGap: flexGridProps.spacing
+                                        },
+                                        children: renderFlexGridItems()
+                                    }) : /*#__PURE__*/ jsx(FlexGrid2Demo, {
+                                        container: true,
+                                        spacing: flexGridProps.spacing,
+                                        children: renderFlexGridItems()
                                     })
                                 ]
                             })
-                        }),
-                        selectedTab === 0 && /*#__PURE__*/ jsxs(Material.Paper, {
-                            elevation: 2,
-                            sx: {
-                                p: 3
-                            },
-                            children: [
-                                /*#__PURE__*/ jsx(Material.Typography, {
-                                    variant: "h5",
-                                    component: "h2",
-                                    gutterBottom: true,
-                                    children: FLEXBOX_TAB_TITLE
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    mb: 3,
-                                    alignItems: "flex-end",
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "X alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexBoxProps.x,
-                                                        label: "X alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexBoxProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    x: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: xOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Y alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexBoxProps.y,
-                                                        label: "Y alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexBoxProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    y: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: yOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem",
-                                                            color: "rgba(0, 0, 0, 0.6)",
-                                                            pointerEvents: "none",
-                                                            zIndex: 1,
-                                                            backgroundColor: "transparent"
-                                                        },
-                                                        children: "Direction"
-                                                    }),
-                                                    /*#__PURE__*/ jsxs(Material.Box, {
-                                                        sx: {
-                                                            display: "flex",
-                                                            gap: 0.5,
-                                                            alignItems: "center",
-                                                            height: 32,
-                                                            mt: 0
-                                                        },
-                                                        children: [
-                                                            /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                                control: /*#__PURE__*/ jsx(Material.Radio, {
-                                                                    size: "small",
-                                                                    checked: direction === "row",
-                                                                    onChange: function() {
-                                                                        console.log("Row radio clicked");
-                                                                        setDirection("row");
-                                                                    },
-                                                                    value: "row"
-                                                                }),
-                                                                label: "row",
-                                                                sx: {
-                                                                    "& .MuiFormControlLabel-label": {
-                                                                        fontSize: "0.875rem"
-                                                                    },
-                                                                    margin: 0
-                                                                }
-                                                            }),
-                                                            /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                                control: /*#__PURE__*/ jsx(Material.Radio, {
-                                                                    size: "small",
-                                                                    checked: direction === "column",
-                                                                    onChange: function() {
-                                                                        console.log("Column radio clicked");
-                                                                        setDirection("column");
-                                                                    },
-                                                                    value: "column"
-                                                                }),
-                                                                label: "column",
-                                                                sx: {
-                                                                    "& .MuiFormControlLabel-label": {
-                                                                        fontSize: "0.875rem"
-                                                                    },
-                                                                    margin: 0
-                                                                }
-                                                            })
-                                                        ]
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                height: 32,
-                                                display: "flex",
-                                                alignItems: "center"
-                                            },
-                                            children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                control: /*#__PURE__*/ jsx(Material.Switch, {
-                                                    size: "small",
-                                                    checked: Boolean(flexBoxProps.wrap),
-                                                    onChange: function(e) {
-                                                        return setFlexBoxProps(function(prev) {
-                                                            return _object_spread_props(_object_spread({}, prev), {
-                                                                wrap: e.target.checked
-                                                            });
-                                                        });
-                                                    }
-                                                }),
-                                                label: "wrap",
-                                                sx: {
-                                                    "& .MuiFormControlLabel-label": {
-                                                        fontSize: "0.875rem"
-                                                    },
-                                                    margin: 0,
-                                                    height: "100%",
-                                                    alignItems: "center"
-                                                }
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                height: 32,
-                                                display: "flex",
-                                                alignItems: "center"
-                                            },
-                                            children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                control: /*#__PURE__*/ jsx(Material.Switch, {
-                                                    size: "small",
-                                                    checked: Boolean(flexBoxProps.reverse),
-                                                    onChange: function(e) {
-                                                        return setFlexBoxProps(function(prev) {
-                                                            return _object_spread_props(_object_spread({}, prev), {
-                                                                reverse: e.target.checked
-                                                            });
-                                                        });
-                                                    }
-                                                }),
-                                                label: "reverse",
-                                                sx: {
-                                                    "& .MuiFormControlLabel-label": {
-                                                        fontSize: "0.875rem"
-                                                    },
-                                                    margin: 0,
-                                                    height: "100%",
-                                                    alignItems: "center"
-                                                }
-                                            })
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsx(DemoCode, {
-                                    code: generateFlexBoxCode()
-                                }),
-                                /*#__PURE__*/ jsxs(FlexBoxInner, {
-                                    "data-testid": "demo-flexbox",
-                                    x: flexBoxProps.x,
-                                    y: flexBoxProps.y,
-                                    row: flexBoxProps.row,
-                                    column: flexBoxProps.column,
-                                    wrap: flexBoxProps.wrap,
-                                    reverse: flexBoxProps.reverse,
-                                    children: [
-                                        /*#__PURE__*/ jsx("span", {
-                                            children: isColumn ? columnEmoji : rowEmoji
-                                        }),
-                                        /*#__PURE__*/ jsx("span", {
-                                            children: isColumn ? columnEmoji : rowEmoji
-                                        }),
-                                        /*#__PURE__*/ jsx("span", {
-                                            children: isColumn ? columnEmoji : rowEmoji
-                                        }),
-                                        /*#__PURE__*/ jsx("span", {
-                                            children: isColumn ? columnEmoji : "🚤"
-                                        })
-                                    ]
-                                })
-                            ]
-                        }),
-                        selectedTab === 1 && version !== "v6" && /*#__PURE__*/ jsxs(Material.Paper, {
-                            elevation: 2,
-                            sx: {
-                                p: 3
-                            },
-                            children: [
-                                /*#__PURE__*/ jsx(Material.Typography, {
-                                    variant: "h5",
-                                    component: "h2",
-                                    gutterBottom: true,
-                                    children: FLEXGRID_TAB_TITLE
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    mb: 2,
-                                    alignItems: "flex-end",
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Rows"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.rows,
-                                                        label: "Rows",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    rows: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: Array.from({
-                                                            length: 5
-                                                        }, function(_, i) {
-                                                            return i + 1;
-                                                        }).map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Columns"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.columns,
-                                                        label: "Columns",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    columns: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: Array.from({
-                                                            length: 5
-                                                        }, function(_, i) {
-                                                            return i + 1;
-                                                        }).map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Spacing"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.spacing,
-                                                        label: "Spacing",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    spacing: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: [
-                                                            0,
-                                                            1,
-                                                            2,
-                                                            3,
-                                                            4,
-                                                            5
-                                                        ].map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                height: 32,
-                                                display: "flex",
-                                                alignItems: "center"
-                                            },
-                                            children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                control: /*#__PURE__*/ jsx(Material.Switch, {
-                                                    size: "small",
-                                                    checked: flexGridProps.useTemplate,
-                                                    onChange: function(e) {
-                                                        return setFlexGridProps(function(prev) {
-                                                            return _object_spread_props(_object_spread({}, prev), {
-                                                                useTemplate: e.target.checked
-                                                            });
-                                                        });
-                                                    }
-                                                }),
-                                                label: "Use grid template",
-                                                sx: {
-                                                    "& .MuiFormControlLabel-label": {
-                                                        fontSize: "0.875rem"
-                                                    },
-                                                    margin: 0,
-                                                    height: "100%",
-                                                    alignItems: "center"
-                                                }
-                                            })
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    mb: 3,
-                                    alignItems: "flex-end",
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "X alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridItemProps.x,
-                                                        label: "X alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridItemProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    x: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: xRowOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Y alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridItemProps.y,
-                                                        label: "Y alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridItemProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    y: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: yRowOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsx(DemoCode, {
-                                    code: generateFlexGridCode()
-                                }),
-                                flexGridProps.useTemplate ? /*#__PURE__*/ jsx(FlexGridDemo, {
-                                    sx: {
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                                        gridGap: flexGridProps.spacing
-                                    },
-                                    children: renderFlexGridItems()
-                                }) : /*#__PURE__*/ jsx(FlexGridDemo, {
-                                    container: true,
-                                    spacing: flexGridProps.spacing,
-                                    children: renderFlexGridItems()
-                                })
-                            ]
-                        }),
-                        selectedTab === 2 && version === "v6" && FlexGrid2Demo && /*#__PURE__*/ jsxs(Material.Paper, {
-                            elevation: 2,
-                            sx: {
-                                p: 3
-                            },
-                            children: [
-                                /*#__PURE__*/ jsx(Material.Typography, {
-                                    variant: "h5",
-                                    component: "h2",
-                                    gutterBottom: true,
-                                    children: FLEXGRID2_TAB_TITLE
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    mb: 2,
-                                    alignItems: "flex-end",
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Rows"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.rows,
-                                                        label: "Rows",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    rows: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: Array.from({
-                                                            length: 5
-                                                        }, function(_, i) {
-                                                            return i + 1;
-                                                        }).map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Columns"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.columns,
-                                                        label: "Columns",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    columns: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: Array.from({
-                                                            length: 5
-                                                        }, function(_, i) {
-                                                            return i + 1;
-                                                        }).map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 110
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Spacing"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridProps.spacing,
-                                                        label: "Spacing",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    spacing: Number(e.target.value)
-                                                                });
-                                                            });
-                                                        },
-                                                        children: [
-                                                            0,
-                                                            1,
-                                                            2,
-                                                            3,
-                                                            4,
-                                                            5
-                                                        ].map(function(num) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: num,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: num
-                                                            }, num);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                height: 32,
-                                                display: "flex",
-                                                alignItems: "center"
-                                            },
-                                            children: /*#__PURE__*/ jsx(Material.FormControlLabel, {
-                                                control: /*#__PURE__*/ jsx(Material.Switch, {
-                                                    size: "small",
-                                                    checked: flexGridProps.useTemplate,
-                                                    onChange: function(e) {
-                                                        return setFlexGridProps(function(prev) {
-                                                            return _object_spread_props(_object_spread({}, prev), {
-                                                                useTemplate: e.target.checked
-                                                            });
-                                                        });
-                                                    }
-                                                }),
-                                                label: "Use grid template",
-                                                sx: {
-                                                    "& .MuiFormControlLabel-label": {
-                                                        fontSize: "0.875rem"
-                                                    },
-                                                    margin: 0,
-                                                    height: "100%",
-                                                    alignItems: "center"
-                                                }
-                                            })
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsxs(Material.Box, {
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: 2,
-                                    mb: 3,
-                                    alignItems: "flex-end",
-                                    children: [
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "X alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridItemProps.x,
-                                                        label: "X alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridItemProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    x: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: xRowOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        }),
-                                        /*#__PURE__*/ jsx(Material.Box, {
-                                            sx: {
-                                                minWidth: 140
-                                            },
-                                            children: /*#__PURE__*/ jsxs(Material.FormControl, {
-                                                fullWidth: true,
-                                                size: "small",
-                                                margin: "none",
-                                                children: [
-                                                    /*#__PURE__*/ jsx(Material.InputLabel, {
-                                                        sx: {
-                                                            fontSize: "0.875rem"
-                                                        },
-                                                        children: "Y alignment"
-                                                    }),
-                                                    /*#__PURE__*/ jsx(Material.Select, {
-                                                        value: flexGridItemProps.y,
-                                                        label: "Y alignment",
-                                                        sx: {
-                                                            height: 32,
-                                                            "& .MuiSelect-select": {
-                                                                padding: "6px 12px",
-                                                                fontSize: "0.875rem"
-                                                            }
-                                                        },
-                                                        onChange: function(e) {
-                                                            return setFlexGridItemProps(function(prev) {
-                                                                return _object_spread_props(_object_spread({}, prev), {
-                                                                    y: e.target.value
-                                                                });
-                                                            });
-                                                        },
-                                                        children: yRowOptions.map(function(option) {
-                                                            return /*#__PURE__*/ jsx(Material.MenuItem, {
-                                                                value: option.value,
-                                                                dense: true,
-                                                                sx: {
-                                                                    fontSize: "0.875rem",
-                                                                    minHeight: 32,
-                                                                    padding: "4px 12px"
-                                                                },
-                                                                children: option.label
-                                                            }, option.value);
-                                                        })
-                                                    })
-                                                ]
-                                            })
-                                        })
-                                    ]
-                                }),
-                                /*#__PURE__*/ jsx(DemoCode, {
-                                    code: generateFlexGridCode()
-                                }),
-                                flexGridProps.useTemplate ? /*#__PURE__*/ jsx(FlexGrid2Demo, {
-                                    sx: {
-                                        display: "grid",
-                                        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                                        gridGap: flexGridProps.spacing
-                                    },
-                                    children: renderFlexGridItems()
-                                }) : /*#__PURE__*/ jsx(FlexGrid2Demo, {
-                                    container: true,
-                                    spacing: flexGridProps.spacing,
-                                    children: renderFlexGridItems()
-                                })
-                            ]
-                        })
-                    ]
+                        ]
+                    })
                 })
-            })
-        ]
+            ]
+        })
     });
 };
 // Preload all versions function
@@ -2227,7 +2227,7 @@ var preloadAllVersions = function() {
                     // Start loading all versions simultaneously
                     preloadPromises = versionsList.map(function(version) {
                         return _async_to_generator(function() {
-                            var Styles, _ref, Material, FlexComponents, _Material_default, _Material_default1, StylesModule, SystemModule, MaterialModule, SystemModuleResolved, simpleStyled, librariesData, err;
+                            var _ref, Material, FlexComponents, MaterialModule, Styles, librariesData, err;
                             return _ts_generator(this, function(_state) {
                                 switch(_state.label){
                                     case 0:
@@ -2245,9 +2245,9 @@ var preloadAllVersions = function() {
                                     case 1:
                                         _state.trys.push([
                                             1,
-                                            7,
+                                            3,
                                             ,
-                                            8
+                                            4
                                         ]);
                                         return [
                                             4,
@@ -2261,62 +2261,19 @@ var preloadAllVersions = function() {
                                             _state.sent(),
                                             2
                                         ]), Material = _ref[0], FlexComponents = _ref[1];
-                                        if (!(version === "v5")) return [
-                                            3,
-                                            4
-                                        ];
-                                        return [
-                                            4,
-                                            import("@mui/styles_".concat(version))
-                                        ];
-                                    case 3:
-                                        StylesModule = _state.sent();
-                                        Styles = _object_spread_props(_object_spread({}, StylesModule.default || StylesModule), {
-                                            createTheme: Material.createTheme || ((_Material_default = Material.default) === null || _Material_default === void 0 ? void 0 : _Material_default.createTheme),
-                                            responsiveFontSizes: (StylesModule.default || StylesModule).responsiveFontSizes || function(theme) {
-                                                return theme;
-                                            },
-                                            ThemeProvider: (StylesModule.default || StylesModule).ThemeProvider,
-                                            CssBaseline: Material.CssBaseline || ((_Material_default1 = Material.default) === null || _Material_default1 === void 0 ? void 0 : _Material_default1.CssBaseline)
-                                        });
-                                        return [
-                                            3,
-                                            6
-                                        ];
-                                    case 4:
-                                        return [
-                                            4,
-                                            import("@mui/system_".concat(version))
-                                        ];
-                                    case 5:
-                                        SystemModule = _state.sent();
                                         MaterialModule = Material.default || Material;
-                                        SystemModuleResolved = SystemModule.default || SystemModule;
-                                        // Create a simple styled function that just applies sx props
-                                        simpleStyled = function(Component) {
-                                            return function(styles) {
-                                                return function(props) {
-                                                    return /*#__PURE__*/ React.createElement(Component, _object_spread_props(_object_spread({}, props), {
-                                                        sx: _object_spread({}, styles, props.sx)
-                                                    }));
-                                                };
-                                            };
-                                        };
                                         Styles = {
-                                            styled: simpleStyled,
+                                            styled: MaterialModule.styled,
                                             createTheme: MaterialModule.createTheme,
-                                            responsiveFontSizes: function(theme) {
-                                                return theme;
-                                            },
-                                            ThemeProvider: SystemModuleResolved.ThemeProvider,
+                                            responsiveFontSizes: MaterialModule.responsiveFontSizes,
+                                            ThemeProvider: MaterialModule.ThemeProvider,
                                             CssBaseline: MaterialModule.CssBaseline
                                         };
-                                        _state.label = 6;
-                                    case 6:
                                         librariesData = {
                                             Material: Material.default || Material,
                                             Styles: Styles,
                                             FlexBox: FlexComponents.FlexBox,
+                                            FlexyProvider: FlexComponents.FlexyProvider,
                                             FlexGrid: FlexComponents.FlexGrid
                                         };
                                         // Only add FlexGrid2 for v6
@@ -2329,11 +2286,11 @@ var preloadAllVersions = function() {
                                             2,
                                             librariesData
                                         ];
-                                    case 7:
+                                    case 3:
                                         err = _state.sent();
                                         console.error("Error preloading libraries for ".concat(version, ":"), err);
                                         throw err;
-                                    case 8:
+                                    case 4:
                                         return [
                                             2
                                         ];
@@ -2375,9 +2332,19 @@ var preloadAllVersions = function() {
     })();
 };
 var App = function() {
-    var _useState = _sliced_to_array(useState("v7"), 2), selectedVersion = _useState[0], setSelectedVersion = _useState[1];
-    var _useState1 = _sliced_to_array(useState(null), 2), headerLibraries = _useState1[0], setHeaderLibraries = _useState1[1];
-    var _useState2 = _sliced_to_array(useState(true), 2), appLoading = _useState2[0], setAppLoading = _useState2[1];
+    var _useState = _sliced_to_array(useState(readVersionFromUrl), 2), selectedVersion = _useState[0], setSelectedVersion = _useState[1];
+    var _useState1 = _sliced_to_array(useState("box"), 2), sandbox = _useState1[0], setSandbox = _useState1[1];
+    var _useState2 = _sliced_to_array(useState(null), 2), headerLibraries = _useState2[0], setHeaderLibraries = _useState2[1];
+    var _useState3 = _sliced_to_array(useState(true), 2), appLoading = _useState3[0], setAppLoading = _useState3[1];
+    useEffect(function() {
+        var onPopState = function() {
+            return setSelectedVersion(readVersionFromUrl());
+        };
+        window.addEventListener("popstate", onPopState);
+        return function() {
+            return window.removeEventListener("popstate", onPopState);
+        };
+    }, []);
     useEffect(function() {
         var loadAppWithPreloading = function() {
             return _async_to_generator(function() {
@@ -2547,6 +2514,11 @@ var App = function() {
                         zIndex: 1100
                     },
                     children: /*#__PURE__*/ jsxs(Material.Toolbar, {
+                        sx: {
+                            flexWrap: "wrap",
+                            py: 1,
+                            rowGap: 0.5
+                        },
                         children: [
                             /*#__PURE__*/ jsx(Material.Box, {
                                 component: "img",
@@ -2566,13 +2538,21 @@ var App = function() {
                                     flexGrow: 1,
                                     color: "text.disabled"
                                 },
-                                children: "docs"
+                                children: "demo & docs"
                             }),
                             versions.map(function(version) {
                                 return /*#__PURE__*/ jsx(Material.Button, {
                                     color: selectedVersion === version.key ? "primary" : "inherit",
-                                    onClick: function() {
-                                        return setSelectedVersion(version.key);
+                                    component: "a",
+                                    href: versionHref(version.key),
+                                    "aria-current": selectedVersion === version.key ? "page" : undefined,
+                                    onClick: function(event) {
+                                        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                                        event.preventDefault();
+                                        if (selectedVersion !== version.key) {
+                                            window.history.pushState(null, "", versionHref(version.key));
+                                            setSelectedVersion(version.key);
+                                        }
                                     },
                                     sx: {
                                         mx: 0.5,
@@ -2597,8 +2577,10 @@ var App = function() {
                     })
                 }),
                 /*#__PURE__*/ jsx(VersionContent, {
-                    version: selectedVersion
-                })
+                    version: selectedVersion,
+                    sandbox: sandbox,
+                    onSandboxChange: setSandbox
+                }, selectedVersion)
             ]
         })
     });

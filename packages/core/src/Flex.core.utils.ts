@@ -430,7 +430,19 @@ export const mapFlexProps = <P extends BaseFlexProps = BaseFlexProps, R = AnyMui
   ref?: React.Ref<_Any> | null,
   componentName: "Box" | "Grid" | "Grid2" = "Box",
 ): R => {
-  const { x, y, row, column, flexDirection, direction, reverse, wrap, agnostic: _agnostic, ...rest } = props;
+  const {
+    x,
+    y,
+    row,
+    column,
+    flexDirection,
+    direction,
+    reverse,
+    wrap,
+    agnostic: _agnostic,
+    styling: _styling,
+    ...rest
+  } = props;
 
   // If direction is explicitly provided, it takes precedence over row/column/flexDirection
   const resolvedDirection =
@@ -440,7 +452,6 @@ export const mapFlexProps = <P extends BaseFlexProps = BaseFlexProps, R = AnyMui
 
   // Map wrap to flexWrap (supports boolean, string, and responsive values)
   const flexWrap = resolveWrapValue(wrap);
-  // TODO: Add unique classnames for each variant of the flex component
   const className =
     `${props.className || ""} MuiFlex-root${componentName ? ` MuiFlex${componentName}-root` : ""}`.trim();
 

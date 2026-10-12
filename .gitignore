@@ -6,7 +6,6 @@ mui-flexy*.tgz
 *.tsbuildinfo
 /.rollup.cache
 /.yarn/*
-!/.yarn/releases
 /demo/.yarn
 /.npmrc
 
@@ -34,7 +33,7 @@ dist/_virtual/*
 # Rollup cache
 .rollup.cache
 
-# Yarn cache and install state
+# Legacy install state
 /packages/*/.yarn
 /packages/*/.pnp.*
 
@@ -61,9 +60,16 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Demo build outputs
+# Test fixture build outputs
 /packages/demo-*/dist/*
 /packages/demo-*/build/*
 
 # Generated docs files
 docs/index.html
+
+# pnpm local state
+.pnpm-store/
+**/pnpm-lock.yaml.backup
+
+# Generated Markdown for the published demo & docs
+docs/guide.md

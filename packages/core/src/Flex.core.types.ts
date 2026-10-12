@@ -4,6 +4,10 @@ import type { CSSProperties } from "react";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type _Any = any;
 
+export type FlexStyling = "system" | "classes";
+
+export type FlexStylingProps = { styling?: FlexStyling };
+
 export type FlexOrientation = "row" | "column" | "agnostic";
 
 // Orientation-specific alignment properties
@@ -47,7 +51,7 @@ export type ResponsiveFlexPosition = ResponsiveStyleValue<
 >;
 
 // row === true
-export type FlexRowProps = {
+export type FlexRowProps = FlexStylingProps & {
   row?: true | undefined;
   column?: false | never;
   x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
@@ -58,7 +62,7 @@ export type FlexRowProps = {
 };
 
 // column === true
-export type FlexColumnProps = {
+export type FlexColumnProps = FlexStylingProps & {
   column: true;
   row?: false | never;
   x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
@@ -123,7 +127,7 @@ export type StrictGrid2Props = {
 export type FlexWrapValue = "wrap" | "nowrap" | "wrap-reverse";
 export type ResponsiveFlexWrap = ResponsiveStyleValue<FlexWrapValue | boolean>;
 
-export type BaseFlexProps<T extends _Any = _Any> = {
+export type BaseFlexProps<T extends _Any = _Any> = FlexStylingProps & {
   row?: ResponsiveFlexBoolean;
   column?: ResponsiveFlexBoolean;
   reverse?: ResponsiveFlexBoolean;
@@ -153,46 +157,47 @@ export type AgnosticFlexProps = {
   agnostic: true;
 } & BaseFlexProps;
 
-export type InferFlexProps = (
-  | {
-      agnostic: true;
-      row?: BaseFlexProps["row"];
-      column?: BaseFlexProps["column"];
-      x?: BaseFlexProps["x"];
-      y?: BaseFlexProps["y"];
-    }
-  | {
-      row?: true | undefined;
-      column?: false | never | StrictResponsiveStyleValue<boolean>;
-      x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
-      y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
-    }
-  | {
-      row?: false | never | StrictResponsiveStyleValue<boolean>;
-      column: true;
-      x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
-      y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
-    }
-  | {
-      row: StrictResponsiveStyleValue<boolean>;
-      column?: boolean | never | ResponsiveStyleValue<boolean>;
-      x?: XRowAlign | XColumnAlign | ResponsiveAlign;
-      y?: YColumnAlign | YRowAlign | ResponsiveAlign;
-    }
-  | {
-      column: StrictResponsiveStyleValue<boolean>;
-      row?: boolean | never | ResponsiveStyleValue<boolean>;
-      x?: XRowAlign | XColumnAlign | ResponsiveAlign;
-      y?: YColumnAlign | YRowAlign | ResponsiveAlign;
-    }
-) & {
-  reverse?: ResponsiveFlexBoolean;
-  wrap?: ResponsiveFlexWrap;
-  direction?: BaseFlexProps["direction"];
-  flexDirection?: BaseFlexProps["flexDirection"];
-  display?: BaseFlexProps["display"];
-  className?: BaseFlexProps["className"];
-};
+export type InferFlexProps = FlexStylingProps &
+  (
+    | {
+        agnostic: true;
+        row?: BaseFlexProps["row"];
+        column?: BaseFlexProps["column"];
+        x?: BaseFlexProps["x"];
+        y?: BaseFlexProps["y"];
+      }
+    | {
+        row?: true | undefined;
+        column?: false | never | StrictResponsiveStyleValue<boolean>;
+        x?: XRowAlign | StrictResponsiveStyleValue<XRowAlign>;
+        y?: YRowAlign | StrictResponsiveStyleValue<YRowAlign>;
+      }
+    | {
+        row?: false | never | StrictResponsiveStyleValue<boolean>;
+        column: true;
+        x?: XColumnAlign | StrictResponsiveStyleValue<XColumnAlign>;
+        y?: YColumnAlign | StrictResponsiveStyleValue<YColumnAlign>;
+      }
+    | {
+        row: StrictResponsiveStyleValue<boolean>;
+        column?: boolean | never | ResponsiveStyleValue<boolean>;
+        x?: XRowAlign | XColumnAlign | ResponsiveAlign;
+        y?: YColumnAlign | YRowAlign | ResponsiveAlign;
+      }
+    | {
+        column: StrictResponsiveStyleValue<boolean>;
+        row?: boolean | never | ResponsiveStyleValue<boolean>;
+        x?: XRowAlign | XColumnAlign | ResponsiveAlign;
+        y?: YColumnAlign | YRowAlign | ResponsiveAlign;
+      }
+  ) & {
+    reverse?: ResponsiveFlexBoolean;
+    wrap?: ResponsiveFlexWrap;
+    direction?: BaseFlexProps["direction"];
+    flexDirection?: BaseFlexProps["flexDirection"];
+    display?: BaseFlexProps["display"];
+    className?: BaseFlexProps["className"];
+  };
 
 // restricts the props to only row
 export type OnlyRow<T> = Omit<T, "row" | "column" | "agnostic"> & {

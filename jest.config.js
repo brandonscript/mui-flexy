@@ -3,8 +3,16 @@
  * https://jestjs.io/docs/configuration
  */
 import { TS_TRANSFORM_PATTERN } from "ts-jest";
+import { createRequire } from "node:module";
+import { dirname, resolve } from "node:path";
+
+const require = createRequire(import.meta.url);
 
 const mapModules = (version) => {
+  const packageDir = resolve(`packages/${version}`);
+  const materialDir = dirname(require.resolve("@mui/material/package.json", { paths: [packageDir] }));
+  // Resolve transitive utilities through each MUI version, including pnpm's isolated layout.
+  const utilsDir = dirname(require.resolve("@mui/utils/package.json", { paths: [materialDir] }));
   return {
     "^@mui/material$": `<rootDir>/packages/${version}/node_modules/@mui/material`,
     "^@mui/material/(.*)$": `<rootDir>/packages/${version}/node_modules/@mui/material/$1`,
@@ -12,8 +20,11 @@ const mapModules = (version) => {
     "^@mui/system/(.*)$": `<rootDir>/packages/${version}/node_modules/@mui/system/$1`,
     "^@mui/styles$": `<rootDir>/packages/${version}/node_modules/@mui/styles`,
     "^@mui/styles/(.*)$": `<rootDir>/packages/${version}/node_modules/@mui/styles/$1`,
-    "^@mui/utils$": `<rootDir>/packages/${version}/node_modules/@mui/utils`,
-    "^@mui/utils/(.*)$": `<rootDir>/packages/${version}/node_modules/@mui/utils/$1`,
+    "^@mui/utils$": utilsDir,
+    "^@mui/utils/(.*)$": `${utilsDir}/$1`,
+    "^@emotion/react$": `<rootDir>/packages/${version}/node_modules/@emotion/react`,
+    "^@emotion/styled$": `<rootDir>/packages/${version}/node_modules/@emotion/styled`,
+    "^@emotion/cache$": `<rootDir>/packages/${version}/node_modules/@emotion/cache`,
     "^react$": `<rootDir>/packages/${version}/node_modules/react`,
     "^react-dom$": `<rootDir>/packages/${version}/node_modules/react-dom`,
   };
@@ -136,7 +147,7 @@ export default {
       },
     },
   ],
-  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/demos/", "/docs/", "/playwright-report/", "/test-results/"],
+  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/fixtures/", "/docs/", "/playwright-report/", "/test-results/"],
   collectCoverageFrom: [
     "packages/*/src/**/*.{ts,tsx}",
     "!packages/*/src/**/*.test.{ts,tsx}",
