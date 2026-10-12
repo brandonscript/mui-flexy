@@ -34,20 +34,17 @@ const packageBundles = packages.map(pkg => ({
     file: `static/${pkg.name}.js`,
     format: 'es',
     sourcemap: false,
+    // Each adapter must use its own MUI version, including theme hooks.
+    paths: id => {
+      if (pkg.name !== 'core' && id.startsWith('@mui/')) {
+        const major = pkg.name.slice(1);
+        const parts = id.split('/');
+        return `https://esm.sh/${parts.slice(0, 2).join('/')}@${major}${parts.length > 2 ? '/' + parts.slice(2).join('/') : ''}?external=react`;
+      }
+      return id;
+    },
   },
-  external: [
-    'react',
-    'react/jsx-runtime',
-    'react-dom',
-    '@mui/material',
-    '@mui/material/Box',
-    '@mui/material/Grid',
-    '@mui/system',
-    '@emotion/react',
-    '@emotion/styled',
-    // External packages should reference each other
-    ...(pkg.name !== 'core' ? ['@mui-flexy/core'] : []),
-  ],
+  external: id => /^(react(?:\/|$)|react-dom(?:\/|$)|@mui\/|@emotion\/|@mui-flexy\/core$)/.test(id),
   plugins: [
     // Use SWC for reliable TypeScript compilation across all environments
     swc({
@@ -140,7 +137,8 @@ const docsConfig = {
     }),
     copy({
       targets: [
-        { src: "../demos/v7/public/**/*", dest: "." },
+        { src: "../README.md", dest: ".", rename: "guide.md" },
+        { src: "../fixtures/v7/public/**/*", dest: "." },
         { src: "../flex-logo.svg", dest: "." },
         { src: "../flex-logo.png", dest: "." },
         { 

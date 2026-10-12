@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-test.describe("Documentation", () => {
+test.describe("Demo & docs", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the docs (webpack dev server on port 3003)
     await page.goto("http://localhost:3003");
@@ -74,13 +74,13 @@ test.describe("Documentation", () => {
 
     // Try to wait for the button, but if it fails, still check for errors
     try {
-      await page.waitForSelector('button:has-text("MUI v7")', { timeout: 5000 });
+      await page.waitForSelector('a:has-text("MUI v7")', { timeout: 5000 });
 
       // If we get here, the page loaded successfully, so test navigation
       await page.locator('button[role="tab"]:has-text("FlexBox")').click();
       await page.waitForTimeout(500);
 
-      await page.locator('button:has-text("MUI v5")').click();
+      await page.locator('a:has-text("MUI v5")').click();
       await page.waitForTimeout(500);
 
       await page
@@ -133,20 +133,20 @@ test.describe("Documentation", () => {
     await expect(page.locator("h1")).toContainText("mui-flexy");
 
     // Check that the AppBar with documentation title is visible
-    await expect(page.locator("text=mui-flexy Documentation")).toBeVisible();
+    await expect(page.locator("text=demo & docs")).toBeVisible();
   });
 
   test("should display MUI version buttons", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
 
     // Check that all version buttons are present
-    await expect(page.locator('button:has-text("MUI v5")')).toBeVisible();
-    await expect(page.locator('button:has-text("MUI v6")')).toBeVisible();
-    await expect(page.locator('button:has-text("MUI v7")')).toBeVisible();
-    await expect(page.locator('button:has-text("MUI v9")')).toBeVisible();
+    await expect(page.locator('a:has-text("MUI v5")')).toBeVisible();
+    await expect(page.locator('a:has-text("MUI v6")')).toBeVisible();
+    await expect(page.locator('a:has-text("MUI v7")')).toBeVisible();
+    await expect(page.locator('a:has-text("MUI v9")')).toBeVisible();
 
     // Check that v7 is selected by default
-    await expect(page.locator('button:has-text("MUI v7")')).toHaveClass(/\bMuiButton-textPrimary\b/);
+    await expect(page.locator('a:has-text("MUI v7")')).toHaveClass(/\bMuiButton-textPrimary\b/);
   });
 
   test("should have functioning tabs", async ({ page }) => {
@@ -193,13 +193,13 @@ test.describe("Documentation", () => {
 
     // Check which MUI version is currently selected
     const isV5Selected =
-      (await page.locator('button:has-text("MUI v5")').getAttribute("aria-pressed")) === "true" ||
-      (await page.locator('button:has-text("MUI v5")').evaluate((el) => el.classList.contains("selected"))) ||
+      (await page.locator('a:has-text("MUI v5")').getAttribute("aria-pressed")) === "true" ||
+      (await page.locator('a:has-text("MUI v5")').evaluate((el) => el.classList.contains("selected"))) ||
       (await page.locator('h1:has-text("MUI v5")').isVisible());
 
     const isV7Selected =
-      (await page.locator('button:has-text("MUI v7")').getAttribute("aria-pressed")) === "true" ||
-      (await page.locator('button:has-text("MUI v7")').evaluate((el) => el.classList.contains("selected"))) ||
+      (await page.locator('a:has-text("MUI v7")').getAttribute("aria-pressed")) === "true" ||
+      (await page.locator('a:has-text("MUI v7")').evaluate((el) => el.classList.contains("selected"))) ||
       (await page.locator('h1:has-text("MUI v7")').isVisible());
 
     const isV6Selected = await page.locator('h1:has-text("MUI v6")').isVisible();
@@ -229,7 +229,7 @@ test.describe("Documentation", () => {
   });
 
   test("should switch to MUI v5 tab", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v5")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v5")', { timeout: 10000 });
 
     // Set up console error listener
     const consoleErrors: string[] = [];
@@ -240,7 +240,7 @@ test.describe("Documentation", () => {
     });
 
     // Click on v5 button
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
 
     // Check that the title updates
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
@@ -257,12 +257,12 @@ test.describe("Documentation", () => {
     expect(criticalErrors).toHaveLength(0);
 
     // Switch back to v7
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should switch to MUI v6 tab", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v6")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v6")', { timeout: 10000 });
 
     // Set up console error listener
     const consoleErrors: string[] = [];
@@ -273,7 +273,7 @@ test.describe("Documentation", () => {
     });
 
     // Click on v6 button
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
 
     // Check that the title updates
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
@@ -290,12 +290,12 @@ test.describe("Documentation", () => {
     expect(criticalErrors).toHaveLength(0);
 
     // Switch back to v7
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should load MUI v7 tab", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
 
     // Set up console error listener
     const consoleErrors: string[] = [];
@@ -306,7 +306,7 @@ test.describe("Documentation", () => {
     });
 
     // Click on v7 button
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
 
     // Check that the title updates
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
@@ -324,7 +324,7 @@ test.describe("Documentation", () => {
   });
 
   test("should load MUI v9 tab", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v9")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v9")', { timeout: 10000 });
 
     const consoleErrors: string[] = [];
     page.on("console", (msg) => {
@@ -333,7 +333,7 @@ test.describe("Documentation", () => {
       }
     });
 
-    await page.locator('button:has-text("MUI v9")').click();
+    await page.locator('a:has-text("MUI v9")').click();
 
     await expect(page.locator("h1")).toContainText("MUI v9 + mui-flexy");
     await expect(page.locator("h6").first()).toContainText("Compatible with @mui/material v9");
@@ -348,118 +348,118 @@ test.describe("Documentation", () => {
   });
 
   test("should cycle from v7 -> v5 -> v6 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should cycle from v7 -> v6 -> v5 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should cycle from v7 -> v5 -> v7 -> v6 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should cycle from v7 -> v6 -> v7 -> v5 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should cycle from v7 -> flexgrid -> v6 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
     await page
       .locator('button[role="tab"]')
       .filter({ hasText: /^FlexGrid$/ })
       .click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
 
   test("should cycle from v7 -> flexgrid -> v6 -> v5", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
     await page
       .locator('button[role="tab"]')
       .filter({ hasText: /^FlexGrid$/ })
       .click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
   });
 
   test("should cycle from v7 -> flexgrid -> v5 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
     await page
       .locator('button[role="tab"]')
       .filter({ hasText: /^FlexGrid$/ })
       .click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
   });
   test("should cycle from v5 -> flexgrid -> v6 -> v7", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
-    await page.locator('button:has-text("MUI v7")').click();
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
+    await page.locator('a:has-text("MUI v7")').click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
     await page
       .locator('button[role="tab"]')
       .filter({ hasText: /^FlexGrid$/ })
       .click();
     await expect(page.locator("h1")).toContainText("MUI v7 + mui-flexy");
-    await page.locator('button:has-text("MUI v6")').click();
+    await page.locator('a:has-text("MUI v6")').click();
     await expect(page.locator("h1")).toContainText("MUI v6 + mui-flexy");
-    await page.locator('button:has-text("MUI v5")').click();
+    await page.locator('a:has-text("MUI v5")').click();
     await expect(page.locator("h1")).toContainText("MUI v5 + mui-flexy");
   });
 
   test("should be responsive", async ({ page }) => {
-    await page.waitForSelector('button:has-text("MUI v7")', { timeout: 10000 });
+    await page.waitForSelector('a:has-text("MUI v7")', { timeout: 10000 });
 
     // Test mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
@@ -467,7 +467,7 @@ test.describe("Documentation", () => {
 
     // Check that content is still visible and accessible
     await expect(page.locator("h1")).toBeVisible();
-    await expect(page.locator('button:has-text("MUI v7")')).toBeVisible();
+    await expect(page.locator('a:has-text("MUI v7")')).toBeVisible();
 
     // Test tablet viewport
     await page.setViewportSize({ width: 768, height: 1024 });
@@ -669,7 +669,7 @@ test.describe("Documentation", () => {
     await page.goto("http://localhost:3003");
 
     // Test v5 first
-    await page.click('button:has-text("MUI v5")');
+    await page.click('a:has-text("MUI v5")');
     await page.waitForSelector('h1:has-text("MUI v5 + mui-flexy")', { timeout: 5000 });
     await page
       .locator('button[role="tab"]')
@@ -681,7 +681,7 @@ test.describe("Documentation", () => {
     await expect(visibleGridItems).toHaveCount(6);
 
     // Test v6
-    await page.click('button:has-text("MUI v6")');
+    await page.click('a:has-text("MUI v6")');
     await page.waitForSelector('h1:has-text("MUI v6 + mui-flexy")', { timeout: 5000 });
 
     gridItems = page.locator(".grid-item").filter({ hasText: /^Grid \d+$/ });
@@ -689,7 +689,7 @@ test.describe("Documentation", () => {
     await expect(visibleGridItems).toHaveCount(6);
 
     // Test v7 (the main fix)
-    await page.click('button:has-text("MUI v7")');
+    await page.click('a:has-text("MUI v7")');
     await page.waitForSelector('h1:has-text("MUI v7 + mui-flexy")', { timeout: 5000 });
 
     gridItems = page.locator(".grid-item").filter({ hasText: /^Grid \d+$/ });

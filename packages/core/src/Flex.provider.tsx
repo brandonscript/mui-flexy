@@ -71,7 +71,8 @@ export function useFlexProps<P extends BaseFlexProps = BaseFlexProps, R = Record
 export function FlexyClassOverrides({ children }: { children: ReactElement<{ className?: string }> }) {
   const cache = __unsafe_useEmotionCache();
   const names = (children.props.className ?? "").split(/\s+/);
-  if (!names.includes("MuiFlex-classes") || !cache) return children;
+  if (!names.some((name) => /^MuiFlex-(?:d-|dir-|row(?:-|$)|col(?:-|$)|j-|a-|w-)/.test(name)) || !cache)
+    return children;
   const inherited = names.filter((name) => cache.registered[name] !== undefined);
   if (!inherited.length) return children;
   const cssText = inherited.map((name) => cache.registered[name]).join(";");

@@ -3,6 +3,6 @@
 **/webpack.config.*
 node_modules
 src
-demo
+fixtures
 docs
 package

@@ -42,7 +42,7 @@
     "./node_modules",
     "./node_modules/*",
     "./node_modules/@types/node/index.d.ts",
-    "demo/**/*",
+    "fixtures/**/*",
     "**eslint**",
     "jest.config.**",
     "webpack.config.js",

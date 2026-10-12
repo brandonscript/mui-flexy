@@ -1,17 +1,18 @@
 {
   "name": "mui-flexy-docs",
   "version": "2.2.0",
-  "description": "Documentation for mui-flexy",
+  "description": "Interactive demo & docs for mui-flexy",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "pnpm run clean && pnpm exec rollup -c rollup.docs.mjs",
-    "dev": "node dev-server.js",
-    "dev:basepath": "BASEPATH=/mui-flexy node dev-server.js",
+    "dev": "pnpm run build && node dev-server.js",
+    "dev:basepath": "BASEPATH=/mui-flexy pnpm run dev",
     "serve:killall": "pnpm exec kill-port 3003",
     "serve": "pnpm run serve:killall > /dev/null 2>&1 && pnpm exec serve -s . -p 3003 --no-clipboard",
     "serve:basepath": "pnpm run serve:killall > /dev/null 2>&1 && BASEPATH=/mui-flexy pnpm exec serve -s . -p 3003 --no-clipboard",
-    "clean": "rm -rf static && mkdir -p static"
+    "clean": "rm -rf static && mkdir -p static",
+    "typecheck": "pnpm exec tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",

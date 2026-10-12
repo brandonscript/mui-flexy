@@ -10,14 +10,14 @@ jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         node-version: [24.x]
-        
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - uses: pnpm/action-setup@v4
 
     - name: Setup Node.js ${{ matrix.node-version }}
@@ -26,28 +26,31 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'pnpm'
         cache-dependency-path: pnpm-lock.yaml
-    
+
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
-    
+
     - name: Run Jest tests
       run: pnpm exec jest --silent --verbose=false --reporters=summary --passWithNoTests
-    
+
     - name: Run type checking
       run: pnpm run typecheck
-    
+
     - name: Run linting
       run: pnpm run lint
-    
+
     - name: Build all packages
       run: pnpm run build:all
-    
+
     - name: Install Playwright browsers
       run: pnpm run test:e2e:setup
-    
+
     - name: Run Playwright tests
       run: pnpm exec playwright test --quiet
-    
+
+    - name: Check demo & docs
+      run: pnpm exec playwright test --config=playwright.docs.config.ts --quiet
+
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: failure()
@@ -59,11 +62,11 @@ jobs:
           tests/e2e/docs-html-report/
           tests/e2e/docs-test-results/
         retention-days: 30
-    
+
     - name: Upload screenshots
       uses: actions/upload-artifact@v4
       if: failure()
       with:
         name: screenshots
         path: tests/e2e/test-results/screenshots/
-        retention-days: 30 
+        retention-days: 30

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Mui Flexy",
+  "description": "Flexbox shorthand components for MUI Box and Grid, with x/y alignment, responsive props, and optional shared layout classes.",
+  "excludeFolders": ["fixtures", "tests", "node_modules", "docs/static", "packages/*/dist", "packages/*/lib"],
+  "rules": [
+    "Import from the adapter matching your MUI major version: @mui-flexy/v5, v6, v7, or v9.",
+    "Use FlexyProvider styling=\"classes\" inside the matching MUI ThemeProvider for shared layout classes; system mode is the default.",
+    "Use size with FlexGrid in MUI v7/v9 or FlexGrid2 in v6; legacy FlexGrid in v5/v6 uses item and xs.",
+    "Run pnpm run demo for the public demo & docs; fixtures are isolated test applications, not the public demo."
+  ]
+}

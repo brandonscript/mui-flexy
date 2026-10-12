@@ -15,6 +15,12 @@ for (const [version, port] of [
 
     test("responsive layouts, custom themes, Grid defaults, and sx overrides", async ({ page }) => {
       const responsive = page.getByTestId("responsive");
+      await expect(page.getByTestId("default-display")).toHaveCSS("display", "flex");
+      await expect(page.getByTestId("default-display")).not.toHaveClass(/MuiFlex-d-flex/);
+      await expect(page.getByTestId("responsive-display")).toHaveCSS("display", "flex");
+      await expect(page.getByTestId("system-display")).toHaveCSS("display", "block");
+      await expect(page.getByTestId("system-cache-display")).toHaveCSS("display", "inline-block");
+      await expect(page.getByTestId("sx-display")).toHaveCSS("display", "inline-flex");
       await expect(responsive).toHaveCSS("flex-direction", "row");
       await expect(responsive).toHaveCSS("justify-content", "center");
       await expect(responsive).toHaveCSS("align-items", "flex-start");
@@ -28,12 +34,14 @@ for (const [version, port] of [
       await expect(page.getByTestId("cache")).toHaveCSS("flex-direction", "column");
       await expect(page.getByTestId("system")).toHaveCSS("justify-content", "flex-end");
       await page.setViewportSize({ width: 800, height: 800 });
+      await expect(page.getByTestId("responsive-display")).toHaveCSS("display", "none");
       await expect(responsive).toHaveCSS("justify-content", "flex-end");
       await expect(page.getByTestId("gaps")).toHaveCSS("flex-direction", "row-reverse");
       await expect(page.getByTestId("custom-theme")).toHaveCSS("flex-direction", "column");
       await expect(page.getByTestId("named-theme")).toHaveCSS("flex-direction", "column");
       await expect(responsive).toHaveCSS("flex-direction", "row");
       await page.setViewportSize({ width: 950, height: 800 });
+      await expect(page.getByTestId("responsive-display")).toHaveCSS("display", "flex");
       await expect(responsive).toHaveCSS("flex-direction", "column");
       await expect(responsive).toHaveCSS("justify-content", "flex-start");
       await expect(responsive).toHaveCSS("align-items", "flex-end");
@@ -71,11 +79,14 @@ for (const [version, port] of [
         .evaluateAll((elements) =>
           elements.map((element) =>
             [...element.classList]
-              .filter((name) => /^MuiFlex-(display|direction|justify|align|wrap)-/.test(name))
+              .filter((name) => /^MuiFlex-(?:d-|dir-|row(?:-|$)|col(?:-|$)|j-|a-|w-)/.test(name))
               .join(" "),
           ),
         );
       expect(new Set(classes).size).toBe(1);
+      expect(classes[0]).toContain("MuiFlex-row");
+      expect(classes[0]).toContain("MuiFlex-j-center");
+      await expect(page.getByTestId("repeated").first()).not.toHaveClass(/MuiFlex-classes/);
       // Emotion can split global rules across style tags in development mode.
       // Adding instances must not add global sheets in either development or production.
       await expect(page.locator('style[data-emotion$="-global"]')).toHaveCount(globalSheetsBefore);

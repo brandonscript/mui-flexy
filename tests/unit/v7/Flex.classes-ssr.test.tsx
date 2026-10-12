@@ -22,7 +22,7 @@ it("renders shared rules and deterministic responsive classes on the server", ()
   expect(render()).toBe(html);
   expect(html).toContain('data-emotion="ssr-global');
   expect(html.match(/data-emotion="ssr-global/g)).toHaveLength(1);
-  expect(html).toContain(".MuiFlex-root.MuiFlex-justify-center");
-  expect(html).toMatch(/MuiFlex-direction-column-[a-z0-9]+-md/);
+  expect(html).toContain(".MuiFlex-root.MuiFlex-j-center");
+  expect(html).toMatch(/MuiFlex-col-[a-z0-9]+-md/);
   expect(html).toContain("padding:16px");
 });

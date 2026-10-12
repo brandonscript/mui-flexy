@@ -496,9 +496,10 @@ const theme = createTheme();
 </ThemeProvider>;
 ```
 
-The first two boxes share `MuiFlex-justify-center` and `MuiFlex-align-flex-start`,
-along with `MuiFlex-display-flex` and `MuiFlex-direction-row`. Existing MUI root
-classes and a `MuiFlex-classes` marker remain present. There is one utility rule
+The first two boxes share `MuiFlex-j-center` and `MuiFlex-a-start`,
+along with `MuiFlex-row`. The root supplies `display: flex` with zero specificity,
+so only display overrides and responsive resets need a display utility. Existing MUI root
+classes remain present in both modes; the compact layout utilities identify class mode. There is one utility rule
 per property/value, rather than one rule per combination. Unrelated `sx` values
 can still produce different MUI classes, but the shared layout declarations are
 not bundled into those classes.
@@ -622,7 +623,37 @@ pnpm install --frozen-lockfile
 pnpm run test:unit
 pnpm run test:types
 pnpm run build:all
-pnpm run demo:v7
+pnpm run demo
 ```
 
-Install dependencies once from the repository root. Builds and demo commands use the installed, locked tools. `pnpm-workspace.yaml` defines the packages, demos, and docs; `pnpm-lock.yaml` is the shared lockfile. CI installs with `--frozen-lockfile`.
+Install dependencies once from the repository root. Builds and demo commands use the installed, locked tools. `pnpm-workspace.yaml` defines the packages, test fixtures, and demo & docs; `pnpm-lock.yaml` is the shared lockfile. CI installs with `--frozen-lockfile`.
+
+### Demo & docs
+
+`pnpm run demo` (also `pnpm dev` or `pnpm run docs:dev`) starts the same interactive
+**demo & docs** published at https://brandonscript.github.io/mui-flexy/.
+Open http://localhost:3003/. The development server builds the site on startup,
+watches source changes, and asks you to refresh after rebuilding.
+
+Use `?mui=v5`, `?mui=v6`, `?mui=v7`, or `?mui=v9` to select a version directly.
+For example, https://brandonscript.github.io/mui-flexy/?mui=v9 opens MUI v9.
+Version navigation updates this parameter and supports browser back/forward,
+reloads, and opening links in another tab. Missing or invalid versions select v7.
+Add `&styling=classes` to try shared layout classes in the sandbox:
+http://localhost:3003/?mui=v9&styling=classes.
+
+### Test fixtures
+
+`fixtures/` contains isolated per-version rendering fixtures for automated tests;
+these are not the public demo. Use `pnpm run fixture:v9` (or `fixture:v5`,
+`fixture:v6`, `fixture:v7`) to run one, or `pnpm run fixture:all` to run all four.
+They use ports 3005–3008. `?classes` opens the class-mode regression fixture.
+`pnpm run build:fixtures` builds them, and `pnpm run test:e2e:fixtures` checks them.
+`pnpm run test:e2e:docs` checks the actual demo & docs.
+
+### Documentation for coding agents
+
+The README is the API and usage reference. `context7.json` configures Context7
+indexing to exclude test fixtures and generated bundles. The published site
+provides `llms.txt` and a Markdown copy of this README at `guide.md`; the copy is
+generated during the site build so it stays aligned with the package examples.

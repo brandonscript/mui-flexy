@@ -1,6 +1,6 @@
 packages:
   - packages/*
-  - demos/*
+  - fixtures/*
   - docs
 
 # Install explicitly; build/release commands must not silently resolve dependencies.

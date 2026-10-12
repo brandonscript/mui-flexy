@@ -1,0 +1,9 @@
+# Mui Flexy
+
+> Flexbox shorthand components for MUI Box and Grid, supporting MUI v5, v6, v7, and v9, responsive x/y alignment, and optional shared layout classes.
+
+## Documentation
+
+- [API and usage guide](https://brandonscript.github.io/mui-flexy/guide.md): Installation, matching adapters, component props, responsive layouts, shared classes, and development commands.
+- [Demo & docs](https://brandonscript.github.io/mui-flexy/?mui=v9): Interactive MUI v9 sandbox; use mui=v5, v6, or v7 for other adapters.
+- [Demo development guide](https://brandonscript.github.io/mui-flexy/README.md): Local commands, direct links, and test-fixture distinction.

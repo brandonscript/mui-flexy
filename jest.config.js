@@ -147,7 +147,7 @@ export default {
       },
     },
   ],
-  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/demos/", "/docs/", "/playwright-report/", "/test-results/"],
+  testPathIgnorePatterns: ["/node_modules/", "/dist/", "/fixtures/", "/docs/", "/playwright-report/", "/test-results/"],
   collectCoverageFrom: [
     "packages/*/src/**/*.{ts,tsx}",
     "!packages/*/src/**/*.test.{ts,tsx}",

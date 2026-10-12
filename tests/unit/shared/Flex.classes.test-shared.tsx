@@ -1,11 +1,10 @@
-import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
-import { createTheme, ThemeProvider, styled } from "@mui/material/styles";
+import { CacheProvider } from "@emotion/react";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { act, render, screen } from "@testing-library/react";
-import { hydrateRoot } from "react-dom/client";
-import { createRef } from "react";
 import type { ComponentType } from "react";
-
+import { createRef } from "react";
+import { hydrateRoot } from "react-dom/client";
 import { renderToString } from "react-dom/server.node";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,7 +25,7 @@ export function runClassModeTests({
     </ThemeProvider>
   );
   const utilities = (element: HTMLElement) =>
-    [...element.classList].filter((name) => /^MuiFlex-(display|direction|justify|align|wrap)-/.test(name));
+    [...element.classList].filter((name) => /^MuiFlex-(?:d-|dir-|row(?:-|$)|col(?:-|$)|j-|a-|w-)/.test(name));
   describe("shared layout class mode", () => {
     it("shares layout classes across unrelated sx styles and preserves forwarding", () => {
       const ref = createRef<HTMLElement>();
@@ -48,7 +47,7 @@ export function runClassModeTests({
       );
       const first = screen.getByTestId("first");
       expect(utilities(first)).toEqual(utilities(screen.getByTestId("second")));
-      expect(first).toHaveClass("MuiFlex-justify-center", "MuiFlex-align-flex-start", "user-class", "MuiFlexBox-root");
+      expect(first).toHaveClass("MuiFlex-j-center", "MuiFlex-a-start", "user-class", "MuiFlexBox-root");
       expect(first.tagName).toBe("SECTION");
       expect(ref.current).toBe(first);
       expect(first).not.toHaveAttribute("styling");
@@ -69,8 +68,8 @@ export function runClassModeTests({
       );
       components.forEach((_, index) => {
         const element = screen.getByTestId(`variant-${index}`);
-        expect(element).toHaveClass("MuiFlex-wrap-nowrap", "MuiFlex-justify-center", "MuiFlex-align-center");
-        expect(element).toHaveClass(index === 1 ? "MuiFlex-direction-column" : "MuiFlex-direction-row");
+        expect(element).toHaveClass("MuiFlex-w-nowrap", "MuiFlex-j-center", "MuiFlex-a-center");
+        expect(element).toHaveClass(index === 1 ? "MuiFlex-col" : "MuiFlex-row");
       });
     });
 
@@ -86,7 +85,8 @@ export function runClassModeTests({
         ),
       );
       expect(utilities(screen.getByTestId("system"))).toEqual([]);
-      expect(screen.getByTestId("classes")).toHaveClass("MuiFlex-display-flex");
+      expect(screen.getByTestId("classes")).toHaveClass("MuiFlex-row");
+      expect(screen.getByTestId("classes")).not.toHaveClass("MuiFlex-d-flex");
     });
 
     it("keeps sx objects, arrays, callbacks, nested selectors, and styled decoration", () => {
@@ -122,9 +122,13 @@ export function runClassModeTests({
         wrap(<FlexBox data-testid="fallback" direction={() => "column"} display={() => "flow-root"} x="center" />),
       );
       const element = screen.getByTestId("fallback");
-      expect(element).toHaveClass("MuiFlex-direction-column", "MuiFlex-align-center");
-      expect(window.getComputedStyle(element).display).toBe("flow-root");
-      expect(element.className).not.toContain("MuiFlex-display-");
+      expect(element).toHaveClass("MuiFlex-col", "MuiFlex-a-center");
+      // jsdom does not honor :where() specificity across sheets. Chromium
+      // verifies the computed result; here verify the explicit fallback rule.
+      expect(element).toHaveStyleRule("display", "flow-root", {
+        target: ".MuiFlex-root.MuiFlex-root.MuiFlex-root",
+      });
+      expect(element.className).not.toContain("MuiFlex-d-");
     });
 
     it("does not install duplicate sheets for equivalent nested providers", () => {
@@ -153,7 +157,7 @@ export function runClassModeTests({
         ),
       );
       expect(document.querySelectorAll('style[data-emotion$="-global"]')).toHaveLength(2);
-      expect(screen.getByTestId("other-cache")).toHaveClass("MuiFlex-direction-row");
+      expect(screen.getByTestId("other-cache")).toHaveClass("MuiFlex-row");
     });
 
     it("hydrates deterministic layout markup without recoverable errors", async () => {

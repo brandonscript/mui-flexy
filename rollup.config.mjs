@@ -85,7 +85,7 @@ export default {
     babel({
       extensions: [".ts", ".tsx"],
       babelHelpers: "bundled",
-      exclude: ["node_modules/**", "dist/**", "demo/**", "tests/**"],
+      exclude: ["node_modules/**", "dist/**", "fixtures/**", "tests/**"],
       include: ["src/**"],
       presets: [
         "@babel/preset-env",

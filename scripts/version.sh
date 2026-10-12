@@ -28,11 +28,11 @@ PACKAGE_DIRS=(
   "packages/v6"
   "packages/v7"
   "packages/v9"
-  "demos/shared"
-  "demos/v5"
-  "demos/v6"
-  "demos/v7"
-  "demos/v9"
+  "fixtures/shared"
+  "fixtures/v5"
+  "fixtures/v6"
+  "fixtures/v7"
+  "fixtures/v9"
   "docs"
 )
 
@@ -281,11 +281,11 @@ update_workspace_dependencies() {
   
   # List of workspace packages that are linked to the root package.json
   local workspace_packages=(
-    "demos/shared"
-    "demos/v5"
-    "demos/v6"
-    "demos/v7"
-    "demos/v9"
+    "fixtures/shared"
+    "fixtures/v5"
+    "fixtures/v6"
+    "fixtures/v7"
+    "fixtures/v9"
     "docs"
   )
   

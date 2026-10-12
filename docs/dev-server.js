@@ -2,10 +2,11 @@ import { spawn } from "child_process";
 import chokidar from "chokidar";
 import fs from "fs";
 import http from "http";
+import { clearTimeout, setTimeout } from "node:timers";
+import { URL } from "node:url";
 import path from "path";
 
 const PORT = 3003;
-const STATIC_DIR = "./static";
 const BASEPATH = process.env.BASEPATH || "";
 
 // MIME types
@@ -14,6 +15,8 @@ const mimeTypes = {
   ".js": "application/javascript",
   ".css": "text/css",
   ".json": "application/json",
+  ".txt": "text/plain; charset=utf-8",
+  ".md": "text/markdown; charset=utf-8",
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".gif": "image/gif",
@@ -21,11 +24,11 @@ const mimeTypes = {
   ".ico": "image/x-icon",
 };
 
-console.log("🔄 Starting docs server...");
+console.log("🔄 Starting demo & docs server...");
 
 // Simple static file server
 const server = http.createServer((req, res) => {
-  let url = req.url;
+  let url = new URL(req.url, "http://localhost").pathname;
 
   // Strip basepath from URL if present
   if (BASEPATH && url.startsWith(BASEPATH)) {
@@ -33,7 +36,7 @@ const server = http.createServer((req, res) => {
   }
 
   // Redirect root basepath requests to index.html
-  if (BASEPATH && req.url === BASEPATH) {
+  if (BASEPATH && url === BASEPATH) {
     url = "/";
   }
 
@@ -71,33 +74,62 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   const baseUrl = `http://localhost:${PORT}`;
   const fullUrl = BASEPATH ? `${baseUrl}${BASEPATH}` : baseUrl;
-  console.log(`📘 Docs server running at ${baseUrl}`);
+  console.log(`📘 Demo & docs server running at ${baseUrl}`);
   if (BASEPATH) {
     console.log(`🫜 Using basepath: ${fullUrl}`);
   }
 });
 
-// Start rollup in watch mode
-const rollupProcess = spawn("npx", ["rollup", "-c", "rollup.docs.mjs", "--watch"], {
-  stdio: "inherit",
-  shell: true,
-});
-
-// Watch for changes to the built file and log when it's updated
-chokidar.watch(STATIC_DIR + "/docs.js").on("change", () => {
-  console.log("🔄 Built file updated - refresh your browser!");
-});
-
-// Handle cleanup on exit
-process.on("SIGINT", () => {
-  console.log("\n🛑 Shutting down dev server...");
-  rollupProcess.kill();
-  server.close();
-  process.exit(0);
-});
-
-rollupProcess.on("exit", (code) => {
-  if (code !== 0) {
-    console.error(`❌ Rollup process exited with code ${code}`);
+// Poll source files so rebuilds also work on restricted or remote filesystems.
+// The dev command has already completed the initial build before starting us.
+let activeBuild;
+let buildPending = false;
+let shuttingDown = false;
+let debounce;
+const rebuild = () => {
+  if (shuttingDown) return;
+  if (activeBuild) {
+    buildPending = true;
+    return;
   }
+  activeBuild = spawn("pnpm", ["exec", "rollup", "-c", "rollup.docs.mjs"], {
+    stdio: "inherit",
+    shell: false,
+  });
+  activeBuild.on("exit", (code) => {
+    activeBuild = undefined;
+    if (code !== 0) console.error(`Rollup exited with code ${code}`);
+    else console.log("🔄 Built files updated - refresh your browser!");
+    if (buildPending) {
+      buildPending = false;
+      rebuild();
+    }
+  });
+};
+const watcher = chokidar.watch(
+  [
+    "Docs.tsx",
+    "rollup.docs.mjs",
+    "index.template.html",
+    "llms.txt",
+    "../README.md",
+    "../packages/*/src/**/*",
+    "../packages/*/package.json",
+    "../fixtures/v7/public/**/*",
+  ],
+  { usePolling: true, interval: 250, ignoreInitial: true },
+);
+watcher.on("all", () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(rebuild, 150);
 });
+
+const shutdown = () => {
+  shuttingDown = true;
+  clearTimeout(debounce);
+  activeBuild?.kill();
+  watcher.close();
+  server.close(() => process.exit(0));
+};
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

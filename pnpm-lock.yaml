@@ -392,7 +392,7 @@ importers:
         specifier: ^5.1.0
         version: 5.2.2(debug@4.4.1(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.99.9)
 
-  demos/shared:
+  fixtures/shared:
     dependencies:
       '@emotion/cache':
         specifier: ^11.14.0
@@ -432,7 +432,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  demos/v5:
+  fixtures/v5:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -499,7 +499,7 @@ importers:
         specifier: ^5.1.0
         version: 5.2.2(debug@4.4.1(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.99.9)
 
-  demos/v6:
+  fixtures/v6:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -566,7 +566,7 @@ importers:
         specifier: ^5.1.0
         version: 5.2.2(debug@4.4.1(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.99.9)
 
-  demos/v7:
+  fixtures/v7:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0
@@ -633,7 +633,7 @@ importers:
         specifier: ^5.1.0
         version: 5.2.2(debug@4.4.1(supports-color@8.1.1))(supports-color@8.1.1)(webpack-cli@5.1.4)(webpack@5.99.9)
 
-  demos/v9:
+  fixtures/v9:
     dependencies:
       '@emotion/react':
         specifier: ^11.14.0

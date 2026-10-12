@@ -60,7 +60,7 @@ Thumbs.db
 *.tmp
 *.temp
 
-# Demo build outputs
+# Test fixture build outputs
 /packages/demo-*/dist/*
 /packages/demo-*/build/*
 
@@ -70,3 +70,6 @@ docs/index.html
 # pnpm local state
 .pnpm-store/
 **/pnpm-lock.yaml.backup
+
+# Generated Markdown for the published demo & docs
+docs/guide.md

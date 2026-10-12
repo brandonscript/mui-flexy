@@ -30,7 +30,7 @@
     "**/pnpm-debug.log": true,
     "**/test-results": true,
     "**/playwright-report": true,
-    "demos": true,
+    "fixtures": true,
     "docs": true,
     "packages": true,
   },

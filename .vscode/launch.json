@@ -26,9 +26,9 @@
       "command": "pnpm run test --watch"
     },
     {
-      "name": "Demo: v5 Server",
+      "name": "Fixture: v5 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v5",
+      "cwd": "${workspaceFolder}/fixtures/v5",
       "request": "launch",
       "command": "pnpm run dev",
       "serverReadyAction": {
@@ -38,9 +38,9 @@
       }
     },
     {
-      "name": "Demo: v6 Server",
+      "name": "Fixture: v6 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v6",
+      "cwd": "${workspaceFolder}/fixtures/v6",
       "request": "launch",
       "command": "pnpm run dev",
       "serverReadyAction": {
@@ -50,9 +50,9 @@
       }
     },
     {
-      "name": "Demo: v7 Server",
+      "name": "Fixture: v7 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v7",
+      "cwd": "${workspaceFolder}/fixtures/v7",
       "request": "launch",
       "command": "pnpm run dev",
       "serverReadyAction": {
@@ -62,9 +62,9 @@
       }
     },
     {
-      "name": "Demo: v9 Server",
+      "name": "Fixture: v9 Server",
       "type": "node-terminal",
-      "cwd": "${workspaceFolder}/demos/v9",
+      "cwd": "${workspaceFolder}/fixtures/v9",
       "request": "launch",
       "command": "pnpm run dev",
       "serverReadyAction": {
@@ -74,11 +74,11 @@
       }
     },
     {
-      "name": "Docs: Development Server",
+      "name": "Demo & docs: Development Server",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
-      "command": "pnpm run docs:dev",
+      "command": "pnpm run demo",
       "serverReadyAction": {
         "pattern": "webpack compiled|Local:.*http://localhost:3003",
         "uriFormat": "http://localhost:3003",
@@ -86,7 +86,7 @@
       }
     },
     {
-      "name": "Docs: Build and Serve",
+      "name": "Demo & docs: Build and Serve",
       "type": "node-terminal",
       "cwd": "${workspaceFolder}",
       "request": "launch",
@@ -146,12 +146,12 @@
   ],
   "compounds": [
     {
-      "name": "Demo: All",
+      "name": "Fixture: All",
       "configurations": [
-        "Demo: v5 Server",
-        "Demo: v6 Server",
-        "Demo: v7 Server",
-        "Demo: v9 Server"
+        "Fixture: v5 Server",
+        "Fixture: v6 Server",
+        "Fixture: v7 Server",
+        "Fixture: v9 Server"
       ],
       "stopAll": true
     }

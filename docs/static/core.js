@@ -553,11 +553,11 @@ const flexClassValues = {
 };
 const properties = Object.keys(flexClassValues);
 const labels = {
-    display: "display",
-    flexDirection: "direction",
-    justifyContent: "justify",
-    alignItems: "align",
-    flexWrap: "wrap"
+    display: "d",
+    flexDirection: "dir",
+    justifyContent: "j",
+    alignItems: "a",
+    flexWrap: "w"
 };
 const inputs = [
     "row",
@@ -591,7 +591,9 @@ function getFlexClassConfig(theme) {
     };
 }
 function classFor(property, value, config, key) {
-    return `MuiFlex-${labels[property]}-${value}${key === undefined ? "" : `-${config.namespace}-${token(key)}`}`;
+    const shortValue = value.replace(/^flex-/, "").replace(/^space-/, "");
+    const name = property === "flexDirection" && /^(row|column)(-reverse)?$/.test(value) ? value.replace("column", "col").replace("-reverse", "-rev") : `${labels[property]}-${shortValue.replace("-reverse", "-rev")}`;
+    return `MuiFlex-${name}${key === undefined ? "" : `-${config.namespace}-${token(key)}`}`;
 }
 /** Finite property rules, never the Cartesian product of layout permutations. */ function createFlexClassStyles(config, includeBase = true) {
     const styles = {};
@@ -609,7 +611,14 @@ function classFor(property, value, config, key) {
         }
         return result;
     };
-    if (includeBase) Object.assign(styles, rules());
+    if (includeBase) {
+        // Zero specificity keeps system-mode display props authoritative, even if
+        // another Emotion cache inserts this shared default after their styles.
+        styles[":where(.MuiFlex-root)"] = {
+            display: "flex"
+        };
+        Object.assign(styles, rules());
+    }
     for (const { key, query } of config.queries){
         styles[query] = {
             ...styles[query],
@@ -673,8 +682,7 @@ const isResponsive = (value)=>value !== null && typeof value === "object";
         ...state
     }, ref, componentName);
     const classes = [
-        mapped.className,
-        "MuiFlex-classes"
+        mapped.className
     ];
     const fallback = {};
     for (const property of properties){
@@ -687,6 +695,12 @@ const isResponsive = (value)=>value !== null && typeof value === "object";
             if (current === previous) continue;
             // Clear a previous axis alignment when a direction change leaves it unspecified.
             const value = current === undefined ? "initial" : current;
+            // The root supplies the scalar default. Responsive transitions back to
+            // flex still need a utility to override the preceding breakpoint.
+            if (supported && property === "display" && key === undefined && value === "flex") {
+                previous = current;
+                continue;
+            }
             if (supported) classes.push(classFor(property, value, config, key));
             else if (key === undefined) fallback[property] = value;
             else {
@@ -766,7 +780,7 @@ const FlexyContext = /*#__PURE__*/ createContext(undefined);
  */ function FlexyClassOverrides({ children }) {
     const cache = __unsafe_useEmotionCache();
     const names = (children.props.className ?? "").split(/\s+/);
-    if (!names.includes("MuiFlex-classes") || !cache) return children;
+    if (!names.some((name)=>/^MuiFlex-(?:d-|dir-|row(?:-|$)|col(?:-|$)|j-|a-|w-)/.test(name)) || !cache) return children;
     const inherited = names.filter((name)=>cache.registered[name] !== undefined);
     if (!inherited.length) return children;
     const cssText = inherited.map((name)=>cache.registered[name]).join(";");

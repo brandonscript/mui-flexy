@@ -40,13 +40,13 @@
       "name": "🧪 jest"
     },
     {
-      "path": "demos",
-      "name": "🌍 demos",
+      "path": "fixtures",
+      "name": "🧪 fixtures",
       "jest.autoEnable": false
     },
     {
       "path": "docs",
-      "name": "📘 docs",
+      "name": "📘 demo & docs",
       "jest.autoEnable": false
     }
   ],
@@ -109,8 +109,8 @@
       "📦 @mui-flexy/v9",
       "🎭 playwright",
       "🧪 jest",
-      "🌍 demos",
-      "📘 docs"
+      "🧪 fixtures",
+      "📘 demo & docs"
     ],
     "jest.jestCommandLine": "./node_modules/.bin/jest",
     "jest.runMode": "on-demand",

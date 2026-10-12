@@ -38,10 +38,10 @@ git add packages/v6/dist/ || true
 git add packages/v7/dist/ || true
 git add packages/v9/dist/ || true
 git add docs/static/ || true
-git add demos/v5/dist/ || true
-git add demos/v6/dist/ || true
-git add demos/v7/dist/ || true
-git add demos/v9/dist/ || true
+git add fixtures/v5/dist/ || true
+git add fixtures/v6/dist/ || true
+git add fixtures/v7/dist/ || true
+git add fixtures/v9/dist/ || true
 
 # Refresh git index to ensure all changes are properly detected
 git update-index --refresh || true
@@ -50,9 +50,9 @@ echo "Checking for unstaged changes in non-build files..."
 
 # Check for unstaged changes OUTSIDE of build directories (these need manual review)
 # git status --porcelain format: XY filename where Y is workspace status (space = clean, M = modified)
-if git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|demos/.*/dist/)" | grep . > /dev/null; then
+if git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|fixtures/.*/dist/)" | grep . > /dev/null; then
   echo "Changes detected in non-build files. Please review and commit the following files:" >&2
-  git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|demos/.*/dist/)" >&2
+  git status --porcelain | grep '^.[M]' | grep -v -E "(packages/.*/dist/|docs/static/|fixtures/.*/dist/)" >&2
   git update-index --again
   exit 1
 fi

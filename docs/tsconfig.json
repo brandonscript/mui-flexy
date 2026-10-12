@@ -21,7 +21,8 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "Docs.tsx"
+    "Docs.tsx",
+    "types.d.ts"
   ],
   "exclude": [
     "node_modules",

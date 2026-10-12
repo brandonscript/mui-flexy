@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests/e2e",
   /* Exclude docs tests - they have their own config */
-  testIgnore: "**/docs.spec.ts",
+  testIgnore: "**/docs*.spec.ts",
   /* Consolidated output directory for all test results */
   outputDir: "./tests/e2e/test-results",
   /* Run tests in files in parallel */
@@ -105,7 +105,7 @@ export default defineConfig({
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      cwd: "demos/v5",
+      cwd: "fixtures/v5",
       command: "pnpm dev",
       url: "http://127.0.0.1:3005",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
@@ -117,7 +117,7 @@ export default defineConfig({
       },
     },
     {
-      cwd: "demos/v6",
+      cwd: "fixtures/v6",
       command: "pnpm dev",
       url: "http://127.0.0.1:3006",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
@@ -128,7 +128,7 @@ export default defineConfig({
       },
     },
     {
-      cwd: "demos/v7",
+      cwd: "fixtures/v7",
       command: "pnpm dev",
       url: "http://127.0.0.1:3007",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,
@@ -139,7 +139,7 @@ export default defineConfig({
       },
     },
     {
-      cwd: "demos/v9",
+      cwd: "fixtures/v9",
       command: "pnpm dev",
       url: "http://127.0.0.1:3008",
       reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_FORCE_CLEAN,

@@ -33,11 +33,11 @@ type LayoutProperty = keyof typeof flexClassValues;
 type Layout = Partial<Record<LayoutProperty, unknown>>;
 const properties = Object.keys(flexClassValues) as LayoutProperty[];
 const labels: Record<LayoutProperty, string> = {
-  display: "display",
-  flexDirection: "direction",
-  justifyContent: "justify",
-  alignItems: "align",
-  flexWrap: "wrap",
+  display: "d",
+  flexDirection: "dir",
+  justifyContent: "j",
+  alignItems: "a",
+  flexWrap: "w",
 };
 const inputs = ["row", "column", "reverse", "direction", "flexDirection", "x", "y", "wrap", "display"] as const;
 const token = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, (char) => `_${char.charCodeAt(0).toString(16)}_`);
@@ -57,7 +57,12 @@ export function getFlexClassConfig(theme: FlexyTheme) {
 export type FlexClassConfig = ReturnType<typeof getFlexClassConfig>;
 
 function classFor(property: LayoutProperty, value: string, config: FlexClassConfig, key?: string) {
-  return `MuiFlex-${labels[property]}-${value}${key === undefined ? "" : `-${config.namespace}-${token(key)}`}`;
+  const shortValue = value.replace(/^flex-/, "").replace(/^space-/, "");
+  const name =
+    property === "flexDirection" && /^(row|column)(-reverse)?$/.test(value)
+      ? value.replace("column", "col").replace("-reverse", "-rev")
+      : `${labels[property]}-${shortValue.replace("-reverse", "-rev")}`;
+  return `MuiFlex-${name}${key === undefined ? "" : `-${config.namespace}-${token(key)}`}`;
 }
 
 /** Finite property rules, never the Cartesian product of layout permutations. */
@@ -75,7 +80,12 @@ export function createFlexClassStyles(config: FlexClassConfig, includeBase = tru
     }
     return result;
   };
-  if (includeBase) Object.assign(styles, rules());
+  if (includeBase) {
+    // Zero specificity keeps system-mode display props authoritative, even if
+    // another Emotion cache inserts this shared default after their styles.
+    styles[":where(.MuiFlex-root)"] = { display: "flex" };
+    Object.assign(styles, rules());
+  }
   for (const { key, query } of config.queries) {
     styles[query] = { ...(styles[query] as CSSObject), ...rules(key) };
   }
@@ -138,7 +148,7 @@ export function mapFlexClassProps<P extends BaseFlexProps>(
     string,
     unknown
   >;
-  const classes = [mapped.className as string, "MuiFlex-classes"];
+  const classes = [mapped.className as string];
   const fallback: Record<string, unknown> = {};
   for (const property of properties) {
     delete mapped[property];
@@ -154,6 +164,12 @@ export function mapFlexClassProps<P extends BaseFlexProps>(
       if (current === previous) continue;
       // Clear a previous axis alignment when a direction change leaves it unspecified.
       const value = current === undefined ? "initial" : current;
+      // The root supplies the scalar default. Responsive transitions back to
+      // flex still need a utility to override the preceding breakpoint.
+      if (supported && property === "display" && key === undefined && value === "flex") {
+        previous = current;
+        continue;
+      }
       if (supported) classes.push(classFor(property, value as string, config, key));
       else if (key === undefined) fallback[property] = value;
       else {
