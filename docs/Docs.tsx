@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { HiOutlineExternalLink } from "react-icons/hi";
 
-import type { BaseFlexProps } from "../packages/core/dist";
+import type { BaseFlexProps } from "../packages/core/src/Flex.core.types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type _Any = any;
