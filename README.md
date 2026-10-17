@@ -4,8 +4,8 @@
 
 A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components with handy shorthand props.
 
-<a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Version](https://img.shields.io/npm/v/mui-flexy)</a>
-<a href="https://npmjs.org/mui-flexy" target="_blank">![NPM Downloads](https://img.shields.io/npm/dm/mui-flexy?label=downloads)</a>
+<a href="https://www.npmjs.com/package/@mui-flexy/v9" target="_blank">![NPM Version](https://img.shields.io/npm/v/%40mui-flexy%2Fv9)</a>
+<a href="https://www.npmjs.com/package/@mui-flexy/v9" target="_blank">![NPM Downloads](https://img.shields.io/npm/dm/%40mui-flexy%2Fv9?label=downloads)</a>
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/brandonscript/mui-flexy)
 ![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6%20%7C%20v7%20%7C%20v9-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018%20%7C%2019-8A2BE2?logo=react)
