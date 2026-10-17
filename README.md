@@ -10,6 +10,35 @@ A flexbox wrapper for [Material UI](https://mui.com/) Box and Grid components wi
 ![MUI Versions](https://img.shields.io/badge/%40mui%2Fmaterial%20v5%20%7C%20v6%20%7C%20v7%20%7C%20v9-blue)
 ![React Versions](https://img.shields.io/badge/React%2017%20%7C%2018%20%7C%2019-8A2BE2?logo=react)
 
+## New in 2.2.0
+
+**Shared layout classes:** opt in to `styling="classes"` to reuse the same CSS
+utility rules across Flexy components, even when their other styles differ.
+Layout rules are shared per property/value instead of being repeated for each
+combination of layout and `sx` styles.
+
+Why would you want to do this? Well let me tell you! MUI uses Emotion to generate
+CSS classes from your component styles and insert their rules into the DOM.
+Identical styles reuse a cached class, but changing a color or spacing value can
+generate another class that repeats the same layout declarations. Shared layout
+classes let a hundred boxes reuse those declarations even when their other
+styles differ—especially handy for repeated cards, lists, and responsive layouts.
+
+```tsx
+import { FlexBox, FlexyProvider } from "@mui-flexy/v9";
+
+// Inside your existing MUI ThemeProvider:
+<FlexyProvider styling="classes">
+  <FlexBox x="center" y="top" sx={{ color: "red" }} />
+  <FlexBox x="center" y="top" sx={{ color: "blue" }} />
+</FlexyProvider>;
+```
+
+Available in `@mui-flexy/v5`, `v6`, `v7`, and `v9`. Existing apps keep the default
+`styling="system"` behavior. See [Shared layout classes](#shared-layout-classes)
+for setup, scope, and SSR details, or
+[try class mode in the live demo](https://brandonscript.github.io/mui-flexy/?mui=v9&styling=classes).
+
 ## Why?
 
 ### The problem
@@ -80,20 +109,20 @@ Check out the <a href="https://brandonscript.github.io/mui-flexy/" target="_blan
 
 ## Get started
 
-#### (Note: _Breaking changes in v2.0.0_)
+### Migrating from the original `mui-flexy` package
 
-> mui-flexy is now a monorepo with separate packages for each MUI version (`@mui-flexy/v5`, `@mui-flexy/v6`, `@mui-flexy/v7`, `@mui-flexy/v9`) with a dedicated `@mui-flexy/core` package for shared utilities. Each package is now optimized specifically for its MUI version, resulting in smaller bundle sizes and better TypeScript resolution.
+> Since v2.0.0, mui-flexy uses separate packages for each MUI version (`@mui-flexy/v5`, `@mui-flexy/v6`, `@mui-flexy/v7`, `@mui-flexy/v9`) with a dedicated `@mui-flexy/core` package for shared utilities. Each package is now optimized specifically for its MUI version, resulting in smaller bundle sizes and better TypeScript resolution.
 
 > Make sure to update your imports to the new package structure:
 
 ```jsx
 import { FlexBox } from "mui-flexy"; // old
-import { FlexBox } from "@mui-flexy/v7"; // new
+import { FlexBox } from "@mui-flexy/v9"; // new: choose the package matching your MUI version
 ```
 
 > And, as of v1.2.0, CommonJS is no longer supported. If you need it, please use an older version, or file a bug/PR.
 
-#### (Note: _Breaking change - `nowrap` prop replaced with `wrap`_)
+### Migrating from `nowrap` to `wrap`
 
 > The `nowrap` prop was incorrectly setting `whiteSpace: "nowrap"` instead of `flexWrap: "nowrap"`. Since `flexWrap: "nowrap"` is the default CSS behavior, the new `wrap` prop correctly enables flex wrapping by setting `flexWrap: "wrap"`.
 
@@ -124,9 +153,8 @@ npm install @mui-flexy/v6
 # For @mui/material v5
 npm install @mui-flexy/v5
 
-# or...
-pnpm add @mui-flexy/v{5,6,7,9}
-pnpm add @mui-flexy/v{5,6,7,9}
+# Or with pnpm (MUI v9 example; choose one matching package):
+pnpm add @mui-flexy/v9
 ```
 
 ### Dependencies & setup
@@ -158,23 +186,44 @@ const App = () => (
 );
 ```
 
-If you are using a SSR-based framework like Next.js, you should use an Emotion cache to avoid hydration errors:
+If your app uses a custom Emotion cache, put `CacheProvider` outside your
+`ThemeProvider`, with `FlexyProvider` inside both when using class mode:
 
-```jsx
-import { CacheProvider } from "@emotion/react";
+```tsx
 import createCache from "@emotion/cache";
+import { CacheProvider } from "@emotion/react";
+import { CssBaseline } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { FlexBox, FlexyProvider } from "@mui-flexy/v9";
 
+const theme = createTheme();
+
+function AppProviders({ cache }: { cache: ReturnType<typeof createCache> }) {
+  return (
+    <CacheProvider value={cache}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <FlexyProvider styling="classes">
+          <FlexBox x="center" y="center">
+            Hello, Bajor
+          </FlexBox>
+        </FlexyProvider>
+      </ThemeProvider>
+    </CacheProvider>
+  );
+}
+
+// Browser entry point: reuse this cache across renders.
 const cache = createCache({ key: "my-app-css" });
-
-const App = () => (
-  <CacheProvider value={cache}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <YourApp />
-    </ThemeProvider>
-  </CacheProvider>
-);
+const app = <AppProviders cache={cache} />;
 ```
+
+For server rendering, create a fresh cache for each request and use your
+framework's MUI/Emotion integration to collect and hydrate its styles. The
+provider nesting above is only part of SSR setup. Use the same cache key and
+theme/breakpoints on the server and client; a cache key alone does not prevent
+hydration errors. See [Responsive layout and themes](#responsive-layout-and-themes)
+for class-mode theme and cache requirements.
 
 ## Using mui-flexy
 
@@ -199,7 +248,7 @@ import { FlexBox, FlexGrid } from "@mui-flexy/v7";
 // For MUI v9
 import { FlexBox, FlexGrid } from "@mui-flexy/v9";
 
-<FlexBox x="top" y="center">
+<FlexBox x="left" y="center">
   <Typography>Hello, Bajor</Typography>
 </FlexBox>;
 ```
@@ -239,12 +288,12 @@ import { FlexBox, FlexGrid2 } from "@mui-flexy/v6";
 import { FlexBox, FlexGrid } from "@mui-flexy/v7";
 import { FlexBox, FlexGrid } from "@mui-flexy/v9";
 
-// Usage is the same across versions:
-<FlexGrid2 container x="center" y="top">
-  <FlexGrid2 item size={{ xs: 12, sm: 6, md: 4, lg: 3 }} x="center" y="center">
+// MUI v7 / v9 (use FlexGrid2 for the equivalent MUI v6 layout):
+<FlexGrid container x="center" y="top">
+  <FlexGrid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} x="center" y="center">
     <Typography>Grids are cool</Typography>
-  </FlexGrid2>
-</FlexGrid2>;
+  </FlexGrid>
+</FlexGrid>;
 ```
 
 > _(Note: the syntax for legacy Grid is slightly different)_
@@ -302,7 +351,7 @@ It used to get tricky when you switch the `flex-direction`:
 </>
 ```
 
-FlexBox and FlexGrid also support `ResponsiveStyleObject` array notation:
+FlexBox and FlexGrid also support `ResponsiveStyleValue` array notation:
 
 ```jsx
 <FlexBox x={["left", "center", "right"]} y={["bottom", "center", "top"]} row />
@@ -330,7 +379,7 @@ FlexBox and FlexGrid also support `ResponsiveStyleObject` array notation:
 }} />
 ```
 
-...and `ResponsiveStyleObject` object notation:
+...and `ResponsiveStyleValue` object notation:
 
 ```jsx
 <FlexBox
@@ -462,7 +511,7 @@ MUI v5 introduced `Unstable_Grid2`, a new grid system based on flexbox. In v6, `
 Both FlexBox and FlexGrid are wrapped with forwardRef, so you can pass a ref to FlexBox and FlexGrid. You can also pass a `component` prop to override the default `div`:
 
 ```jsx
-import { forwardRef } from "react";
+import { useRef } from "react";
 
 const boxRef = useRef(null);
 
@@ -483,7 +532,7 @@ layout rules independently of each element's other styles, enable `styling="clas
 
 ```tsx
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { FlexBox, FlexyProvider } from "@mui-flexy/v7";
+import { FlexBox, FlexyProvider } from "@mui-flexy/v9";
 
 const theme = createTheme();
 
@@ -559,8 +608,9 @@ specificity; for example:
 Load an equally specific external rule after the shared stylesheet, or add another
 class selector. Avoid depending on the order of names in `className`.
 
-A standalone class-mode demo is available at `/?classes` on each version's demo
-server. Its "Render 300 boxes" button demonstrates layout-rule reuse with varied
+Try the [public class-mode sandbox](https://brandonscript.github.io/mui-flexy/?mui=v9&styling=classes).
+For development, each version's [test fixture](#test-fixtures) also has a `/?classes`
+page with a "Render 300 boxes" button to demonstrate layout-rule reuse with varied
 `sx` styling.
 
 ## `styled()` support
@@ -579,16 +629,15 @@ It supports all of the advanced functions available through `styled()` for theme
 
 ##### `shouldForwardProp`:
 
-```jsx
-const CountBox =
-  styled(FlexBox, {
-    shouldForwardProp: (prop) => !["count"].includes(String(prop)),
-  }) <
-  { count: number } >
-  (({ theme, count }) =>
-    theme.unstable_sx({
-      color: (theme) => (count > 8 ? theme.palette.primary.warning : theme.palette.primary.main),
-    }));
+```tsx
+import { styled } from "@mui/material/styles";
+import { FlexBox } from "@mui-flexy/v9";
+
+const CountBox = styled(FlexBox, {
+  shouldForwardProp: (prop) => prop !== "count",
+})<{ count: number }>(({ theme, count }) => ({
+  color: count > 8 ? theme.palette.warning.main : theme.palette.primary.main,
+}));
 ```
 
 ##### `inline components`:
